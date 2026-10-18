@@ -615,3 +615,5 @@ a.adcard:hover{border-color:var(--amber)}
 .tmkt .mk>*{unicode-bidi:isolate}.tmkt .mk small{margin-inline-start:3px}
 .tmkt .up,.tmkt .dn{margin-inline-start:6px!important}
 .today-in{margin-bottom:18px}
+
+.auc-grid .auccat{grid-column:1/-1;margin:12px 0 0;font-size:17px;color:var(--pri)}
