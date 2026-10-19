@@ -260,6 +260,8 @@ function route(h){h=h||location.hash||'#home';let m;
   show(VIEWS.includes(v)?v:'home')}
 window.addEventListener('hashchange',()=>route());
 // the home search looks through every service and consultancy
+// popular searches under the home search box
+document.querySelectorAll('.popular [data-q]').forEach(b=>b.onclick=()=>{$('hq').value=b.dataset.q;$('hs').requestSubmit?$('hs').requestSubmit():$('hs').dispatchEvent(new Event('submit',{cancelable:true}))});
 $('hs')&&$('hs').addEventListener('submit',e=>{e.preventDefault();const q=$('hq').value.trim();$('q').value=q;ent='all';
   if(location.hash==='#services')route('#services');else location.hash='services';render()});
 
@@ -299,7 +301,7 @@ function buildQuote(c){const d=new Date(),pad=x=>String(x).padStart(2,'0');
   c.sv.split('\n').map(x=>x.trim()).filter(Boolean).forEach(line=>{const m=line.match(/\(([A-Z]{2}-\d{2})\)(?:\s*×\s*(\d+))?/);const s=m&&byCode[m[1]];
     if(!s){custom.push(line);return}const q=Math.max(1,parseInt(m[2])||1);sum+=s.p*q;if(s.from)from=true;rows.push({s,q})});
   const cur=T.cur;
-  const html=`<div class="qhead"><div class="qbrand">${LOGO}<div><b>${T.q.title}</b><span>${EN?'Basira for Transactions LLC':'بصيرة للمعاملات ذ.م.م'} · <span dir="ltr">${esc(CFG.PHONE||'+974 72232609')}</span> · ${esc(CFG.EMAIL||'baseeratactions@gmail.com')}</span></div></div><div class="num">${T.q.no}: ${no}<br>${T.q.date}: ${date}</div></div>
+  const html=`<div class="qhead"><div class="qbrand">${LOGO}<div><b>${T.q.title}</b><span>${EN?'Basira for Transactions LLC':'بصيرة للمعاملات ذ.م.م'} · <span dir="ltr">${esc(CFG.PHONE||'+974 7223 2609')}</span> · ${esc(CFG.EMAIL||'baseeratactions@gmail.com')}</span></div></div><div class="num">${T.q.no}: ${no}<br>${T.q.date}: ${date}</div></div>
    <p><b>${T.q.client}:</b> ${esc(c.n)}${c.co?' · '+T.co+': '+esc(c.co):''} · <span dir="ltr">${esc(c.ph)}</span>${c.em?' · '+esc(c.em):''} · ${esc(c.typeTxt)}${c.plan?' · '+esc(c.plan):''}${c.via?' · '+T.lVia+': '+esc(c.via):''}</p>
    ${rows.length?`<div class="ptable"><table><thead><tr><th>${T.q.svc}</th><th>${T.q.qty}</th><th>${T.q.fee}</th><th>${T.q.total}</th></tr></thead><tbody>${rows.map(({s,q})=>`<tr><td>${esc(s.n)} <span class="code">${s.c}</span></td><td class="num">${q}</td><td class="num">${s.from?T.from+' ':''}${fmt(s.p)}</td><td class="num">${fmt(s.p*q)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3"><b>${T.q.sum}</b></td><td class="num"><b>${from?T.from+' ':''}${fmt(sum)} ${cur}</b></td></tr></tfoot></table></div>`:''}
    ${custom.length?`<p><b>${T.q.custom}:</b><br>${custom.map(esc).join('<br>')}</p>`:''}

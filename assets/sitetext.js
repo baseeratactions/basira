@@ -22,7 +22,7 @@ const SLOTS={
   about:d=>q(d,'#about .lead')};
 function read(d){const o={};Object.keys(SLOTS).forEach(k=>{const n=SLOTS[k](d);o[k]=n?n.textContent.trim():''});return o}
 const digits=s=>String(s||'').replace(/\D/g,'');
-const showPhone=w=>/^974\d{8}$/.test(w)?'+974 '+w.slice(3):'+'+w;
+const showPhone=w=>/^974\d{8}$/.test(w)?'+974 '+w.slice(3,7)+' '+w.slice(7):'+'+w;
 function apply(s){if(!s)return;const t=s[L]||{};
   Object.keys(SLOTS).forEach(k=>{if(!t[k])return;const n=SLOTS[k](document);if(!n)return;
     if(n.nodeType===3){const lead=n.textContent.match(/^\s*/)[0],tail=n.textContent.match(/\s*$/)[0];n.textContent=lead+t[k]+tail}else n.textContent=t[k]});
@@ -33,7 +33,7 @@ function apply(s){if(!s)return;const t=s[L]||{};
   if(ph)document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.href='tel:+'+ph});
   if(em)document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{a.href=a.href.replace(/^mailto:[^?]*/,'mailto:'+em)});
   // visible copies of the phone and email in text
-  const oldPh=[showPhone(DEF_WA),'+'+DEF_WA,DEF_WA],swaps=[];
+  const oldPh=[showPhone(DEF_WA),'+974 '+DEF_WA.slice(3),'+'+DEF_WA,DEF_WA],swaps=[];
   if(ph)oldPh.forEach(o=>swaps.push([o,showPhone(ph)]));if(em)swaps.push([DEF_MAIL,em]);
   if(!swaps.length||!document.body)return;
   const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
