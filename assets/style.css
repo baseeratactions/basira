@@ -649,3 +649,18 @@ main:focus{outline:none}
 #services .costbox.fees{margin-top:22px}
 @media (max-width:620px){.plainnav{flex-wrap:nowrap;overflow-x:auto;gap:4px;scrollbar-width:none}.plainnav::-webkit-scrollbar{display:none}.plainnav a,.plainnav button{white-space:nowrap;flex:none}}
 .plainnav a.acct{border:1.5px solid currentColor}
+/* polish (2026-10-19): popular searches, footer in columns */
+.popular{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:-6px 0 0;font-size:14px}
+.popular span{color:var(--mute)}
+.popular button{font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;min-height:34px}
+.popular button:hover,.popular button:focus-visible{border-color:var(--navy);color:var(--navy)}
+footer .fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:22px;opacity:1;padding-bottom:18px;margin-bottom:14px;border-bottom:1px solid var(--bar-line,rgba(255,255,255,.18))}
+footer .fcol{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+footer .fcol>b{font-family:var(--display);color:var(--amber);font-size:15.5px}
+footer .fcol a{text-decoration:none;opacity:.9}
+footer .fcol a:hover{opacity:1;text-decoration:underline}
+footer .fbrand>b{color:inherit;font-size:17px}
+footer .fbrand span{opacity:.8;line-height:1.7}
+footer .fgrid .fc{border:0;margin:0;padding:0;font-size:14px;flex-direction:column;align-items:flex-start;gap:8px}
+footer .fbottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;opacity:.85;font-size:13.5px}
+@media (max-width:860px){footer .fgrid{grid-template-columns:1fr 1fr}footer .fbrand,footer .fgrid .fc{grid-column:1/-1}footer .fgrid .fc{flex-direction:row;flex-wrap:wrap}}
