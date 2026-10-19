@@ -2,7 +2,7 @@ html,body{margin:0}
 
 /* Layout: navy header band with a watchful "eye" mark, then a working catalog: filter chips + searchable service list, packages with monthly/annual switch, cost estimator, request form */
 :root{
-  --bg:#f6f7f8;--surface:#ffffff;--ink:#26323d;--mute:#6b7682;--line:#e4e7ea;
+  --bg:#f6f7f8;--surface:#ffffff;--ink:#1f2a33;--mute:#545f6a;--line:#e4e7ea;
   --navy:#2f855a;--navy-ink:#ffffff;--amber:#c9a24d;--amber-soft:#f6f1e8;--amber-ink:#2a2416;
   --ok:#4a7a6c;--ok-soft:#ebf2ef;--chip:#eff1f3;
   --hero-bg:#ffffff;--hero-ink:#26323d;--hero-em:#2f855a;--hero-card:#f6f7f8;
@@ -462,8 +462,8 @@ ul.promises span{color:var(--mute);font-size:14.5px}
 .drop.small{min-width:200px}
 .drop>li>a{display:block;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none;font-size:14.5px}
 .drop>li>a:hover{background:var(--chip)}
-.btn.wa{background:#1f9d55;color:#fff;border-color:#1f9d55;display:inline-flex;align-items:center;gap:6px}
-.btn.wa:hover{background:#178a49}
+.btn.wa{background:#15803d;color:#fff;border-color:#15803d;display:inline-flex;align-items:center;gap:6px}
+.btn.wa:hover{background:#116b32}
 .mbar{display:none}
 @media (max-width:760px){
   .mbar{display:flex;gap:8px;position:fixed;z-index:9;inset-inline:0;bottom:0;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(10,20,40,.08)}
