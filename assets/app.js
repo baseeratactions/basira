@@ -328,8 +328,11 @@ function applyReg(){if(!REG){if(GUEST&&$('who')){$('who').textContent=T.register
   if(REG.company){fType.value='org';syncPlan()}}
 const reg=$('reg');
 function openReg(){if(!reg)return;if(REG){$('rName').value=REG.name;$('rPhone').value=REG.phone;$('rMail').value=REG.email||'';$('rCo').value=REG.company||'';$('rOk').checked=true}
+  // asked while sending a quote: carry over what the visitor already typed in the request form
+  else{if($('fName').value)$('rName').value=$('fName').value;if($('fPhone').value)$('rPhone').value=$('fPhone').value;if($('fMail').value)$('rMail').value=$('fMail').value}
   if(reg.showModal){if(!reg.open)reg.showModal()}else reg.setAttribute('open','')}
-if(reg){reg.addEventListener('cancel',e=>{if(!REG&&!GUEST)e.preventDefault()});
+if(reg){// the sign-up window never blocks browsing: Esc or «Not now» closes it
+  reg.addEventListener('cancel',()=>{quoteWaiting=false});
   $('who').onclick=openReg;
   $('regF').addEventListener('submit',e=>{e.preventDefault();
     const n=$('rName').value.trim(),ph=$('rPhone').value.replace(/\s/g,''),em=$('rMail').value.trim(),co=$('rCo').value.trim();let ok=true;
@@ -345,7 +348,7 @@ if(reg){reg.addEventListener('cancel',e=>{if(!REG&&!GUEST)e.preventDefault()});
     $('fName').value='';$('fPhone').value='';$('fMail').value='';applyReg();reg.close();toast(T.hi(n.split(' ')[0]));
     if(keep){quoteWaiting=false;if(keep.n)$('fName').value=keep.n;if(keep.p)$('fPhone').value=keep.p;if(keep.m)$('fMail').value=keep.m;$('f').requestSubmit?$('f').requestSubmit():$('f').dispatchEvent(new Event('submit',{cancelable:true}))}});
   $('rGuest').onclick=()=>{GUEST=true;quoteWaiting=false;try{sessionStorage.setItem(GUEST_KEY,'1')}catch(err){}reg.close();applyReg()};
-  if(!REG&&!GUEST)openReg()}
+}
 applyReg();
 $('printQ')&&($('printQ').onclick=()=>window.print());
 $('copyMsg').onclick=()=>copy($('out').textContent,$('out'));
