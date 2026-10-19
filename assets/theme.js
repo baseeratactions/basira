@@ -4,9 +4,9 @@
 (function(){
 // Public pages (and «حسابي») use one fixed, easy-to-read green palette in light and dark mode (owner, 2026-10-19).
 // Every text colour here passes WCAG AA (4.5:1) on the background it sits on; the admin colour picker only changes the admin panel.
-const PUB={bg:'#f4f8f6',surface:'#ffffff',ink:'#17241e',mute:'#4b5a53',line:'#d5e3db',chip:'#e8f1ec',
-  hero:'#e7f2ec',heroCard:'#ffffff',green:'#1d6b47',bar:'#1d5c40',barInk:'#ffffff',
-  gold:'#8a6512',goldSoft:'#f6efdd',goldLine:'#b8913a',ok:'#1d6b47',okSoft:'#e3f1e9'};
+const PUB={bg:'#e4f2e9',surface:'#ffffff',ink:'#14231c',mute:'#44544c',line:'#bcd8c6',chip:'#d6ebdd',
+  hero:'#d4eadb',heroCard:'#ffffff',green:'#1b6644',bar:'#1d5c40',barInk:'#ffffff',
+  gold:'#755510',goldSoft:'#f6efdd',goldLine:'#b8913a',ok:'#1b6644',okSoft:'#d4eadb'};
 const KEY='basira_theme',DEF={primary:'#2f855a',accent:'#c9a24d'};
 const hex=s=>/^#[0-9a-f]{6}$/i.test(s||'');
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
@@ -26,7 +26,7 @@ body:not(.crm) .top,body:not(.crm) footer{background:var(--pub-bar,var(--navy));
 body:not(.crm) .burger span{background:currentColor}
 body:not(.crm) .basmala{color:${G}!important}
 body:not(.crm) .plan.elite .save{color:#f3d98f}
-body:not(.crm) footer .fc b{color:#f3d98f}`}
+body:not(.crm) footer .fc b,body:not(.crm) footer .fcol>b:not(.fbrand>b){color:#f3d98f}`}
 function apply(t){if(!t||!hex(t.primary)||!hex(t.accent)||/^#(0e5e4a|0b6b53)$/i.test(t.primary))t=DEF;let el=document.getElementById('siteTheme');
   if(!el){el=document.createElement('style');el.id='siteTheme';document.head.appendChild(el)}el.textContent=css(t);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t.primary}
