@@ -1,0 +1,29 @@
+name: catalog-check
+# Manual check of what the admin panel has hidden in the published services catalog (public data only).
+on: workflow_dispatch
+permissions: {}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hidden services per server
+        run: |
+          for api in "https://script.google.com/macros/s/AKfycbw7qcFIL5JcqRkJ44EwRd_UEy5b-TcsOPEmGksqwaemlNP-o0cWYLaBcZvoP1LFFRs/exec" "https://script.google.com/macros/s/AKfycbx-GRnFTT0imyz_QO7wr19dXuQm8kk7svgyWkHfnCPkaP9nFT0Y9obVc1szH6uFvND8/exec"; do
+            curl -sSL -X POST -H 'Content-Type: text/plain;charset=utf-8' -d '{"action":"catalog","ver":""}' "$api" > c.json
+            python3 - <<'P'
+          import json
+          j=json.load(open('c.json'));print('ok',j.get('ok'),'ver',j.get('ver'))
+          if j.get('data'):
+            d=j['data'];h=(j.get('details') or {}).get('_hidden')
+            print('hidden',json.dumps(h,ensure_ascii=False))
+            print('groups',[(g[0],len(g[2])) for g in d.get('G',[])])
+            print('setup',len(d.get('SETUP',[])),'consult',[(k['code'],len(k['items'])) for k in d.get('CONSULT',[])],'plans',[p.get('key') for p in d.get('PLANS',[])])
+            names={}
+            for g in d.get('G',[]):
+              for x in g[2]: names[x[0]]=x[1]
+            for x in d.get('SETUP',[]): names[x[0]]=x[1]
+            for k in d.get('CONSULT',[]):
+              for x in k['items']: names[x['c']]=x.get('n')
+            for c in (h or {}).get('s',[]): print('  S',c,names.get(c))
+          P
+          done
