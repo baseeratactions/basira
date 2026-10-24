@@ -9,7 +9,7 @@ jobs:
       - name: Hidden services per server
         run: |
           for api in "https://script.google.com/macros/s/AKfycbw7qcFIL5JcqRkJ44EwRd_UEy5b-TcsOPEmGksqwaemlNP-o0cWYLaBcZvoP1LFFRs/exec" "https://script.google.com/macros/s/AKfycbx-GRnFTT0imyz_QO7wr19dXuQm8kk7svgyWkHfnCPkaP9nFT0Y9obVc1szH6uFvND8/exec"; do
-            curl -sSL -X POST -H 'Content-Type: text/plain;charset=utf-8' -d '{"action":"catalog","ver":""}' "$api" > c.json
+            curl -sSL -H 'Content-Type: text/plain;charset=utf-8' -d '{"action":"catalog","ver":""}' "$api" > c.json; head -c 300 c.json; echo
             python3 - <<'P'
           import json
           j=json.load(open('c.json'));print('ok',j.get('ok'),'ver',j.get('ver'))
