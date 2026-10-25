@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://api.github.com https://baseeratactions.github.io https://munjiz-qa.github.io; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#1b2a4a">
 <title>الديوان | لوحة الإدارة الموحّدة</title>
 <link rel="icon" href="mark.svg" type="image/svg+xml">
@@ -37,7 +38,7 @@
     </label>
     <button class="primary block" id="loginBtn">دخول موحّد</button>
     <p class="msg" id="loginMsg" role="alert"></p>
-    <p class="fine">تُستخدم بيانات مدير المنصات نفسها. إذا اختلفت بيانات منصة، تدخلها مرة واحدة من بطاقتها بعد الدخول.</p>
+    <p class="fine">تُستخدم بيانات مدير المنصات نفسها. إذا اختلفت بيانات منصة، تدخلها مرة واحدة من بطاقتها بعد الدخول. لحماية بيانات العملاء ينتهي الدخول تلقائياً بعد 30 دقيقة دون استخدام، وعند إغلاق التبويب.</p>
   </form>
 </main>
 
@@ -88,6 +89,6 @@
 </div>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="diwan.js?v=20261025b"></script>
+<script src="diwan.js?v=20261025c"></script>
 </body>
 </html>

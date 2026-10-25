@@ -239,7 +239,7 @@ function collect() {
 function logoHtml(p) {
   const letter = esc((p.name || '؟').trim().charAt(0));
   if (!p.icon) return '<span class="logo" style="--brand:' + esc(p.color) + '">' + letter + '</span>';
-  return '<span class="logo" style="--brand:' + esc(p.color) + '"><img src="' + esc(p.site + p.icon) + '" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'' + letter + '\'))"></span>';
+  return '<span class="logo" style="--brand:' + esc(p.color) + '" data-letter="' + letter + '"><img src="' + esc(p.site + p.icon) + '" alt="" loading="lazy"></span>';
 }
 function adminLink(p) {
   if (!p.admin) return '';
@@ -442,6 +442,18 @@ function bind() {
     else { btn.disabled = false; f.querySelector('p').textContent = ERR[b.err] || 'تعذّر الدخول'; }
   });
 }
+
+// شعار لم يُحمَّل: يحل محله الحرف الأول من اسم المنصة
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.parentNode && t.parentNode.dataset.letter != null) t.replaceWith(document.createTextNode(t.parentNode.dataset.letter)); }, true);
+
+// خروج تلقائي من كل المنصات بعد 30 دقيقة دون استخدام، حمايةً لبيانات العملاء على الأجهزة المشتركة
+const IDLE_MIN = 30;
+let lastUse = Date.now();
+['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(ev => addEventListener(ev, () => { lastUse = Date.now(); }, {passive: true}));
+setInterval(() => {
+  if ($('#app').hidden || Date.now() - lastUse < IDLE_MIN * 60000) return;
+  logout().then(() => { $('#loginMsg').className = 'msg'; $('#loginMsg').textContent = 'انتهت الجلسة تلقائياً بعد 30 دقيقة دون استخدام، حفاظاً على سرية البيانات'; });
+}, 30000);
 
 async function boot() {
   const th = store.get(THEME, ''); if (th) document.documentElement.dataset.theme = th;
