@@ -1,6 +1,6 @@
 // الديوان: لوحة إدارة موحّدة لكل المنصات.
 // - تقرأ سجل المنصات (platforms.json) وتكتشف تلقائياً أي موقع جديد منشور على حسابات الشركة في GitHub.
-// - تقرأ رابط الخادم من ملف إعدادات كل منصة، وتجمع المنصات التي تشترك في خادم واحد.
+// - تتصل فقط بالخوادم المثبّتة في السجل، وتجمع المنصات التي تشترك في خادم واحد.
 // - دخول واحد: نفس اسم المستخدم وكلمة المرور تُرسل لكل خادم، وتُحفظ أختام الجلسات في هذا التبويب فقط.
 // - «لوحة الإدارة» تفتح إدارة المنصة بختم الجلسة نفسه (#sso=...) فلا يُطلب الدخول مرة ثانية.
 (() => {
@@ -111,7 +111,7 @@ function colorFor(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(
 async function buildPlatforms() {
   const reg = S.reg, disc = await discover(reg);
   const ignore = new Set((reg.ignore || []).map(x => x.toLowerCase()));
-  const list = reg.platforms.map(p => Object.assign({source: 'registry'}, p));
+  const list = reg.platforms.map(p => Object.assign({source: 'registry'}, p, {pinned: /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(p.api || '') ? p.api : '', api: ''}));
   const known = new Set(list.map(keyOf));
   // مستودعات منشورة غير مسجلة
   Object.values(disc.repos).forEach(r => {
@@ -139,11 +139,17 @@ async function buildPlatforms() {
     try { const r = await fetch(p.site, {cache: 'no-store'}); p.up = r.ok; }
     catch (e) { try { await fetch(p.site, {mode: 'no-cors', cache: 'no-store'}); p.up = true; } catch (e2) { p.up = false; } }
     // الخادم من ملف الإعدادات
-    p.api = '';
+    // بيانات الدخول لا تُرسل إلا إلى خادم مثبّت في platforms.json لمنصة مسجلة.
+    // ملف إعدادات المنصة يُقرأ للعرض فقط: منصة مكتشفة أو رابط خادم لا يطابق السجل لا يصله شيء.
+    p.api = ''; p.cfgApi = '';
     if (p.config) {
-      try { const t = await getText(p.site + p.config); const m = /\bAPI\s*:\s*["']([^"']*)["']/.exec(t); p.api = m ? m[1].trim() : ''; p.mode = p.api ? 'server' : 'local'; }
+      try { const t = await getText(p.site + p.config); const m = /\bAPI\s*:\s*["']([^"']*)["']/.exec(t); p.cfgApi = m ? m[1].trim() : ''; p.mode = p.cfgApi ? 'server' : 'local'; }
       catch (e) { p.mode = 'unknown'; }
     } else p.mode = p.feed ? 'static' : 'unknown';
+    if (p.source === 'registry' && p.pinned) {
+      if (p.cfgApi === p.pinned) p.api = p.pinned;
+      else if (p.cfgApi) p.mode = 'mismatch';
+    } else if (p.mode === 'server') p.mode = 'unpinned';
     // آخر خلاصة لمنصات المحتوى
     if (p.feed) { try { const f = await getJSON(p.site + p.feed); p.feedAt = f.published || f.date || ''; p.feedTitle = (f.title && (f.title.ar || f.title)) || ''; } catch (e) {} }
   }));
@@ -249,6 +255,8 @@ function modeBadges(p) {
     else if (b && b.err) out.push('<span class="badge ' + (b.err === 'network' ? 'bad' : 'warn') + '">' + esc(b.err === 'network' ? 'الخادم لا يستجيب' : 'بانتظار الدخول') + '</span>');
     if (b && b.platforms.length > 1) out.push('<span class="badge info">خادم مشترك مع ' + esc(b.platforms.filter(x => x !== p).map(x => x.name).join(' و')) + '</span>');
   } else if (p.mode === 'local') out.push('<span class="badge warn">الوضع المحلي: بلا خادم</span>');
+  else if (p.mode === 'unpinned') out.push('<span class="badge warn">خادم غير معتمد في السجل</span>');
+  else if (p.mode === 'mismatch') out.push('<span class="badge bad">رابط الخادم تغيّر: الدخول موقوف</span>');
   else if (p.mode === 'static') out.push('<span class="badge info">منصة محتوى</span>');
   if (p.deploy) {
     const d = p.deploy;
@@ -269,6 +277,8 @@ function cardHtml(p, st) {
   let note = '';
   if (p.feedAt) note = 'آخر خلاصة: ' + esc(p.feedTitle) + ' · ' + esc(fmtDate(p.feedAt));
   else if (p.mode === 'local') note = 'تعمل على أجهزة المستخدمين فقط إلى أن يُربط خادمها. إدارتها من داخل المنصة نفسها.';
+  else if (p.mode === 'mismatch') note = 'رابط الخادم في ملف إعدادات المنصة لا يطابق الرابط المعتمد في سجل الديوان، فلم تُرسل إليه بيانات الدخول. راجع التغيير قبل اعتماده.';
+  else if (p.mode === 'unpinned') note = 'للمنصة خادم خاص، ولن يُرسل إليه الديوان بيانات الدخول حتى يُعتمد رابطه في سجل المنصات.';
   else if (p.source === 'discovered') note = 'نُشرت على حساب الشركة وانضمت إلى الديوان تلقائياً.';
   const adm = adminLink(p);
   return '<article class="card" style="--brand:' + esc(p.color) + '"><div class="band"></div>' +
@@ -335,7 +345,7 @@ function renderInbox() {
 
 function renderTable() {
   const dep = p => !p.deploy ? '<span class="mute">—</span>' : p.deploy.status !== 'completed' ? '<span class="badge info">جارٍ</span>' : p.deploy.conclusion === 'success' ? '<span class="badge ok">ناجح</span>' : '<span class="badge bad">متعثّر</span>';
-  const mode = p => p.mode === 'server' ? 'خادم ' + (S.backends.get(p.api) && S.backends.get(p.api).platforms.length > 1 ? 'مشترك' : 'مستقل') : p.mode === 'local' ? 'محلي' : p.mode === 'static' ? 'محتوى' : '—';
+  const mode = p => p.mode === 'mismatch' ? 'خادم غير مطابق' : p.mode === 'unpinned' ? 'خادم غير معتمد' : p.mode === 'server' ? 'خادم ' + (S.backends.get(p.api) && S.backends.get(p.api).platforms.length > 1 ? 'مشترك' : 'مستقل') : p.mode === 'local' ? 'محلي' : p.mode === 'static' ? 'محتوى' : '—';
   $('#ptable').innerHTML = '<thead><tr><th>المنصة</th><th>الرابط</th><th>الموقع</th><th>البيانات</th><th>آخر نشر</th><th>آخر تحديث</th><th>الانضمام</th></tr></thead><tbody>' +
     S.platforms.map(p => '<tr><td><div class="pn">' + logoHtml(p) + '<div><b>' + esc(p.name) + '</b><div class="mute" style="font-size:12px">' + esc(p.kind || '') + '</div></div></div></td>' +
       '<td><a class="ltr" href="' + esc(p.site) + '" target="_blank" rel="noopener">' + esc(p.site.replace(/^https:\/\//, '')) + '</a></td>' +

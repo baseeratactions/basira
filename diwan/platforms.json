@@ -1,10 +1,11 @@
 {
-  "about": "سجل منصات الديوان. أي مستودع منشور على GitHub Pages لدى الحسابات المذكورة في owners، وأي تطبيق داخله له ملف manifest.webmanifest، يظهر في اللوحة تلقائياً. هذا الملف يضيف فقط الاسم والهوية ورابط الإدارة وقواعد التمييز للمنصات المعروفة.",
+  "about": "سجل منصات الديوان. أي مستودع منشور على GitHub Pages لدى الحسابات المذكورة في owners، وأي تطبيق داخله له ملف manifest.webmanifest، يظهر في اللوحة تلقائياً. هذا الملف يضيف الاسم والهوية ورابط الإدارة وقواعد التمييز. ولا تُرسل بيانات الدخول إلا إلى الخوادم المثبّتة هنا في الحقل api، فالمنصة المكتشفة تُعرض فقط حتى يُعتمد خادمها في هذا الملف.",
   "owners": ["baseeratactions", "munjiz-qa"],
   "ignore": ["baseeratactions/basira/diwan"],
   "platforms": [
     {
       "id": "basira",
+      "api": "https://script.google.com/macros/s/AKfycbw7qcFIL5JcqRkJ44EwRd_UEy5b-TcsOPEmGksqwaemlNP-o0cWYLaBcZvoP1LFFRs/exec",
       "repo": "baseeratactions/basira",
       "name": "بصيرة للمعاملات",
       "kind": "تعقيب المعاملات الحكومية",
@@ -17,6 +18,7 @@
     },
     {
       "id": "jahiz",
+      "api": "https://script.google.com/macros/s/AKfycbw7qcFIL5JcqRkJ44EwRd_UEy5b-TcsOPEmGksqwaemlNP-o0cWYLaBcZvoP1LFFRs/exec",
       "repo": "baseeratactions/jahiz",
       "name": "جاهز",
       "kind": "سوق المواد والخدمات",
@@ -30,6 +32,7 @@
     },
     {
       "id": "munjiz",
+      "api": "https://script.google.com/macros/s/AKfycbx-GRnFTT0imyz_QO7wr19dXuQm8kk7svgyWkHfnCPkaP9nFT0Y9obVc1szH6uFvND8/exec",
       "repo": "munjiz-qa/munjiz-qa.github.io",
       "name": "منجز لخدمات الأعمال",
       "kind": "خدمات الأعمال والشركات",
