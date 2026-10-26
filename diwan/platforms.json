@@ -1,0 +1,83 @@
+{
+  "about": "سجل منصات الديوان. أي مستودع منشور على GitHub Pages لدى الحسابات المذكورة في owners، وأي تطبيق داخله له ملف manifest.webmanifest، يظهر في اللوحة تلقائياً. هذا الملف يضيف الاسم والهوية ورابط الإدارة وقواعد التمييز. ولا تُرسل بيانات الدخول إلا إلى الخوادم المثبّتة هنا في الحقل api، فالمنصة المكتشفة تُعرض فقط حتى يُعتمد خادمها في هذا الملف.",
+  "owners": ["baseeratactions", "munjiz-qa"],
+  "ignore": ["baseeratactions/basira/diwan"],
+  "platforms": [
+    {
+      "id": "basira",
+      "api": "https://script.google.com/macros/s/AKfycbw7qcFIL5JcqRkJ44EwRd_UEy5b-TcsOPEmGksqwaemlNP-o0cWYLaBcZvoP1LFFRs/exec",
+      "repo": "baseeratactions/basira",
+      "name": "بصيرة للمعاملات",
+      "kind": "تعقيب المعاملات الحكومية",
+      "site": "https://baseeratactions.github.io/basira/",
+      "icon": "assets/icon-192.png",
+      "color": "#0e5e4a",
+      "admin": "crm.html",
+      "portal": "portal.html",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "jahiz",
+      "api": "https://script.google.com/macros/s/AKfycbw7qcFIL5JcqRkJ44EwRd_UEy5b-TcsOPEmGksqwaemlNP-o0cWYLaBcZvoP1LFFRs/exec",
+      "repo": "baseeratactions/jahiz",
+      "name": "جاهز",
+      "kind": "سوق المواد والخدمات",
+      "site": "https://baseeratactions.github.io/jahiz/",
+      "icon": "assets/jahiz-mark-v3.svg",
+      "color": "#6d28d9",
+      "admin": "crm.html",
+      "portal": "portal.html",
+      "config": "assets/config.js",
+      "claim": { "codes": "^[A-Z]{2}-", "types": ["شريك معتمد", "Partner"] }
+    },
+    {
+      "id": "munjiz",
+      "api": "https://script.google.com/macros/s/AKfycbx-GRnFTT0imyz_QO7wr19dXuQm8kk7svgyWkHfnCPkaP9nFT0Y9obVc1szH6uFvND8/exec",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "name": "منجز لخدمات الأعمال",
+      "kind": "خدمات الأعمال والشركات",
+      "site": "https://munjiz-qa.github.io/",
+      "icon": "assets/icon-192.png",
+      "color": "#7a1e3a",
+      "admin": "crm.html",
+      "portal": "portal.html",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "nibras",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "nibras",
+      "name": "نبراس",
+      "kind": "تقارير الوضع الراهن",
+      "site": "https://munjiz-qa.github.io/nibras/",
+      "icon": "assets/icon.svg",
+      "color": "#5e0e26",
+      "admin": "",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "marqab",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "marqab",
+      "name": "مرقب",
+      "kind": "الذكاء المؤسسي ودعم القرار",
+      "site": "https://munjiz-qa.github.io/marqab/",
+      "icon": "assets/icon.svg",
+      "color": "#0a3740",
+      "admin": "",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "khabar",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "khabar",
+      "name": "خبر",
+      "kind": "الخلاصة الإخبارية اليومية",
+      "site": "https://munjiz-qa.github.io/khabar/",
+      "icon": "assets/icon.svg",
+      "color": "#14212e",
+      "admin": "admin/",
+      "feed": "data/brief.json"
+    }
+  ]
+}

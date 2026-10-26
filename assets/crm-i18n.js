@@ -11,6 +11,8 @@ const EN=lang==='en';
 window.CRM_LANG=lang;
 
 const W={
+// «اليوم» page and the «المزيد» menu (crm-today.js builds its own texts in both languages)
+'اليوم':'Today','المزيد':'More','لوحات المتابعة':'Dashboards',
 // header, tabs, sign-in
 'لوحة الإدارة | بصيرة للمعاملات':'Admin panel | Basira for Transactions','لوحة الإدارة':'Admin panel','أقسام لوحة الإدارة':'Admin panel sections',
 'لوحة المتابعة':'Dashboard','الطلبات':'Requests','العملاء':'Clients','المعاملات':'Transactions','المراسلات':'Messages','السجل':'Log','الموظفون':'Staff','حسابي':'My account','خروج':'Sign out',
