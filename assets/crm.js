@@ -14,12 +14,16 @@ const EN=window.CRM_LANG==='en',L=(a,e)=>EN?e:a;   // texts built in code; the s
 const ERR={no_permission:'ليست لديك صلاحية لهذا الإجراء. راجع المدير.',wrong_password:'اسم المستخدم أو كلمة المرور غير صحيحة.',rate_limited:'محاولات كثيرة، حاول بعد ساعة.',weak_password:'كلمة المرور 8 أحرف على الأقل.',bad_username:'اسم المستخدم غير صالح (3 أحرف على الأقل وبدون مسافات).',
   username_taken:'اسم المستخدم مستخدم من قبل.',must_change_both:'غيّر اسم المستخدم (ليس 123) وكلمة المرور معاً.',admin_only:'هذا الإجراء للمدير فقط.',last_admin:'لا يمكن إيقاف آخر مدير أو تحويله إلى موظف.',
   too_large:'الملف أكبر من 10 ميجابايت.',not_found:'غير موجود.',invalid:'بيانات غير مكتملة.',read_only:'لا يمكن تعديل هذا السجل مباشرة.',must_change:'غيّر بيانات الدخول أولاً.',period_locked:'هذه الفترة المالية مقفلة. لا يمكن التسجيل أو التعديل بتاريخ يقع فيها.',unbalanced:'القيد غير متوازن.'};
-const errText=e=>ERR[e]||e;
+const errText=e=>ERR[e]||(/failed to fetch|networkerror|load failed/i.test(String(e))?'تعذّر الاتصال بالخادم. تحقق من اتصال الإنترنت وحاول مرة أخرى.':e);
 function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const days=s=>{if(!s)return null;const d=new Date(s);return isNaN(d)?null:Math.round((d-today())/864e5)};
 const now=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
 const iso=()=>now().slice(0,10);
+// dates are stored as 2026-10-28 (sorting) and always shown as 28-10-2026, the one format used across Basira
+// a link saved by a user opens only when it is a web address (never javascript: or data:)
+const safeUrl=u=>/^https:\/\//i.test(String(u||'').trim())?String(u).trim():'#';
+const dmy=v=>String(v==null?'':v).replace(/^(\d{4})-(\d{2})-(\d{2})/,'$3-$2-$1');
 // in-page replacements for confirm() and prompt(), which some browsers and embedded viewers block
 function ask(msg,{input=false,ok='نعم'}={}){return new Promise(res=>{const d=$('dlgQ');$('qT').textContent=msg;$('qIn').hidden=!input;$('qIn').value='';$('qOk').textContent=ok;
   d.onclose=()=>res(d.returnValue==='ok'?(input?$('qIn').value.trim()||null:true):(input?null:false));d.returnValue='';d.showModal();if(input)$('qIn').focus()})}
@@ -147,7 +151,7 @@ function renderDash(){
   $('kpis').innerHTML=[['العملاء',DB.Clients.length],['طلبات جديدة',nreq.length],['معاملات مفتوحة',open.length],['رسائل تنتظر الرد',waiting.length],['متأخرة',late.length],['منجزة هذا الشهر',done.length],...(can('finance')?[['أتعاب منجزة هذا الشهر',fmt(done.reduce((a,t)=>a+(+t.fee||0),0))+' ر.ق'],['مستحق على العملاء',fmt(due)+' ر.ق']]:[])]
     .map(([k,v])=>`<div class="kpi"><b class="num">${v}</b><span>${k}</span></div>`).join('');
   const li=(arr,f)=>arr.length?`<ul class="plain">${arr.slice(0,12).map(x=>`<li>${f(x)}</li>`).join('')}</ul>`:'<p class="mute">لا يوجد.</p>';
-  $('dReq').innerHTML=li(nreq,r=>`${link(r.clientId,r.name)} · <span class="num">${esc(r.phone)}</span> · <small class="mute">${esc(r.created)}</small>`);
+  $('dReq').innerHTML=li(nreq,r=>`${link(r.clientId,r.name)} · <span class="num">${esc(r.phone)}</span> · <small class="mute">${esc(dmy(r.created))}</small>`);
   $('dLate').innerHTML=li(late,t=>`<a href="#" data-txn="${t.id}">${esc(t.service)}</a> · ${link(t.clientId,cli(t.clientId).name)} · <span class="bad">متأخرة ${-days(t.dueDate)} يوم</span>`);
   $('dRenew').innerHTML=li(renew,t=>`<a href="#" data-txn="${t.id}">${esc(t.service)}</a> · ${link(t.clientId,cli(t.clientId).name)} · تنتهي بعد ${days(t.expiryDate)} يوم`);
   $('dPlans').innerHTML=li(plans,c=>`${link(c.id,c.name)} · باقة ${esc(c.plan)} · تنتهي بعد ${days(c.planEnd)} يوم`);
@@ -160,7 +164,7 @@ REQ_ST.forEach(s=>$('reqF').insertAdjacentHTML('beforeend',`<option>${s}</option
 $('reqF').onchange=$('reqQ').oninput=renderReq;
 function renderReq(){const f=$('reqF').value,q=$('reqQ').value.trim();
   const rows=DB.Requests.filter(r=>(!f||r.status===f)&&(!q||(r.name+' '+r.phone+' '+r.id).includes(q))).sort((a,b)=>a.created<b.created?1:-1).map(r=>`<tr>
-    <td class="num">${esc(r.id)}<br><small class="mute">${esc(r.created)}</small></td><td>${link(r.clientId,r.name)}<br><small class="num">${esc(r.phone)}</small>${r.email?`<br><small dir="ltr">${esc(r.email)}</small>`:''}</td>
+    <td class="num">${esc(r.id)}<br><small class="mute">${esc(dmy(r.created))}</small></td><td>${link(r.clientId,r.name)}<br><small class="num">${esc(r.phone)}</small>${r.email?`<br><small dir="ltr">${esc(r.email)}</small>`:''}</td>
     <td class="pre">${esc(r.services)}</td><td>${esc(r.plan||'')}</td><td>${r.mailed==='نعم'?'أُرسل':'—'}</td>
     <td><select data-rq="${esc(r.id)}">${REQ_ST.map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select>
     <div class="acts"><button class="btn xs ghost" type="button" data-conv="${esc(r.id)}">تحويل إلى معاملات</button>${r.email?`<button class="btn xs ghost" type="button" data-rmail="${esc(r.id)}">رد بالبريد</button>`:''}</div></td></tr>`);
@@ -214,20 +218,20 @@ function unreadBy(){const m={};DB.Messages.filter(x=>x.from==='client'&&!x.read)
 const NEEDS_SERVER='<p class="mute sm">تعمل بعد تشغيل الخادم (ملف «اقرأني - تشغيل نظام العملاء»).</p>';
 function renderExtras(c){
   const msgs=DB.Messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.created>b.created?1:-1);
-  $('cMsgs').innerHTML=REMOTE?(msgs.length?msgs.map(m=>`<div class="bub ${m.from==='office'?'me':''}"><div class="pre">${esc(m.body)}</div><small class="mute">${m.from==='office'?esc(m.by||'المكتب'):'العميل'} · ${esc(m.created)}</small></div>`).join(''):'<p class="mute">لا توجد رسائل بعد. اكتب للعميل وسيراها في حسابه.</p>'):NEEDS_SERVER;
+  $('cMsgs').innerHTML=REMOTE?(msgs.length?msgs.map(m=>`<div class="bub ${m.from==='office'?'me':''}"><div class="pre">${esc(m.body)}</div><small class="mute">${m.from==='office'?esc(m.by||'المكتب'):'العميل'} · ${esc(dmy(m.created))}</small></div>`).join(''):'<p class="mute">لا توجد رسائل بعد. اكتب للعميل وسيراها في حسابه.</p>'):NEEDS_SERVER;
   $('replyF').hidden=!REMOTE;$('rMail').closest('label').hidden=!c.email;
   const acc=DB.Accounts.find(a=>a.clientId===c.id);
-  $('cAcc').innerHTML=(acc?`<dl class="dl"><dt>اسم المستخدم</dt><dd dir="ltr">${esc(acc.username)}</dd><dt>الحالة</dt><dd><span class="st ${acc.status==='مفعّل'?'st-5':'st-1'}">${esc(acc.status)}</span></dd><dt>تاريخ الإنشاء</dt><dd class="num">${esc(acc.created)}</dd><dt>آخر دخول</dt><dd class="num">${esc(acc.lastLogin||'لم يدخل بعد')}</dd></dl>`
+  $('cAcc').innerHTML=(acc?`<dl class="dl"><dt>اسم المستخدم</dt><dd dir="ltr">${esc(acc.username)}</dd><dt>الحالة</dt><dd><span class="st ${acc.status==='مفعّل'?'st-5':'st-1'}">${esc(acc.status)}</span></dd><dt>تاريخ الإنشاء</dt><dd class="num">${esc(dmy(acc.created))}</dd><dt>آخر دخول</dt><dd class="num">${esc(acc.lastLogin||'لم يدخل بعد')}</dd></dl>`
     :'<p class="mute">ليس للعميل حساب على الموقع. يمكنه إنشاؤه بنفسه من صفحة «حسابي»، أو أنشئه له هنا.</p>')+
     (REMOTE?`<div class="acts">${acc&&acc.status!=='مفعّل'?'<button class="btn sm pri" type="button" data-acc="activate">تفعيل الحساب</button>':''}<button class="btn sm ghost" type="button" data-acc="edit">${acc?'تعديل أو إعادة تعيين كلمة المرور':'إنشاء حساب للعميل'}</button>${acc&&acc.status==='مفعّل'?'<button class="btn sm ghost danger" type="button" data-acc="stop">إيقاف الحساب</button>':''}</div>`:NEEDS_SERVER);
   const files=DB.Files.filter(f=>f.clientId===c.id).sort((a,b)=>a.created<b.created?1:-1);
-  $('cFiles').innerHTML=files.length?`<ul class="plain">${files.map(f=>`<li><a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.title)}</a> <small class="mute num">${esc(f.created)}${f.txnId?' · '+esc(f.txnId):''}${f.by?' · '+esc(f.by):''}</small> <button class="btn xs ghost danger" type="button" data-fdel="${esc(f.id)}">حذف</button></li>`).join('')}</ul>`:'<p class="mute">لم يُرفع للعميل أي ملف بعد.</p>';
+  $('cFiles').innerHTML=files.length?`<ul class="plain">${files.map(f=>`<li><a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener">${esc(f.title)}</a> <small class="mute num">${esc(dmy(f.created))}${f.txnId?' · '+esc(f.txnId):''}${f.by?' · '+esc(f.by):''}</small> <button class="btn xs ghost danger" type="button" data-fdel="${esc(f.id)}">حذف</button></li>`).join('')}</ul>`:'<p class="mute">لم يُرفع للعميل أي ملف بعد.</p>';
   $('fTxn').innerHTML='<option value="">بدون</option>'+DB.Transactions.filter(t=>t.clientId===c.id).map(t=>`<option value="${esc(t.id)}">${esc(t.id)} · ${esc(t.service)}</option>`).join('');
   $('fUpL').hidden=!REMOTE;$('fHint').textContent=REMOTE?'يُحفظ الملف خاصاً في Google Drive للمكتب، ولا يصل إليه إلا العميل من حسابه.':'الوضع المحلي: أضف رابطاً فقط.';
   const creds=DB.Credentials.filter(x=>x.clientId===c.id);
   $('cCreds').innerHTML=REMOTE?(creds.length?`<ul class="plain">${creds.map(x=>`<li><b>${esc(x.portal)}</b> · <span dir="ltr">${esc(x.username)}</span> · <span class="pwv" id="pv-${esc(x.id)}" dir="ltr">••••••</span> <button class="btn xs ghost" type="button" data-reveal="${esc(x.id)}">إظهار</button>${x.note?`<br><small class="mute">${esc(x.note)}</small>`:''}</li>`).join('')}</ul>`:'<p class="mute">لم يضف العميل بيانات دخول لأي بوابة.</p>'):NEEDS_SERVER;
   const cons=DB.Consents.filter(x=>x.clientId===c.id).sort((a,b)=>a.created<b.created?1:-1);
-  $('cCons').innerHTML=cons.length?`<ul class="plain">${cons.map(x=>`<li>${esc(x.docs)} · الإصدار ${esc(x.version)}<br><small class="mute">${esc(x.created)} · وقّع باسم «${esc(x.name)}» · ${esc(x.source)}</small></li>`).join('')}</ul>`:'<p class="mute">لا توجد موافقات مسجلة.</p>'}
+  $('cCons').innerHTML=cons.length?`<ul class="plain">${cons.map(x=>`<li>${esc(x.docs)} · الإصدار ${esc(x.version)}<br><small class="mute">${esc(dmy(x.created))} · وقّع باسم «${esc(x.name)}» · ${esc(x.source)}</small></li>`).join('')}</ul>`:'<p class="mute">لا توجد موافقات مسجلة.</p>'}
 $('replyF').onsubmit=async e=>{e.preventDefault();const b=$('rBody').value.trim();if(!b)return;
   try{const j=await S.api('reply',{clientId:curClient,body:b,email:$('rMail').checked});$('rBody').value='';toast(j.mailed?'أُرسل الرد وظهر في حساب العميل ووصله بالبريد':'أُرسل الرد وظهر في حساب العميل');await reload()}catch(err){toast(errText(err.message))}};
 $('cAcc').onclick=async e=>{const b=e.target.closest('[data-acc]');if(!b)return;const acc=DB.Accounts.find(a=>a.clientId===curClient);
@@ -253,7 +257,7 @@ $('cCreds').onclick=async e=>{const b=e.target.closest('[data-reveal]');if(!b)re
 
 // ---- messages overview ----
 function renderMsg(){const by={};DB.Messages.forEach(m=>{(by[m.clientId]=by[m.clientId]||[]).push(m)});
-  const rows=Object.entries(by).map(([id,l])=>{l.sort((a,b)=>a.created>b.created?1:-1);const last=l[l.length-1],un=l.filter(m=>m.from==='client'&&!m.read).length;return [last.created,`<tr><td><button type="button" class="btn xs pri openf" data-client="${esc(id)}">فتح</button></td><td>${link(id,cli(id).name)}${un?` <span class="pill num">${un}</span>`:''}</td><td class="pre">${esc(String(last.body).slice(0,160))}</td><td>${last.from==='office'?'المكتب':'العميل'}</td><td class="num">${esc(last.created)}</td></tr>`]}).sort((a,b)=>a[0]<b[0]?1:-1).map(x=>x[1]);
+  const rows=Object.entries(by).map(([id,l])=>{l.sort((a,b)=>a.created>b.created?1:-1);const last=l[l.length-1],un=l.filter(m=>m.from==='client'&&!m.read).length;return [last.created,`<tr><td><button type="button" class="btn xs pri openf" data-client="${esc(id)}">فتح</button></td><td>${link(id,cli(id).name)}${un?` <span class="pill num">${un}</span>`:''}</td><td class="pre">${esc(String(last.body).slice(0,160))}</td><td>${last.from==='office'?'المكتب':'العميل'}</td><td class="num">${esc(dmy(last.created))}</td></tr>`]}).sort((a,b)=>a[0]<b[0]?1:-1).map(x=>x[1]);
   $('msgT').innerHTML=REMOTE?table(['','العميل','آخر رسالة','من','التاريخ'],rows):'<div class="empty">المراسلات مع العملاء تعمل بعد تشغيل الخادم.</div>'}
 
 // ---- permissions (the server enforces them; the page only hides what an employee cannot use) ----
@@ -317,7 +321,7 @@ async function loadRep(){const [from,to]=period();try{REP=await S.api('report',{
   if(repSel)showRep(repSel);else $('repD').hidden=true}
 function showRep(id){const x=REP.staff.find(y=>y.id===id);if(!x)return;repSel=id;$('repD').hidden=false;$('repDT').textContent=`${x.name||x.username}: ${REP.from}${REP.to!==REP.from?' إلى '+REP.to:''}${x.shiftStart?` · الدوام ${x.shiftStart}–${x.shiftEnd||''}`:''}`;
   $('repDays').innerHTML=table(['التاريخ','أول دخول','آخر خروج','مدة العمل','ملاحظات'],x.days.map(d=>`<tr><td class="num">${esc(d.date)}</td><td class="num ${d.late?'bad':''}">${esc(d.first)}</td><td class="num">${d.open?'<small class="mute">ما زال داخلاً</small>':esc(d.last)}</td><td class="num">${hm(d.minutes)}</td><td><small>${[d.late?'تأخر':'',d.early?'خرج مبكراً':'',d.sessions>1?d.sessions+' جلسات':''].filter(Boolean).join(' · ')}</small></td></tr>`));
-  $('repLog').innerHTML=x.log.length?`<ul class="plain">${x.log.slice(0,80).map(l=>`<li><small class="mute num">${esc(l.created)}</small> ${esc(l.summary)}${l.clientId?' · '+link(l.clientId,cli(l.clientId).name||l.clientId):''}</li>`).join('')}</ul>`:'<p class="mute">لا توجد أعمال مسجلة في هذه الفترة.</p>';
+  $('repLog').innerHTML=x.log.length?`<ul class="plain">${x.log.slice(0,80).map(l=>`<li><small class="mute num">${esc(dmy(l.created))}</small> ${esc(l.summary)}${l.clientId?' · '+link(l.clientId,cli(l.clientId).name||l.clientId):''}</li>`).join('')}</ul>`:'<p class="mute">لا توجد أعمال مسجلة في هذه الفترة.</p>';
   $('repD').scrollIntoView({behavior:'smooth',block:'start'})}
 $('repT1').onclick=e=>{const b=e.target.closest('[data-rep]');if(b)showRep(b.dataset.rep)};
 $('repGo').onclick=loadRep;
@@ -334,7 +338,7 @@ $('txF').onchange=$('txQ').oninput=renderTx;
 function txTable(list,withClient=true){return table(['الرقم','الخدمة',...(withClient?['العميل']:[]),'الحالة','المسؤول','الإنجاز','الأتعاب','الرسوم','المتبقي','الموعد المتوقع','انتهاء المستند','المستندات'],list.map(t=>{
   const docs=parseDocs(t.docs),got=docs.filter(d=>d.ok).length,dd=days(t.dueDate),rem=(+t.fee||0)+(+t.govFee||0)-(+t.paid||0);
   return `<tr><td class="num"><a href="#" data-txn="${t.id}">${esc(t.id)}</a></td><td>${esc(t.service)} <span class="code">${esc(t.code)}</span></td>${withClient?`<td>${link(t.clientId,cli(t.clientId).name)}</td>`:''}<td>${stTag(t.status)}</td><td>${esc(staffName(t.assignee))}</td><td>${progBar(txProgress(t))}</td><td class="num">${fmt(t.fee)}</td><td class="num">${fmt(t.govFee)}</td><td class="num ${rem>0?'bad':''}">${fmt(rem)}</td>
-  <td class="num ${dd!==null&&dd<0&&!CLOSED.includes(t.status)?'bad':''}">${esc(t.dueDate||'')}</td><td class="num">${esc(t.expiryDate||'')}</td><td class="num">${docs.length?`${got}/${docs.length}`:''}</td></tr>`}))}
+  <td class="num ${dd!==null&&dd<0&&!CLOSED.includes(t.status)?'bad':''}">${esc(dmy(t.dueDate||''))}</td><td class="num">${esc(dmy(t.expiryDate||''))}</td><td class="num">${docs.length?`${got}/${docs.length}`:''}</td></tr>`}))}
 function renderTx(){const f=$('txF').value,q=$('txQ').value.trim();
   const list=DB.Transactions.filter(t=>(!f||(f==='open'?!CLOSED.includes(t.status):t.status===f))&&(!q||[t.service,t.code,t.govRef,t.id,cli(t.clientId).name].join(' ').includes(q))).sort((a,b)=>a.created<b.created?1:-1);
   $('txT').innerHTML=txTable(list)}
@@ -395,7 +399,7 @@ let mCtx=null;
 function fill(s,en){const c=mCtx.c||{},t=mCtx.t||{},de=((D[t.code]||{}).en)||{};
   const docs=en?((de.docs||[]).map(d=>'- '+d).join('\n')||'- (list the documents)'):(parseDocs(t.docs).filter(d=>!d.ok).map(d=>'- '+d.t).join('\n')||(t.code?docsFor(t.code).map(d=>'- '+d).join('\n'):'- (حدد المستندات)'));
   return s.replace(/\{name\}/g,c.name||'').replace(/\{service\}/g,(en?de.name:t.service)||t.service||(en?'the requested service':'الخدمة المطلوبة')).replace(/\{txn\}/g,t.id||'').replace(/\{status\}/g,(en?ST_EN[t.status]:t.status)||t.status||'').replace(/\{fee\}/g,fmt(t.fee)).replace(/\{govFee\}/g,fmt(t.govFee))
-    .replace(/\{docs\}/g,docs).replace(/\{ref\}/g,t.govRef?(en?`Authority reference: ${t.govRef}`:`رقم الطلب لدى الجهة: ${t.govRef}`):'').replace(/\{expiry\}/g,t.expiryDate?(en?`Document expiry: ${t.expiryDate}`:`تاريخ انتهاء المستند: ${t.expiryDate}`):'').replace(/\{expiryDate\}/g,t.expiryDate||'')}
+    .replace(/\{docs\}/g,docs).replace(/\{ref\}/g,t.govRef?(en?`Authority reference: ${t.govRef}`:`رقم الطلب لدى الجهة: ${t.govRef}`):'').replace(/\{expiry\}/g,t.expiryDate?(en?`Document expiry: ${dmy(t.expiryDate)}`:`تاريخ انتهاء المستند: ${dmy(t.expiryDate)}`):'').replace(/\{expiryDate\}/g,dmy(t.expiryDate))}
 function applyTpl(){const en=$('mLang').value==='en',k=$('mTpl').value,[sub,body]=en?TPL_EN[k]:TPL[k].slice(1);const f=$('fM');f.elements.subject.value=fill(sub,en);f.elements.body.value=fill(body,en)}
 $('mTpl').onchange=$('mLang').onchange=applyTpl;
 function openMail(c,t,tpl){if(!t&&c&&c.id){t=DB.Transactions.filter(x=>x.clientId===c.id).sort((a,b)=>a.created<b.created?1:-1)[0]||null}
@@ -407,7 +411,7 @@ $('fM').addEventListener('submit',async e=>{if(e.submitter&&e.submitter.value!==
 
 // ---- log, export, backup ----
 const KIND={email:'بريد',note:'ملاحظة',status:'تحديث',request:'طلب من الموقع',error:'خطأ',account:'حساب',file:'ملف',credential:'بوابة',message:'مراسلة',profile:'بيانات العميل',register:'تسجيل',payment:'دفعة'};
-const logItem=l=>`<div class="logi"><span class="k k-${esc(l.kind)}">${KIND[l.kind]||esc(l.kind)}</span><div><b>${esc(l.subject)}</b> ${l.txnId?`<a href="#" data-txn="${esc(l.txnId)}" class="code">${esc(l.txnId)}</a>`:''}${l.body?`<div class="pre mute sm">${esc(String(l.body).slice(0,400))}</div>`:''}</div><small class="mute num">${esc(l.created)}</small></div>`;
+const logItem=l=>`<div class="logi"><span class="k k-${esc(l.kind)}">${KIND[l.kind]||esc(l.kind)}</span><div><b>${esc(l.subject)}</b> ${l.txnId?`<a href="#" data-txn="${esc(l.txnId)}" class="code">${esc(l.txnId)}</a>`:''}${l.body?`<div class="pre mute sm">${esc(String(l.body).slice(0,400))}</div>`:''}</div><small class="mute num">${esc(dmy(l.created))}</small></div>`;
 function renderLog(){const l=[...DB.Log].sort((a,b)=>a.created<b.created?1:-1).slice(0,300);
   $('logL').innerHTML=l.length?l.map(x=>`${x.clientId?`<div class="mute sm">${link(x.clientId,cli(x.clientId).name)}</div>`:''}${logItem(x)}`).join(''):'<div class="empty">لا توجد أحداث.</div>';$('restoreL').hidden=!!CFG.API}
 const HEAD={Clients:['الرقم','تاريخ الإضافة','الاسم','النوع','الجوال','البريد','الرقم الشخصي','السجل التجاري','بطاقة المنشأة','الرقم الضريبي','الباقة','نهاية الاشتراك','العنوان','المصدر','المتطلبات','ملاحظات','آخر تحديث'],
@@ -469,7 +473,7 @@ function renderMy(){if(!ME)return;const f=$('myF').value,mine=workItems().filter
 function workCard(w,mine){const c=cli(w.clientId),dd=w.due?days(w.due):null;
   return `<article class="wcard ${isLate(w)?'late':''} ${w.closed?'closed':''}" data-wk="${w.k}" data-wid="${esc(w.id)}">
     <div class="wtop"><span class="k">${KLAB[w.k]}</span>${w.urgent?`<span class="k urgent">${L('عاجلة','Urgent')}</span>`:''}<b>${esc(w.title)}</b><span class="sp"></span><small class="num mute">${esc(w.id)}</small></div>
-    <div class="wmeta">${c.id?link(c.id,c.name):esc(w.name||'')}${w.due?` · <span class="${isLate(w)?'bad':''}">${L('الموعد','Due')} <span class="num">${esc(w.due)}</span>${dd!==null&&!w.closed?(dd<0?` (${L('متأخرة '+(-dd)+' يوم','overdue by '+(-dd)+' days')})`:dd===0?` (${L('اليوم','today')})`:''):''}</span>`:''}${w.k==='Transactions'?` · <a href="#" data-txn="${esc(w.id)}">${L('فتح المعاملة','Open transaction')}</a>`:''}</div>
+    <div class="wmeta">${c.id?link(c.id,c.name):esc(w.name||'')}${w.due?` · <span class="${isLate(w)?'bad':''}">${L('الموعد','Due')} <span class="num">${esc(dmy(w.due))}</span>${dd!==null&&!w.closed?(dd<0?` (${L('متأخرة '+(-dd)+' يوم','overdue by '+(-dd)+' days')})`:dd===0?` (${L('اليوم','today')})`:''):''}</span>`:''}${w.k==='Transactions'?` · <a href="#" data-txn="${esc(w.id)}">${L('فتح المعاملة','Open transaction')}</a>`:''}</div>
     ${w.notes?`<div class="pre sm mute">${esc(String(w.notes).slice(-400))}</div>`:''}
     <div class="wctl"><label>${L('الحالة','Status')}<select data-f="status">${stOpts(w)}</select></label>
       ${w.k!=='Requests'?`<label class="wprog">${L('نسبة الإنجاز','Progress')}<span class="prow"><input type="range" min="0" max="100" step="5" value="${w.progress}" data-f="progress"><output class="num">${w.progress}%</output></span></label>`:''}
@@ -497,7 +501,7 @@ function renderWork(){if(!can('assign'))return;const sv=$('wkS').value,kv=$('wkK
     return `<tr data-wk="${w.k}" data-wid="${esc(w.id)}" class="${isLate(w)?'latebg':''}"><td><span class="k">${KLAB[w.k]}</span>${w.urgent?` <span class="k urgent">${L('عاجلة','Urgent')}</span>`:''}</td>
     <td>${w.k==='Transactions'?`<a href="#" data-txn="${esc(w.id)}">${esc(w.title)}</a>`:w.k==='Tasks'?`<a href="#" data-task="${esc(w.id)}">${esc(w.title)}</a>`:esc(w.title)}<br><small class="num mute">${esc(w.id)}</small></td>
     <td>${c.id?link(c.id,c.name):esc(w.name||'')}</td><td><select data-asg aria-label="${L('الموظف المسؤول','Assigned to')}">${staffOptions(w.assignee)}</select></td>
-    <td><input type="date" data-due value="${esc(w.due)}" aria-label="${L('الموعد','Due')}"></td><td>${esc(w.status)}</td><td>${progBar(w.progress)}</td></tr>`}))}
+    <td><input type="date" data-due value="${esc(dmy(w.due))}" aria-label="${L('الموعد','Due')}"></td><td>${esc(w.status)}</td><td>${progBar(w.progress)}</td></tr>`}))}
 $('wkLoad').addEventListener('click',e=>{const a=e.target.closest('[data-wks]');if(a){e.preventDefault();$('wkS').value=a.dataset.wks;renderWork()}});
 $('wkT').addEventListener('change',async e=>{const tr=e.target.closest('[data-wk]');if(!tr)return;const k=tr.dataset.wk,row=Object.assign({},DB[k].find(x=>x.id===tr.dataset.wid));
   if(e.target.matches('[data-asg]'))row.assignee=e.target.value;else if(e.target.matches('[data-due]'))row[k==='Transactions'?'dueDate':'due']=e.target.value;else return;
@@ -624,7 +628,9 @@ function printDoc(title,body){const w=window.open('','_blank');if(!w){toast(L('�
   header b{font-size:22px;color:#0e5e4a}header small{display:block;color:#5d6b78}h1{font-size:20px;margin:0 0 4px}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{border:1px solid #cfd6dd;padding:7px 10px;text-align:start}th{background:#f1f4f6}
   .tot td,.tot th{font-weight:700}.h td,.h th{background:#eef2f4;font-weight:700}.net td,.net th{font-weight:800;border-top:2px solid #0e5e4a;background:#faf6ea}td.num,th.num{text-align:end}.big{font-size:20px;font-weight:700}.note{color:#5d6b78;font-size:12.5px;margin-top:22px}.sig{display:flex;justify-content:space-between;margin-top:46px}.sig div{border-top:1px solid #999;padding-top:6px;width:40%;text-align:center}
   @media print{body{margin:14mm}}</style></head><body><header><div><b>${brand}</b><small>${L('الدوحة، قطر','Doha, Qatar')}</small></div><div style="text-align:end"><small dir="ltr">+974 7223 2609</small><small dir="ltr">baseeratactions@gmail.com</small></div></header>${body}
-  <script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`);w.document.close()}
+  </body></html>`);w.document.close();
+  // printed from here, not by a script inside the new window, so the panel keeps its strict content security policy
+  setTimeout(()=>{try{w.focus();w.print()}catch(e){}},400)}
 const trx=x=>EN&&window.CRM_I18N?CRM_I18N.tr(String(x||'')):x;   // the print window has no live translator
 function printReceipt(id){const p=DB.Payments.find(x=>x.id===id);if(!p)return;const t=DB.Transactions.find(x=>x.id===p.txnId)||{},c=cli(p.clientId);
   printDoc(L('سند قبض ','Receipt ')+p.receiptNo,`<h1>${L('سند قبض','Payment receipt')}</h1><p>${L('رقم السند','Receipt no.')}: <b dir="ltr">${esc(p.receiptNo)}</b> · ${L('التاريخ','Date')}: <b>${esc(p.date)}</b></p>
@@ -796,7 +802,7 @@ function renderHrf(){if(!canHR())return;const st=DB.Staff||[],soon=x=>docAlerts(
   $('hrK').innerHTML=kpis([[L('الموظفون','Employees'),st.length],[L('الأقسام','Departments'),deps.length],[L('إجمالي الرواتب والبدلات شهرياً','Monthly salaries and allowances'),money(st.reduce((a,x)=>a+(+x.salary||0)+(+x.allowance||0),0))],[L('موظفون لديهم وثيقة تنتهي خلال 30 يوماً','Staff with a document ending within 30 days'),st.filter(soon).length,st.some(soon)?'bad':''],[L('في إجازة اليوم','On leave today'),DB.Leaves.filter(l=>l.status==='موافق عليها'&&l.from<=iso()&&l.to>=iso()).length]]);
   $('hrT').innerHTML=table([L('الموظف','Employee'),L('القسم والتخصص','Department and specialisation'),L('الجنسية','Nationality'),L('تاريخ التعيين','Hire date'),L('العقد','Contract'),L('تنبيهات الوثائق','Document alerts'),L('الراتب','Salary'),L('البدلات','Allowances'),L('رصيد الإجازة','Leave balance'),''],hrList().map(x=>{const al=docAlerts(x),bal=(+x.leaveDays||0)-annualUsed(x.username);
     return `<tr><td><b>${esc(x.name||x.username)}</b><br><small class="mute">${esc(x.jobTitle||'')}${x.empNo?' · '+esc(x.empNo):''} · <span dir="ltr">${esc(x.username)}</span></small></td>
-    <td>${esc(x.department||'')}${x.specialty?`<br><small class="mute">${esc(x.specialty)}</small>`:''}</td><td>${esc(x.nationality||'')}</td><td class="num">${esc(x.hireDate||'')}</td><td>${esc(x.contractType||'')}${x.contractEnd?`<br><small class="num mute">${L('حتى ','to ')}${esc(x.contractEnd)}</small>`:''}</td>
+    <td>${esc(x.department||'')}${x.specialty?`<br><small class="mute">${esc(x.specialty)}</small>`:''}</td><td>${esc(x.nationality||'')}</td><td class="num">${esc(dmy(x.hireDate||''))}</td><td>${esc(x.contractType||'')}${x.contractEnd?`<br><small class="num mute">${L('حتى ','to ')}${esc(dmy(x.contractEnd))}</small>`:''}</td>
     <td>${al.length?al.map(a=>`<small class="bad">${esc(a.n)}: ${a.d<0?L('منتهية','expired'):L('بعد '+a.d+' يوم','in '+a.d+' days')}</small>`).join('<br>'):`<small class="good">✓</small>`}</td>
     <td class="num">${fmt(x.salary)}</td><td class="num">${fmt(x.allowance)}</td><td class="num">${x.leaveDays?bal+' / '+x.leaveDays:''}</td>
     <td><div class="acts"><button class="btn xs ghost" type="button" data-hrv="${esc(x.username)}">${L('الملف الكامل','Full file')}</button>${isAdmin()?`<button class="btn xs ghost" type="button" data-hre="${esc(x.username)}">${L('تعديل الملف','Edit file')}</button>`:''}</div></td></tr>`}))}
@@ -843,7 +849,7 @@ function renderSal(){if(!canHR())return;if(!$('slM').value)$('slM').value=iso().
   $('slK').innerHTML=kpis([[L('الموظفون في المسير','Employees on payroll'),list.length],[L('صافي الرواتب','Net salaries'),money(list.reduce((a,x)=>a+(+x.net||0),0))],[L('المدفوع','Paid'),money(list.filter(x=>x.status==='مدفوع').reduce((a,x)=>a+(+x.net||0),0))],[L('غير مدفوع','Unpaid'),list.filter(x=>x.status!=='مدفوع').length,list.some(x=>x.status!=='مدفوع')?'bad':'']]);
   $('slT').innerHTML=table([L('الموظف','Employee'),L('الأساسي','Basic'),L('البدلات','Allowances'),L('الخصومات','Deductions'),L('الصافي','Net'),L('الحالة','Status'),L('ملاحظة','Note'),''],list.map(x=>{const lock=x.status==='مدفوع';
     return `<tr data-sl="${esc(x.id)}"><td>${esc(staffName(x.username))}</td><td><input type="number" min="0" data-s="basic" value="${esc(x.basic)}" ${lock?'disabled':''}></td><td><input type="number" min="0" data-s="allowances" value="${esc(x.allowances)}" ${lock?'disabled':''}></td><td><input type="number" min="0" data-s="deductions" value="${esc(x.deductions||0)}" ${lock?'disabled':''}></td>
-    <td class="num"><b>${fmt(x.net)}</b></td><td>${lock?`<span class="st st-5">${L('مدفوع','Paid')}</span><br><small class="num mute">${esc(x.paidDate||'')}</small>`:`<span class="st st-1">${L('مسودة','Draft')}</span>`}</td><td><input data-s="note" value="${esc(x.note||'')}" ${lock?'disabled':''}></td>
+    <td class="num"><b>${fmt(x.net)}</b></td><td>${lock?`<span class="st st-5">${L('مدفوع','Paid')}</span><br><small class="num mute">${esc(dmy(x.paidDate||''))}</small>`:`<span class="st st-1">${L('مسودة','Draft')}</span>`}</td><td><input data-s="note" value="${esc(x.note||'')}" ${lock?'disabled':''}></td>
     <td><div class="acts">${lock?'':`<button class="btn xs ghost" type="button" data-slsave>${L('حفظ','Save')}</button><button class="btn xs pri" type="button" data-slpay>${L('دفع','Pay')}</button>`}<button class="btn xs ghost" type="button" data-slip>${L('قسيمة الراتب','Payslip')}</button></div></td></tr>`}))}
 $('slM').onchange=renderSal;
 $('slGen').onclick=async()=>{const m=$('slM').value;let n=0;for(const x of (DB.Staff||[])){if(DB.Payroll.some(p=>p.month===m&&p.username===x.username)||!(+x.salary||+x.allowance))continue;
@@ -858,7 +864,7 @@ $('slT').addEventListener('click',async e=>{const tr=e.target.closest('[data-sl]
 $('slCsv').onclick=()=>{const m=$('slM').value;csvOut(`basira-payroll-${m}.csv`,[L('الشهر','Month'),L('الموظف','Employee'),L('الأساسي','Basic'),L('البدلات','Allowances'),L('الخصومات','Deductions'),L('الصافي','Net'),L('الحالة','Status'),L('تاريخ الدفع','Paid on')],DB.Payroll.filter(x=>x.month===m).map(x=>[x.month,staffName(x.username),x.basic,x.allowances,x.deductions,x.net,x.status,x.paidDate]))};
 function printSlip(x){const s=(DB.Staff||[]).find(y=>y.username===x.username)||{};printDoc(L('قسيمة راتب ','Payslip ')+x.month,`<h1>${L('قسيمة راتب','Payslip')}</h1><p>${L('الموظف','Employee')}: <b>${esc(s.name||x.username)}</b>${s.jobTitle?' · '+esc(s.jobTitle):''} · ${L('الشهر','Month')}: <b>${esc(x.month)}</b></p>
   <table><tr><th>${L('الراتب الأساسي','Basic salary')}</th><td>${money(x.basic)}</td></tr><tr><th>${L('البدلات','Allowances')}</th><td>${money(x.allowances)}</td></tr><tr><th>${L('الخصومات','Deductions')}</th><td>${money(x.deductions)}</td></tr><tr class="tot"><th>${L('الصافي','Net pay')}</th><td class="big">${money(x.net)}</td></tr>
-  <tr><th>${L('الحالة','Status')}</th><td>${x.status==='مدفوع'?L('مدفوع','Paid')+' · '+esc(x.paidDate||''):L('لم يُدفع بعد','Not paid yet')}</td></tr>${x.note?`<tr><th>${L('ملاحظة','Note')}</th><td>${esc(x.note)}</td></tr>`:''}</table>
+  <tr><th>${L('الحالة','Status')}</th><td>${x.status==='مدفوع'?L('مدفوع','Paid')+' · '+esc(dmy(x.paidDate||'')):L('لم يُدفع بعد','Not paid yet')}</td></tr>${x.note?`<tr><th>${L('ملاحظة','Note')}</th><td>${esc(x.note)}</td></tr>`:''}</table>
   <div class="sig"><div>${L('توقيع الموظف','Employee signature')}</div><div>${L('الختم والتوقيع','Stamp and signature')}</div></div>`)}
 // evaluations: five criteria from 1 to 5, shown with the employee's work figures
 const CRIT=[['quality',L('جودة العمل والدقة','Quality and accuracy')],['speed',L('سرعة الإنجاز والالتزام بالمواعيد','Speed and meeting deadlines')],['clients',L('التعامل مع العملاء','Dealing with clients')],['discipline',L('الانضباط والحضور','Discipline and attendance')],['team',L('التعاون والمبادرة','Teamwork and initiative')]];
@@ -961,7 +967,7 @@ function renderClose(){if(!can('finance'))return;const lk=DB.Lock||'';$('lkNow')
   const b=balances(),D=Object.values(b).reduce((a,x)=>a+x.dr,0),C=Object.values(b).reduce((a,x)=>a+x.cr,0),unpaid=DB.Payroll.filter(x=>x.status!=='مدفوع'&&x.month<iso().slice(0,7)).length,owing=DB.Transactions.filter(t=>t.status==='منجزة'&&balance(t)>0).length,noTx=DB.Expenses.filter(x=>x.category===GOVCAT&&!x.txnId).length;
   const chk=(ok,t)=>`<li>${ok?'<span class="good">✓</span>':'<span class="bad">!</span>'} ${t}</li>`;
   $('ckL').innerHTML=`<ul class="plain">${chk(Math.abs(D-C)<.01,L('ميزان المراجعة متوازن','The trial balance balances'))}${chk(!owing,L(`معاملات منجزة لم يُحصّل كامل رسومها: ${owing}`,`Completed transactions not fully paid: ${owing}`))}${chk(!unpaid,L(`رواتب أشهر سابقة غير مدفوعة: ${unpaid}`,`Unpaid salaries from past months: ${unpaid}`))}${chk(!noTx,L(`رسوم حكومية مدفوعة غير مربوطة بمعاملة: ${noTx}`,`Government fees paid without a transaction: ${noTx}`))}</ul>`;
-  if(REMOTE){const P=periodOf($('auP').value);S.api('auditTrail',{from:P[0],to:P[1]}).then(j=>{$('auT').innerHTML=table([L('الوقت','Time'),L('الموظف','By'),L('الإجراء','Action'),L('السجل','Record'),L('التفاصيل','Details')],j.rows.map(x=>`<tr><td class="num">${esc(x.created)}</td><td>${esc(staffName(x.username))}</td><td>${esc(x.action)}</td><td class="num">${esc(x.recordId||'')}</td><td><small>${esc(x.summary)}</small></td></tr>`))}).catch(e=>{$('auT').innerHTML=`<div class="empty">${esc(errText(e.message))}</div>`})}
+  if(REMOTE){const P=periodOf($('auP').value);S.api('auditTrail',{from:P[0],to:P[1]}).then(j=>{$('auT').innerHTML=table([L('الوقت','Time'),L('الموظف','By'),L('الإجراء','Action'),L('السجل','Record'),L('التفاصيل','Details')],j.rows.map(x=>`<tr><td class="num">${esc(dmy(x.created))}</td><td>${esc(staffName(x.username))}</td><td>${esc(x.action)}</td><td class="num">${esc(x.recordId||'')}</td><td><small>${esc(x.summary)}</small></td></tr>`))}).catch(e=>{$('auT').innerHTML=`<div class="empty">${esc(errText(e.message))}</div>`})}
   else $('auT').innerHTML=NEEDS_SERVER}
 $('lkGo').onclick=async()=>{const d=$('lkD').value;if(!d||!await ask(L(`إقفال كل الفترات حتى ${d}؟ لن يمكن تعديل الدفعات والمصروفات والقيود المؤرخة قبلها.`,`Close all periods up to ${d}? Payments, expenses and entries dated on or before it can no longer change.`),{ok:L('إقفال','Close')}))return;
   try{const j=await S.api('setLock',{date:d});DB.Lock=j.lock;toast(L('أُقفلت الفترة','Period closed'));renderClose()}catch(err){toast(errText(err.message))}};

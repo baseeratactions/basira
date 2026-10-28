@@ -3,6 +3,8 @@
 // Only a client account is ever shown here. The admin panel (crm.html) has its own sign-in, kept apart, and shows its own account.
 (function(){
 const B='basira',EN=document.documentElement.lang==='en';
+// pages in a sub-folder (the service pages) point to «حسابي» through their own header link
+const PORTAL=(document.querySelector('header.top a.acct')||{}).getAttribute?document.querySelector('header.top a.acct').getAttribute('href'):'portal.html';
 function signed(){try{const p=(localStorage.getItem(B+'_portal')||'').split('.');const w=JSON.parse(localStorage.getItem(B+'_who')||'null');
   return p.length===4&&p[0]==='c'&&+p[2]>Date.now()&&w&&w.name?w:null}catch(e){return null}}
 const L=EN?{role:'Client account',out:'Not signed in',tip:'Signed in to My account as'}:{role:'حساب عميل',out:'لم تسجّل الدخول',tip:'مسجّل الدخول إلى «حسابي» باسم'};
@@ -18,14 +20,16 @@ function refresh(){const w=signed(),top=document.querySelector('.top');if(!top||
     // on phones the menu folds away, so a short copy stays in the header bar
     let m=document.getElementById('acctWhoM');
     if(!w){if(m)m.remove();return}
-    if(!m){m=document.createElement('a');m.id='acctWhoM';m.className='acctwho mob';m.href='portal.html';top.appendChild(m)}
+    if(!m){m=document.createElement('a');m.id='acctWhoM';m.className='acctwho mob';m.href=PORTAL;top.appendChild(m)}
     chip(m,w);m.title=link.title;return}
   let el=document.getElementById('acctWho');
   if(!w&&!portal){if(el)el.remove();return}
-  if(!el){el=document.createElement(portal?'span':'a');el.id='acctWho';el.className='acctwho';if(!portal)el.href='portal.html';
+  if(!el){el=document.createElement(portal?'span':'a');el.id='acctWho';el.className='acctwho';if(!portal)el.href=PORTAL;
     const host=top.querySelector('.plainnav')||top.querySelector('.wrap')||top;host.insertBefore(el,host.firstChild)}
   el.classList.toggle('out',!w);chip(el,w)}
 window.ACCT_WHO={refresh,set(w){try{w?localStorage.setItem(B+'_who',JSON.stringify(w)):localStorage.removeItem(B+'_who')}catch(e){}refresh()}};
 window.addEventListener('storage',e=>{if(e.key===B+'_who'||e.key===B+'_portal')refresh()});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh);else refresh();
+// print buttons on the legal pages (no inline handlers, so the pages can keep a strict content security policy)
+document.querySelectorAll('[data-print]').forEach(b=>b.addEventListener('click',()=>print()));
 })();

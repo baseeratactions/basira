@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cloud.umami.is https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://www.gstatic.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cloud.umami.is https://api-gateway.umami.dev https://translate.googleapis.com https://translate-pa.googleapis.com; frame-src https://translate.google.com https://translate.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>بصيرة للمعاملات | تعقيب معاملات ودراسات واستشارات في الدوحة</title>
 <meta name="description" content="بصيرة للمعاملات: مكتب تعقيب معاملات في الدوحة للأفراد والشركات. 90 خدمة حكومية بأسعار ثابتة، أربع باقات للشركات، ودراسات واستشارات إدارية وفنية.">
 <meta name="theme-color" content="#2f855a">
@@ -24,14 +25,14 @@
 <meta property="og:locale" content="ar_QA">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "بصيرة للمعاملات", "alternateName": "Basira for Transactions", "legalName": "بصيرة للمعاملات ذ.م.م", "description": "مكتب تعقيب معاملات في الدوحة: خدمات حكومية بأسعار ثابتة، باقات للشركات، ودراسات واستشارات.", "url": "https://baseeratactions.github.io/basira/", "logo": "https://baseeratactions.github.io/basira/assets/icon-512.png", "image": "https://baseeratactions.github.io/basira/assets/og.png", "telephone": "+97472232609", "email": "baseeratactions@gmail.com", "address": {"@type": "PostalAddress", "addressLocality": "Doha", "addressCountry": "QA"}, "areaServed": {"@type": "Country", "name": "Qatar"}, "availableLanguage": ["ar", "en"], "contactPoint": {"@type": "ContactPoint", "telephone": "+97472232609", "contactType": "customer service", "availableLanguage": ["Arabic", "English"]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "بصيرة للمعاملات", "alternateName": "Basira for Transactions", "legalName": "بصيرة للمعاملات ذ.م.م", "description": "مكتب تعقيب معاملات في الدوحة: خدمات حكومية بأسعار ثابتة، باقات للشركات، ودراسات واستشارات.", "url": "https://baseeratactions.github.io/basira/", "logo": "https://baseeratactions.github.io/basira/assets/icon-512.png", "image": "https://baseeratactions.github.io/basira/assets/og.png", "telephone": "+97472232609", "email": "baseeratactions@gmail.com", "address": {"@type": "PostalAddress", "addressLocality": "Doha", "addressCountry": "QA"}, "areaServed": {"@type": "Country", "name": "Qatar"}, "availableLanguage": ["ar", "en"], "contactPoint": {"@type": "ContactPoint", "telephone": "+97472232609", "contactType": "customer service", "availableLanguage": ["Arabic", "English"]}, "@id": "https://baseeratactions.github.io/basira/#org", "founder": {"@type": "Person", "name": "د. مصطفى أبوسعد"}, "priceRange": "10+ QAR", "currenciesAccepted": "QAR", "knowsLanguage": ["ar", "en"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "الخدمات والأسعار", "url": "https://baseeratactions.github.io/basira/services/"}, "potentialAction": {"@type": "CommunicateAction", "target": "https://wa.me/97472232609", "name": "WhatsApp"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261025a">
+<link rel="stylesheet" href="assets/style.css?v=20261028a">
 <script src="assets/theme.js?v=20261019m"></script>
-<script src="assets/lang.js?v=20261018a" defer></script>
-<script src="assets/who.js?v=20261018w" defer></script>
+<script src="assets/lang.js?v=20261028a" defer></script>
+<script src="assets/who.js?v=20261028a" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
@@ -192,6 +193,7 @@
     <label>رقم الجوال<input id="fPhone" inputmode="tel" required placeholder="مثال: 5XXX XXXX"><span class="err" id="ePhone"></span></label>
     <label>البريد الإلكتروني (اختياري، لنرسل لك التأكيد)<input id="fMail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" dir="ltr"><span class="err" id="eMail"></span></label>
     <label>وسيلة التواصل المفضلة<select id="fVia"><option>واتساب</option><option>اتصال هاتفي</option><option>البريد الإلكتروني</option></select></label>
+    <div class="full when"><span class="wlab">موعد التواصل المفضل (اختياري)</span><input id="fDay" type="date" aria-label="اليوم المفضل للتواصل"><select id="fSlot" aria-label="الفترة المفضلة للتواصل"><option value="">أي وقت</option><option>صباحاً (8 – 12)</option><option>ظهراً (12 – 4)</option><option>مساءً (4 – 8)</option></select></div>
     <label>نوع العميل<select id="fType"><option value="ind">فرد</option><option value="org">منشأة</option></select></label>
     <label>الباقة<select id="fPlan"><option value="">بدون باقة (دفع لكل خدمة)</option><option value="أساس">أساس</option><option value="شامل">شامل</option><option value="نخبة">نخبة</option><option value="الذهبية">الذهبية</option></select></label>
     <input id="fHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -269,7 +271,7 @@
 </div></section>
 
 </main>
-<footer><div class="wrap fgrid"><div class="fcol fbrand"><b>بصيرة للمعاملات ذ.م.م</b><span>مكتب تعقيب معاملات في الدوحة، قطر.</span><span>الأسعار سارية من 2026 وقابلة للمراجعة. القرار النهائي ومدة المعاملة من اختصاص الجهة الحكومية.</span></div><nav class="fcol" aria-label="الخدمات"><b>الخدمات</b><a href="#prices">الخدمات والأسعار</a><a href="#consult">الدراسات والاستشارات</a><a href="#packages">باقات الشركات</a><a href="#cat=AD">أعلن معنا</a></nav><nav class="fcol" aria-label="روابط مفيدة"><b>روابط مفيدة</b><a href="#track">تابع معاملتك</a><a href="#faq">الأسئلة الشائعة</a><a href="about.html">تعرّف إلى بصيرة</a><a href="portal.html">حسابي</a></nav><div class="fcol fc"><b>للتواصل</b><a href="tel:+97472232609" dir="ltr">☎ +974 7223 2609</a><a href="https://wa.me/97472232609" target="_blank" rel="noopener">واتساب</a><a href="mailto:baseeratactions@gmail.com" dir="ltr">✉ baseeratactions@gmail.com</a></div></div><div class="wrap fbottom"><span>© 2026 بصيرة للمعاملات ذ.م.م</span><span><a href="privacy.html">سياسة الخصوصية</a> · <a href="legal.html">المستندات القانونية</a> · <a href="en/index.html" lang="en">English</a></span></div><div class="wrap logins" role="navigation" aria-label="الدخول إلى المنصة"><b>الدخول إلى المنصة</b><a href="portal.html" class="lgbtn">👤 دخول العملاء</a><a href="crm.html" class="lgbtn" rel="nofollow">🔐 دخول الإدارة والموظفين</a></div></footer>
+<footer><div class="wrap fgrid"><div class="fcol fbrand"><b>بصيرة للمعاملات ذ.م.م</b><span>مكتب تعقيب معاملات في الدوحة، قطر.</span><span>الأسعار سارية من 2026 وقابلة للمراجعة. القرار النهائي ومدة المعاملة من اختصاص الجهة الحكومية.</span></div><nav class="fcol" aria-label="الخدمات"><b>الخدمات</b><a href="#prices">الخدمات والأسعار</a><a href="services/">دليل الخدمات</a><a href="#consult">الدراسات والاستشارات</a><a href="#packages">باقات الشركات</a><a href="#cat=AD">أعلن معنا</a></nav><nav class="fcol" aria-label="روابط مفيدة"><b>روابط مفيدة</b><a href="#track">تابع معاملتك</a><a href="#faq">الأسئلة الشائعة</a><a href="about.html">تعرّف إلى بصيرة</a><a href="portal.html">حسابي</a></nav><div class="fcol fc"><b>للتواصل</b><a href="tel:+97472232609" dir="ltr">☎ +974 7223 2609</a><a href="https://wa.me/97472232609" target="_blank" rel="noopener">واتساب</a><a href="mailto:baseeratactions@gmail.com" dir="ltr">✉ baseeratactions@gmail.com</a></div></div><div class="wrap fbottom"><span>© 2026 بصيرة للمعاملات ذ.م.م</span><span><a href="privacy.html">سياسة الخصوصية</a> · <a href="legal.html">المستندات القانونية</a> · <a href="en/index.html" lang="en">English</a></span></div><div class="wrap logins" role="navigation" aria-label="الدخول إلى المنصة"><b>الدخول إلى المنصة</b><a href="portal.html" class="lgbtn">👤 دخول العملاء</a><a href="crm.html" class="lgbtn" rel="nofollow">🔐 دخول الإدارة والموظفين</a></div></footer>
 
 <dialog id="reg" aria-labelledby="regT"><form class="dlg regf" id="regF" novalidate>
   <div class="reghead"><svg width="40" height="40" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg><div><h3 id="regT">أهلاً بك في بصيرة للمعاملات</h3><p class="mute sm"><span id="regLead">يمكنك تسجيل بياناتك مرة واحدة ليُجهَّز عرض السعر باسمك تلقائياً، أو التصفح أولاً والتسجيل لاحقاً عند طلب عرض السعر.</span></p></div></div>
@@ -289,14 +291,15 @@
 <nav class="mbar" aria-label="اطلب خدمة"><a class="btn pri" href="#request">اطلب خدمة</a><a class="btn wa" id="mbWa" href="https://wa.me/97472232609" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.8-.7 14 14 0 0 1-5.3-4.7c-.4-.5-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.2 1.5z"/></svg> واتساب</a></nav>
 <a class="wa-fab" id="waFab" href="https://wa.me/97472232609" target="_blank" rel="noopener" aria-label="تواصل معنا على واتساب" title="تواصل معنا على واتساب"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.4z"/></svg></a>
 <div class="toast" id="toast" hidden></div>
-<script src="assets/config.js?v=20261018a"></script>
+<script src="assets/config.js?v=20261028a"></script>
+<script src="assets/track.js?v=20261028a"></script>
 <script src="assets/sitetext.js?v=20261019p2"></script>
 <script src="assets/data.js?v=20261024j"></script>
 <script src="assets/details.js?v=20261024i"></script>
 <script src="assets/catalog.js?v=20261024i"></script>
-<script src="assets/app.js?v=20261023i"></script>
+<script src="assets/app.js?v=20261028a"></script>
 <script src="assets/extras.js?v=20261018a"></script>
 <script src="assets/ads.js?v=20261018a"></script>
-<script src="assets/today.js?v=20261025a"></script>
+<script src="assets/today.js?v=20261028a"></script>
 </body>
 </html>

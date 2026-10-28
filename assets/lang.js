@@ -15,12 +15,14 @@ box.innerHTML=`<a href="${ar}" lang="ar" hreflang="ar"${EN?'':' aria-current="tr
   `<a href="${en}" lang="en" hreflang="en"${EN?' aria-current="true"':''}><span class="lshort">EN</span></a>`;
 const sel=document.createElement('select');sel.className='gtsel';sel.setAttribute('aria-label',EN?'Other languages (Google Translate)':'لغات أخرى (ترجمة Google)');sel.title=sel.getAttribute('aria-label');
 sel.innerHTML=`<option value="">🌐</option>`+(cur&&cur!==SRC?`<option value="-">↩ ${EN?'English (original)':'العربية (الأصل)'}</option>`:'')+LANGS.map(([c,n])=>`<option value="${c}"${c===cur?' selected':''}>${n}</option>`).join('');
-sel.onchange=()=>{const v=sel.value;if(v==='-')setLang('');else if(v)setLang(v)};box.appendChild(sel);
+sel.onchange=()=>{const v=sel.value;if(v==='-')setLang('');else if(v)setLang(v)};
+// pages that hold client data (حسابي) say <meta name="google" content="notranslate">: Arabic and English only, no outside script
+const noGT=!!document.querySelector('meta[name="google"][content="notranslate"]');if(!noGT)box.appendChild(sel);
 // a link that keeps the hash (#section) when switching between Arabic and English
 box.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{if(location.hash&&!a.hasAttribute('aria-current')&&!/#/.test(a.getAttribute('href')))a.href=a.getAttribute('href')+location.hash}));
 const li=alt.closest('li');(li||alt).hidden=true;
 const burger=wrap.querySelector('.burger');wrap.insertBefore(box,burger||null);
-if(cur&&cur!==SRC){const h=document.createElement('div');h.id='gte';h.hidden=true;document.body.appendChild(h);
+if(cur&&cur!==SRC&&!noGT){const h=document.createElement('div');h.id='gte';h.hidden=true;document.body.appendChild(h);
   window.gtInit=()=>new google.translate.TranslateElement({pageLanguage:SRC,autoDisplay:false},'gte');
   const s=document.createElement('script');s.src='https://translate.google.com/translate_a/element.js?cb=gtInit';s.async=true;document.head.appendChild(s)}
 })();
