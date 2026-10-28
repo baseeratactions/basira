@@ -10,6 +10,8 @@ const el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt
 const dGreg=new Intl.DateTimeFormat(LOC,{timeZone:TZ,weekday:'long',day:'numeric',month:'long',year:'numeric',numberingSystem:'latn'});
 const dHij=new Intl.DateTimeFormat((EN?'en':'ar-SA')+'-u-ca-islamic-umalqura',{timeZone:TZ,day:'numeric',month:'long',year:'numeric',numberingSystem:'latn'});
 const dTime=new Intl.DateTimeFormat(EN?'en-GB':'ar-QA',{timeZone:TZ,hour:'numeric',minute:'2-digit',second:'2-digit',hour12:!EN,numberingSystem:'latn'});
+// a time from the data files, in Doha time and Basira's one date format: 28-10-2026 12:45
+const stamp=v=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(v)).map(x=>[x.type,x.value]));return `${p.day}-${p.month}-${p.year} ${p.hour}:${p.minute}`};
 const dohaNow=()=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return {y:+p.year,m:+p.month,d:+p.day,min:+p.hour*60+ +p.minute+ +p.second/60}};
 
 // ---- prayer times (Qatar method: Fajr 18°, Isha 90 min after Maghrib, Asr shadow 1) ----
@@ -98,7 +100,7 @@ fetch((EN?'../':'')+'data/news.json?d='+PRday,{cache:'no-cache'}).then(r=>r.ok?r
   const link=x=>{const a=el('a',null,String(x.title).slice(0,180));a.href=safe(x.link);a.target='_blank';a.rel='noopener noreferrer nofollow';return a};
   let i=0;const show=()=>{const x=list[i%list.length];tkLine.replaceChildren(link(x));if(x.source)tkLine.append(el('small','mute',' · '+String(x.source).slice(0,40)));tkLine.classList.remove('in');void tkLine.offsetWidth;tkLine.classList.add('in');i++};
   show();tkAll.hidden=false;if(list.length>1&&!matchMedia('(prefers-reduced-motion: reduce)').matches){let t=setInterval(show,6000);ticker.onmouseenter=()=>clearInterval(t);ticker.onmouseleave=()=>{clearInterval(t);t=setInterval(show,6000)}}
-  if(j.updated)nMeta.textContent=L('آخر تحديث: ','Updated: ')+String(j.updated).slice(0,16).replace('T',' ')+L(' · المصدر: أخبار Google',' · Source: Google News');
+  if(j.updated&&!isNaN(new Date(j.updated)))nMeta.textContent=L('آخر تحديث: ','Updated: ')+stamp(j.updated)+L(' · المصدر: أخبار Google',' · Source: Google News');
 }).catch(()=>{ticker.hidden=true});
 
 // ---- market prices (numbers only, refreshed by the same scheduled job) ----
@@ -111,6 +113,6 @@ fetch((EN?'../':'')+'data/markets.json?d='+PRday,{cache:'no-cache'}).then(r=>r.o
   items.forEach(x=>{const c=el('span','mk');c.append(el('span','mk-n',String(EN?x.en:x.ar).slice(0,40)+':'),el('b','num',nf.format(x.v)),el('small','mute',' '+String(EN?x.uen:x.uar).slice(0,12)));
     if(typeof x.ch==='number'&&isFinite(x.ch)&&x.ch!==0){const d=el('small',x.ch>0?'up':'dn',(x.ch>0?'▲':'▼')+Math.abs(x.ch).toFixed(1)+'%');d.dir='ltr';c.append(d)}row.append(c)});
   const srcs=[...new Set(items.map(x=>String(x.src||'')).filter(Boolean))].join('، ').slice(0,80);
-  mkt.append(el('span','tk-ico',L('أسعار اليوم','Today’s prices')),row,el('small','mute mk-meta',L('أسعار استرشادية','Indicative prices')+(j.updated&&!isNaN(new Date(j.updated))?' · '+new Intl.DateTimeFormat(EN?'en-GB':'ar-QA',{timeZone:'Asia/Qatar',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',numberingSystem:'latn'}).format(new Date(j.updated)):'')+(srcs?' · '+srcs:'')));mkt.hidden=false;
+  mkt.append(el('span','tk-ico',L('أسعار اليوم','Today’s prices')),row,el('small','mute mk-meta',L('أسعار استرشادية','Indicative prices')+(j.updated&&!isNaN(new Date(j.updated))?' · '+stamp(j.updated):'')+(srcs?' · '+srcs:'')));mkt.hidden=false;
 }).catch(()=>{});
 })();

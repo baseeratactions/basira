@@ -43,10 +43,10 @@ const DRAFT={
     `\nWe would like to update you that «${t.service}» (${t.id}) is in progress; its status now: ${trS(t.status)}. We are working to finish it as soon as possible and will update you right away.`)+sign(),
   waiting:(t,c)=>hi(c.name)+L(`\nمعاملة «${t.service}» (${t.id}) بانتظار ما يلزم من طرفكم لنكمل الإجراء. يسعدنا التواصل معكم في الوقت المناسب لكم.`,
     `\n«${t.service}» (${t.id}) is waiting for an action from your side so we can continue. We are happy to call you at a convenient time.`)+sign(),
-  renew:(t,c)=>hi(c.name)+L(`\nنود تنبيهكم إلى أن «${t.service}» ينتهي بتاريخ ${t.expiryDate}. هل ترغبون أن نبدأ إجراءات التجديد الآن لتجنب أي غرامة أو توقف؟`,
-    `\nPlease note that «${t.service}» expires on ${t.expiryDate}. Would you like us to start the renewal now to avoid any fine or interruption?`)+sign(),
-  plan:c=>hi(c.name)+L(`\nينتهي اشتراككم في باقة «${c.plan}» بتاريخ ${c.planEnd}. يسعدنا تجديده لتستمر متابعة معاملاتكم دون انقطاع.`,
-    `\nYour «${c.plan}» package ends on ${c.planEnd}. We are happy to renew it so your transactions continue without interruption.`)+sign(),
+  renew:(t,c)=>hi(c.name)+L(`\nنود تنبيهكم إلى أن «${t.service}» ينتهي بتاريخ ${dmy(t.expiryDate)}. هل ترغبون أن نبدأ إجراءات التجديد الآن لتجنب أي غرامة أو توقف؟`,
+    `\nPlease note that «${t.service}» expires on ${dmy(t.expiryDate)}. Would you like us to start the renewal now to avoid any fine or interruption?`)+sign(),
+  plan:c=>hi(c.name)+L(`\nينتهي اشتراككم في باقة «${c.plan}» بتاريخ ${dmy(c.planEnd)}. يسعدنا تجديده لتستمر متابعة معاملاتكم دون انقطاع.`,
+    `\nYour «${c.plan}» package ends on ${dmy(c.planEnd)}. We are happy to renew it so your transactions continue without interruption.`)+sign(),
   reply:c=>hi(c.name)+L(`\nشكراً لرسالتكم، اطلعنا عليها وسنعود إليكم بالرد خلال يوم عمل واحد.`,`\nThank you for your message. We have read it and will reply within one working day.`)+sign()
 };
 
@@ -85,11 +85,11 @@ function collect(){const out=[],me=ME_().username,W=workItems();
       next:L('أرسل تذكيراً لطيفاً بالدفع، وعند الاستلام سجّل الدفعة ليصدر سند القبض.','Send a polite reminder; when paid, record the payment to issue the receipt.'),
       acts:[['pay',L('تسجيل دفعة','Record payment'),1],['wa',L('تذكير بالدفع','Payment reminder')]],draft:()=>DRAFT.pay(t,c),phone:phoneOf(t.clientId)})});
   DB.Transactions.filter(t=>{const d=days(t.expiryDate);return d!==null&&d>=0&&d<=14&&mineOrAll(t.assignee||'')}).forEach(t=>{const c=cli(t.clientId),d=days(t.expiryDate);
-    add({key:'renew:'+t.id,kind:'renew',base:d<=3?7:5,age:0,clientId:t.clientId,ref:t.id,title:L(`ينتهي خلال ${d} يوم`,`Expires in ${d} days`)+' · '+t.service,sub:L('تاريخ الانتهاء ','Expiry ')+t.expiryDate,
+    add({key:'renew:'+t.id,kind:'renew',base:d<=3?7:5,age:0,clientId:t.clientId,ref:t.id,title:L(`ينتهي خلال ${d} يوم`,`Expires in ${d} days`)+' · '+t.service,sub:L('تاريخ الانتهاء ','Expiry ')+dmy(t.expiryDate),
       next:L('اعرض على العميل التجديد الآن؛ هذه معاملة جديدة وإيراد إضافي.','Offer the renewal now; it is a new transaction and extra revenue.'),
       acts:[['wa',L('عرض التجديد','Offer renewal'),1],['renewTx',L('فتح معاملة تجديد','Open renewal')]],draft:()=>DRAFT.renew(t,c),phone:phoneOf(t.clientId)})});
   (can('assign')?DB.Clients:[]).filter(c=>{const d=days(c.planEnd);return c.plan&&d!==null&&d>=0&&d<=14}).forEach(c=>{const d=days(c.planEnd);
-    add({key:'plan:'+c.id,kind:'renew',base:5,age:0,clientId:c.id,title:L(`اشتراك الباقة ينتهي خلال ${d} يوم`,`Package ends in ${d} days`),sub:c.plan+' · '+c.planEnd,
+    add({key:'plan:'+c.id,kind:'renew',base:5,age:0,clientId:c.id,title:L(`اشتراك الباقة ينتهي خلال ${d} يوم`,`Package ends in ${d} days`),sub:c.plan+' · '+dmy(c.planEnd),
       next:L('تواصل لتجديد الباقة قبل انتهائها.','Contact the client to renew before it ends.'),acts:[['wa',L('تجديد الباقة','Renew package'),1],['openCli',L('ملف العميل','Client file')]],draft:()=>DRAFT.plan(c),phone:phoneOf(c.id)})});
   if(can('accounts')||isAdmin())DB.Accounts.filter(a=>a.status==='بانتظار التفعيل').forEach(a=>add({key:'acc:'+a.id,kind:'msg',base:4,age:ago(a.created),clientId:a.clientId,
     title:L('حساب عميل ينتظر التفعيل','Client account waiting for activation'),sub:a.username||'',next:L('اتصل بالعميل للتأكد من هويته، ثم فعّل الحساب من ملفه.','Call the client to confirm, then activate the account from the file.'),acts:[['openCli',L('فتح الملف','Open file'),1]]}));
@@ -115,7 +115,7 @@ function briefing(list){const n=ME_().name||ME_().username||'',h=new Date().getH
 // ---------- render ----------
 function render(){if(!ME)return;items=collect();byKey=Object.fromEntries(items.map(x=>[x.key,x]));
   const vis=items.filter(x=>showSnoozed||!snoozed(x.key)),nSn=items.length-items.filter(x=>!snoozed(x.key)).length,b=briefing(items);
-  const d=new Date(),date=d.toLocaleDateString(EN?'en-GB':'ar-QA-u-nu-latn',{weekday:'long',year:'numeric',month:'2-digit',day:'2-digit'});
+  const d=new Date(),date=d.toLocaleDateString(EN?'en-GB':'ar-QA',{weekday:'long'})+'، '.replace('،',EN?',':'،')+dmy(iso());
   const counts=Object.fromEntries(KINDS.map(([k])=>[k,vis.filter(x=>inKind(x,k)).length]));
   const list=vis.filter(x=>inKind(x,filter));
   V.innerHTML=`<div class="td-head"><div><h2>${esc(b.greet)}</h2><p class="mute sm">${esc(date)}</p></div><span class="sp"></span>
@@ -232,7 +232,7 @@ function find(q){const s=q.trim().toLowerCase(),dg=s.replace(/\D/g,''),idm=s.mat
       <li>${L('معاملات مفتوحة','Open transactions')}: <b class="num">${open.length}</b>${open.length?' · '+open.slice(0,3).map(t=>`<a href="#" data-txn="${esc(t.id)}">${esc(t.service)}</a> (${esc(trS(t.status))})`).join('، '):''}</li>
       ${R.length?`<li>${L('طلبات مفتوحة','Open requests')}: ${R.map(r=>`<span class="num">${esc(r.id)}</span> (${esc(trS(r.status))})`).join('، ')}</li>`:''}
       ${can('finance')?`<li>${L('المستحق عليه','Balance owed')}: <b class="num ${bal>0?'bad':''}">${money(bal)}</b></li>`:''}
-      <li>${L('آخر تواصل','Last contact')}: ${lg?`<span class="num">${esc(String(lg.created).slice(0,10))}</span> · ${esc(String(lg.subject||'').slice(0,60))}`:L('لا يوجد مسجّل','none recorded')}</li>
+      <li>${L('آخر تواصل','Last contact')}: ${lg?`<span class="num">${esc(dmy(String(lg.created).slice(0,10)))}</span> · ${esc(String(lg.subject||'').slice(0,60))}`:L('لا يوجد مسجّل','none recorded')}</li>
       <li><b>${L('الخطوة التالية','Next step')}:</b> ${its.length?`<a href="#" data-goto="${esc(its[0].key)}">${esc(its[0].next)}</a>`:L('لا يوجد إجراء معلّق لهذا العميل.','No pending action for this client.')}</li></ul></div>`}).join('')+
     rq.filter(r=>!r.clientId||!cli(r.clientId).id).slice(0,3).map(r=>`<p>${L('طلب','Request')} <span class="num">${esc(r.id)}</span> · ${esc(r.name)} · ${esc(trS(r.status))}</p>`).join('')}
 

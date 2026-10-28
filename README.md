@@ -12,3 +12,11 @@ Basira for Transactions LLC is a government-transactions office in Doha, Qatar, 
 
 ---
 ملفات الموقع ثابتة وتُنشر تلقائيًا على GitHub Pages من الفرع main.
+
+## صفحات الخدمات
+- لكل خدمة صفحة مستقلة بالعربية في `services/` وبالإنجليزية في `en/services/`، مع قائمة كاملة في `services/index.html`.
+- تُبنى بالأمر `node scripts/services.mjs` من القائمة المعتمدة في لوحة الإدارة، ويعيد بناءها تلقائياً سير العمل `.github/workflows/services.yml` يومياً وعند تغيير ملفات الخدمات. لا تعدّل هذه الصفحات يدوياً.
+
+## إحصاء الزيارات
+- ضع «Website ID» من حساب Umami Cloud في `UMAMI_ID` داخل `assets/config.js` ليبدأ الإحصاء (بلا ملفات تعريف ارتباط). يُقاس: الزيارات، والأقسام، والخدمات المعروضة، وعروض الأسعار، والطلبات المرسلة، والتسجيل، والضغط على واتساب والاتصال والبريد.
+

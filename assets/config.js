@@ -6,6 +6,6 @@ window.BASIRA_CONFIG = {
   WHATSAPP: "97472232609",
   PHONE: "+974 7223 2609",
   EMAIL: "baseeratactions@gmail.com",
-  // رابط موقع الشركة الشقيقة منجز. يظهر زر «زيارة موقع منجز» في صفحة «تعرّف إلى بصيرة» عند وضعه.
-  MUNJIZ_URL: ""
+  // إحصاء الزيارات دون ملفات تعريف ارتباط: ضع هنا «Website ID» من حساب Umami Cloud لبصيرة. فارغ = الإحصاء متوقف.
+  UMAMI_ID: ""
 };

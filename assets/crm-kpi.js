@@ -187,8 +187,8 @@ function renderCli(){const P=range(per),Pp=prevOf(per,P),nc=DB.Clients.filter(c=
       ${panel(L('من أين يأتي العملاء الجدد','Where new clients come from'),hbars(by(nc,c=>c.source)))}</div>
     <div class="grid2">${panel(L('العملاء حسب النوع','Clients by type'),hbars(by(DB.Clients,c=>c.type)))}
       ${panel(L('توزيع تقييمات العملاء في الفترة','Client ratings in the period'),hbars(R.length?dist:[]))}</div>
-    <div class="grid2">${panel(L('باقات تنتهي خلال 30 يوماً','Packages ending within 30 days'),renew.length?`<ul class="plain">${renew.map(c=>`<li>${link(c.id,c.name)} · ${esc(c.plan)} · <span class="num">${esc(c.planEnd)}</span></li>`).join('')}</ul>`:`<p class="mute">${L('لا يوجد.','None.')}</p>`)}
-      ${panel(L('باقات انتهت ولم تُجدَّد (آخر 60 يوماً)','Packages ended, not renewed (last 60 days)'),lost.length?`<ul class="plain">${lost.map(c=>`<li>${link(c.id,c.name)} · ${esc(c.plan)} · <span class="num">${esc(c.planEnd)}</span></li>`).join('')}</ul>`:`<p class="mute">${L('لا يوجد.','None.')}</p>`)}</div>`}
+    <div class="grid2">${panel(L('باقات تنتهي خلال 30 يوماً','Packages ending within 30 days'),renew.length?`<ul class="plain">${renew.map(c=>`<li>${link(c.id,c.name)} · ${esc(c.plan)} · <span class="num">${esc(dmy(c.planEnd))}</span></li>`).join('')}</ul>`:`<p class="mute">${L('لا يوجد.','None.')}</p>`)}
+      ${panel(L('باقات انتهت ولم تُجدَّد (آخر 60 يوماً)','Packages ended, not renewed (last 60 days)'),lost.length?`<ul class="plain">${lost.map(c=>`<li>${link(c.id,c.name)} · ${esc(c.plan)} · <span class="num">${esc(dmy(c.planEnd))}</span></li>`).join('')}</ul>`:`<p class="mute">${L('لا يوجد.','None.')}</p>`)}</div>`}
 
 // ---------- 5) team ----------
 let rep=null,repKey='';

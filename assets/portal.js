@@ -17,7 +17,7 @@ const T=EN?{
   fgSent:'If the account has an email, we have sent a code to it. It works for 15 minutes.',fgSet:'Set the new password',fgDone:'Your new password is set.',
   pendingOk:'Your account has been created. Because this number already has a file with us, we will call you to confirm it and then activate the account.',
   welcome:n=>`Welcome, ${n}`,client:'Client no.',user:'Username',cur:'QAR',from:'from',
-  k:['Open requests','Transactions in progress','Completed','Files'],none:'Nothing yet.',noSoon:'No documents expiring in the next 60 days.',
+  k:['Open requests','Transactions in progress','Completed','Files'],none:'Nothing yet.',renew:'Renew now',renewMsg:(s,d,n)=>`Hello, I would like to renew: ${s} (expires ${d}).${n?'\n'+n:''}`,noSoon:'No documents expiring in the next 60 days.',
   th:{no:'No.',date:'Date',svc:'Service',st:'Status',start:'Started',due:'Expected',exp:'Expires',paid:'Paid',fee:'Basira fee',ref:'Gov. ref.',services:'Services',prog:'Progress',gov:'Government fees',bal:'Balance',rcpt:'Receipt no.',txn:'Transaction',method:'Method',amount:'Amount'},
   payK:['Total fees','Paid','Balance due'],
   inDays:d=>d===0?'today':`in ${d} days`,expired:'expired',qty:'Qty',remove:'Remove',pickFirst:'Please add at least one service.',
@@ -37,7 +37,7 @@ const T=EN?{
   fgSent:'إذا كان في الحساب بريد فقد أرسلنا إليه رمزاً صالحاً لمدة 15 دقيقة.',fgSet:'عيّن كلمة المرور الجديدة',fgDone:'تم تعيين كلمة المرور الجديدة.',
   pendingOk:'تم إنشاء حسابك. لأن رقمك مسجل لدينا مسبقاً، سنتصل بك للتأكد منه ثم نفعّل الحساب.',
   welcome:n=>`أهلاً، ${n}`,client:'رقم العميل',user:'اسم المستخدم',cur:'ر.ق',from:'من',
-  k:['طلبات مفتوحة','معاملات قيد التنفيذ','معاملات منجزة','ملفات'],none:'لا يوجد شيء بعد.',noSoon:'لا توجد مستندات تنتهي خلال 60 يوماً.',
+  k:['طلبات مفتوحة','معاملات قيد التنفيذ','معاملات منجزة','ملفات'],none:'لا يوجد شيء بعد.',renew:'جدّد الآن',renewMsg:(s,d,n)=>`السلام عليكم، أرغب في تجديد: ${s} (ينتهي في ${d}).${n?'\n'+n:''}`,noSoon:'لا توجد مستندات تنتهي خلال 60 يوماً.',
   th:{no:'الرقم',date:'التاريخ',svc:'الخدمة',st:'الحالة',start:'البدء',due:'الموعد المتوقع',exp:'تاريخ الانتهاء',paid:'المدفوع',fee:'أتعاب بصيرة',ref:'المرجع الحكومي',services:'الخدمات',prog:'الإنجاز',gov:'الرسوم الحكومية',bal:'المتبقي',rcpt:'رقم السند',txn:'المعاملة',method:'طريقة الدفع',amount:'المبلغ'},
   payK:['إجمالي الرسوم','المدفوع','المتبقي عليك'],
   inDays:d=>d===0?'اليوم':`بعد ${d} يوماً`,expired:'منتهٍ',qty:'العدد',remove:'إزالة',pickFirst:'يرجى إضافة خدمة واحدة على الأقل.',
@@ -112,10 +112,12 @@ $('dNewCli').onclick=()=>{signOut();$('signF').reset();tab(true);$('sName').focu
 
 // ---- dashboard ----
 let ME=null;
+// dates come from the office system as 2026-10-28 and are shown as 28-10-2026
+const dmy=v=>String(v==null?'':v).replace(/^(\d{4})-(\d{2})-(\d{2})/,'$3-$2-$1');
 const days=s=>{if(!s)return null;const d=new Date(s),t=new Date();t.setHours(0,0,0,0);return isNaN(d)?null:Math.round((d-t)/864e5)};
 function table(rows,cols){if(!rows.length)return `<p class="mute">${T.none}</p>`;
   return `<div class="ptable"><table><thead><tr>${cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td data-l="${esc(c[0])}">${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-const txCols=[[T.th.no,t=>esc(t.id)],[T.th.svc,t=>esc(t.service)],[T.th.st,t=>stTag(t.status)],[T.th.start,t=>esc(t.startDate)],[T.th.due,t=>esc(t.dueDate)],[T.th.exp,t=>esc(t.expiryDate)],[T.th.ref,t=>esc(t.govRef)]];
+const txCols=[[T.th.no,t=>esc(t.id)],[T.th.svc,t=>esc(t.service)],[T.th.st,t=>stTag(t.status)],[T.th.start,t=>esc(dmy(t.startDate))],[T.th.due,t=>esc(dmy(t.dueDate))],[T.th.exp,t=>esc(dmy(t.expiryDate))],[T.th.ref,t=>esc(t.govRef)]];
 const pct=t=>{const n=Number(t.progress);return /منجزة/.test(t.status)?100:(t.progress!==''&&t.progress!=null&&!isNaN(n)?n:0)};
 const progCell=t=>/ملغاة/.test(t.status)?'':`<span class="pprog"><i style="width:${pct(t)}%"></i></span> <small class="num">${pct(t)}%</small>`;
 txCols.splice(3,0,[T.th.prog,progCell]);
@@ -140,18 +142,18 @@ function reviewDlg(id){let d=$('rvDlg');
 document.addEventListener('click',e=>{const b=e.target.closest('[data-rv]');if(b)reviewDlg(b.dataset.rv)});
 const bal=t=>Math.max(0,(+t.fee||0)+(+t.govFee||0)-(+t.paid||0));
 const money=n=>`${fmt(n)} ${T.cur}`;
-const reqCols=[[T.th.no,r=>esc(r.id)],[T.th.date,r=>esc(String(r.created).slice(0,10))],[T.th.services,r=>esc(r.services).replace(/\n/g,'<br>')],[T.th.st,r=>stTag(r.status)]];
+const reqCols=[[T.th.no,r=>esc(r.id)],[T.th.date,r=>esc(dmy(String(r.created).slice(0,10)))],[T.th.services,r=>esc(r.services).replace(/\n/g,'<br>')],[T.th.st,r=>stTag(r.status)]];
 function render(){const c=ME.client,closed=t=>/منجزة|ملغاة/.test(t.status);
   $('dName').textContent=T.welcome(c.name);$('dMeta').textContent=`${T.client}: ${c.id} · ${T.user}: ${ME.username}`;
   const k=[ME.requests.filter(r=>/جديد|تم التواصل/.test(r.status)).length,ME.transactions.filter(t=>!closed(t)).length,ME.transactions.filter(t=>t.status==='منجزة').length,ME.files.length];
   $('kpis').innerHTML=k.map((n,i)=>`<div class="kpi"><b class="num">${n}</b><span>${T.k[i]}</span></div>`).join('');
   const soon=ME.transactions.map(t=>[t,days(t.expiryDate)]).filter(([t,d])=>d!==null&&d<=60).sort((a,b)=>a[1]-b[1]);
-  $('soon').innerHTML=soon.length?`<ul class="plist">${soon.map(([t,d])=>`<li><b>${esc(t.service)}</b><span class="${d<0?'late':'mute'}">${esc(t.expiryDate)} · ${d<0?T.expired:T.inDays(d)}</span></li>`).join('')}</ul>`:`<p class="mute">${T.noSoon}</p>`;
+  $('soon').innerHTML=soon.length?`<ul class="plist">${soon.map(([t,d])=>`<li><div><b>${esc(t.service)}</b><span class="${d<0?'late':'mute'}">${esc(dmy(t.expiryDate))} · ${d<0?T.expired:T.inDays(d)}</span></div><a class="btn sm wa" target="_blank" rel="noopener" href="https://wa.me/${esc(String(CFG.WHATSAPP||'97472232609').replace(/\D/g,''))}?text=${encodeURIComponent(T.renewMsg(t.service,dmy(t.expiryDate),ME.client&&ME.client.name?ME.client.name+(t.id?' · '+t.id:''):t.id||''))}">${T.renew}</a></li>`).join('')}</ul>`:`<p class="mute">${T.noSoon}</p>`;
   $('latest').innerHTML=table(ME.transactions.slice(0,5),txCols.slice(0,5));
   $('txList').innerHTML=table(ME.transactions,txCols);$('reqList').innerHTML=table(ME.requests,reqCols);
-  $('fileList').innerHTML=ME.files.length?`<ul class="plist files">${ME.files.map(f=>`<li><div><b>${esc(f.title)}</b><span class="mute sm">${esc(String(f.created).slice(0,10))}${f.txnId?` · ${T.txn} ${esc(f.txnId)}`:''}</span></div><button type="button" class="btn sm pri" data-f="${esc(f.id)}">${f.link?T.open:T.dl}</button></li>`).join('')}</ul>`:`<p class="mute">${T.none}</p>`;
+  $('fileList').innerHTML=ME.files.length?`<ul class="plist files">${ME.files.map(f=>`<li><div><b>${esc(f.title)}</b><span class="mute sm">${esc(dmy(String(f.created).slice(0,10)))}${f.txnId?` · ${T.txn} ${esc(f.txnId)}`:''}</span></div><button type="button" class="btn sm pri" data-f="${esc(f.id)}">${f.link?T.open:T.dl}</button></li>`).join('')}</ul>`:`<p class="mute">${T.none}</p>`;
   const pf=$('profF').elements;['name','type','phone','email','cr','estCard','taxNo','qid','address'].forEach(k=>{if(pf[k])pf[k].value=c[k]||''});if(!c.type)pf.type.value='منشأة';
-  $('credList').innerHTML=ME.credentials.length?`<ul class="plist">${ME.credentials.map(x=>`<li><div><b>${esc(x.portal)}</b><span class="mute sm" dir="ltr">${esc(x.username)} · ••••••</span><span class="mute sm">${esc(String(x.created).slice(0,10))}</span></div><button type="button" class="btn sm ghost" data-cdel="${esc(x.id)}">${T.credDel}</button></li>`).join('')}</ul>`:'';
+  $('credList').innerHTML=ME.credentials.length?`<ul class="plist">${ME.credentials.map(x=>`<li><div><b>${esc(x.portal)}</b><span class="mute sm" dir="ltr">${esc(x.username)} · ••••••</span><span class="mute sm">${esc(dmy(String(x.created).slice(0,10)))}</span></div><button type="button" class="btn sm ghost" data-cdel="${esc(x.id)}">${T.credDel}</button></li>`).join('')}</ul>`:'';
   $('msgList').innerHTML=ME.messages.length?ME.messages.map(m=>`<div class="bub ${m.from==='client'?'me':''}"><div class="pre">${esc(m.body)}</div><small class="mute">${m.from==='client'?T.you:T.office} · ${esc(m.created)}</small></div>`).join(''):`<p class="mute">${T.noMsg}</p>`;
   const live=ME.transactions.filter(t=>!/ملغاة/.test(t.status)),pays=ME.payments||[],tot=live.reduce((a,t)=>a+(+t.fee||0)+(+t.govFee||0),0),paid=live.reduce((a,t)=>a+(+t.paid||0),0);
   $('payK').innerHTML=[[T.payK[0],money(tot)],[T.payK[1],money(paid)],[T.payK[2],money(live.reduce((a,t)=>a+bal(t),0))]].map(([k,v],i)=>`<div class="kpi"><b class="num ${i===2&&v!==money(0)?'late':''}">${v}</b><span>${k}</span></div>`).join('');
@@ -172,7 +174,7 @@ $('dContract').onclick=()=>{const c=ME.client||{},open=ME.transactions.filter(t=
 // files: Drive files come through the server (only for this account); plain links open directly
 $('fileList').onclick=async e=>{const b=e.target.closest('[data-f]');if(!b)return;busy(b,true);
   try{const j=await api('cfile',{id:b.dataset.f});
-    if(j.link){window.open(j.link,'_blank','noopener');return}
+    if(j.link){if(/^https:\/\//i.test(String(j.link)))window.open(j.link,'_blank','noopener');return}
     const bin=atob(j.data),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
     const url=URL.createObjectURL(new Blob([u8],{type:j.mime||'application/octet-stream'})),a=document.createElement('a');
     a.href=url;a.download=j.name||'file';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000)}

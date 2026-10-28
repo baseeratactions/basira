@@ -16,7 +16,7 @@ const fmt=n=>(Math.round((Number(n)||0)*100)/100).toLocaleString('en-US');
 const num=(v,lo,hi)=>{v=Number(v);if(!isFinite(v))v=0;return Math.min(hi,Math.max(lo,v))};
 const str=(v,n)=>String(v==null?'':v).replace(/[\u0000-\u001f]/g,' ').slice(0,n||200);
 const pad=n=>String(n).padStart(2,'0');
-const dmy=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||'');return m?`${m[3]}/${m[2]}/${m[1]}`:''};
+const dmy=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||'');return m?`${m[3]}-${m[2]}-${m[1]}`:''};
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
 // +974 XXXX XXXX for Qatari numbers, anything else as typed
 const phone=v=>{const d=String(v||'').replace(/\D/g,'');const l=d.length>=8&&(d.length===8||d.startsWith('974'))?d.slice(-8):'';return l?`+974 ${l.slice(0,4)} ${l.slice(4)}`:str(v,20)};
@@ -66,7 +66,7 @@ function render(){const v=vals(),t=total();
   const ir=rows.find(r=>r.c===ITEM.code),or=rows.find(r=>r.c===ITEM.outletCode);
   $('calcNote').textContent=ir&&or?`طريقة الحساب: ${fmt(ir.q)} صنفاً × ${fmt(ir.p)} ر.ق + ${fmt(or.q)} تسجيلاً في منافذ بيع إضافية بعد أول 5 منافذ × ${fmt(or.p)} ر.ق.\nCalculation: ${fmt(ir.q)} items × QAR ${fmt(ir.p)} + ${fmt(or.q)} extra outlet registrations beyond the first 5 × QAR ${fmt(or.p)}.`:'';
   const ok=$('agree').checked&&$('agreeName').value.trim(),es=$('esign');es.hidden=!ok;
-  if(ok){const d=new Date();es.textContent=`موافقة إلكترونية · Accepted electronically: ${str($('agreeName').value.trim(),120)} · ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+  if(ok){const d=new Date();es.textContent=`موافقة إلكترونية · Accepted electronically: ${str($('agreeName').value.trim(),120)} · ${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
   save()}
 function save(){try{sessionStorage.setItem(DRAFT,JSON.stringify({v:vals(),rows}))}catch(e){}}
 
