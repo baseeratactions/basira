@@ -4,7 +4,8 @@
 (function(){
 const B='basira',EN=document.documentElement.lang==='en';
 // pages in a sub-folder (the service pages) point to «حسابي» through their own header link
-const PORTAL=(document.querySelector('header.top a.acct')||{}).getAttribute?document.querySelector('header.top a.acct').getAttribute('href'):'portal.html';
+// the header link may open the sign-in choice page (login.html); a signed-in client goes straight to «حسابي»
+const ACCT=document.querySelector('header.top a.acct'),AH=ACCT?ACCT.getAttribute('href'):'portal.html',PORTAL=AH.replace(/login\.html.*$/,'portal.html');
 function signed(){try{const p=(localStorage.getItem(B+'_portal')||'').split('.');const w=JSON.parse(localStorage.getItem(B+'_who')||'null');
   return p.length===4&&p[0]==='c'&&+p[2]>Date.now()&&w&&w.name?w:null}catch(e){return null}}
 const L=EN?{role:'Client account',out:'Not signed in',tip:'Signed in to My account as'}:{role:'حساب عميل',out:'لم تسجّل الدخول',tip:'مسجّل الدخول إلى «حسابي» باسم'};
@@ -15,8 +16,8 @@ function refresh(){const w=signed(),top=document.querySelector('.top');if(!top||
   document.body.classList.toggle('signed-client',!!w);
   const portal=document.body.classList.contains('portal-page');
   // the header's «حسابي» link becomes the account itself
-  const link=[...top.querySelectorAll('a[href]')].find(a=>!a.closest('.lsw')&&!a.hasAttribute('lang')&&/^portal\.html(#|$)/.test(a.getAttribute('href')));
-  if(link){if(!link.dataset.t)link.dataset.t=link.textContent;if(w){link.classList.add('acctwho');chip(link,w)}else{link.classList.remove('acctwho');link.textContent=link.dataset.t;link.removeAttribute('title')}
+  const link=[...top.querySelectorAll('a[href]')].find(a=>!a.closest('.lsw')&&!a.hasAttribute('lang')&&/^(portal|login)\.html(#|$)/.test(a.getAttribute('href')));
+  if(link){if(!link.dataset.t){link.dataset.t=link.textContent;link.dataset.h=link.getAttribute('href')}link.setAttribute('href',w?PORTAL:link.dataset.h);if(w){link.classList.add('acctwho');chip(link,w)}else{link.classList.remove('acctwho');link.textContent=link.dataset.t;link.removeAttribute('title')}
     // on phones the menu folds away, so a short copy stays in the header bar
     let m=document.getElementById('acctWhoM');
     if(!w){if(m)m.remove();return}
