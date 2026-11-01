@@ -33,3 +33,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 // print buttons on the legal pages (no inline handlers, so the pages can keep a strict content security policy)
 document.querySelectorAll('[data-print]').forEach(b=>b.addEventListener('click',()=>print()));
 })();
+// restaurants/management/partners pages, footer company facts and WhatsApp messages (grow.js), on every page that shows the account
+(function(){try{const me=document.currentScript;if(!me||document.getElementById('growJs'))return;const b=me.src.replace(/who\.js.*$/,'');
+  const c=document.createElement('link');c.rel='stylesheet';c.href=b+'grow.css?v=20261101g';document.head.appendChild(c);
+  const s=document.createElement('script');s.id='growJs';s.src=b+'grow.js?v=20261101g';document.head.appendChild(s)}catch(e){}})();
