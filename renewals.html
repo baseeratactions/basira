@@ -104,7 +104,11 @@ $('rnList').addEventListener('click',e=>{const del=e.target.closest('[data-del]'
  if(del){L.splice(+del.dataset.del,1);save();render()}if(ic)ics([L[+ic.dataset.ics]])});
 $('rnIcs').onclick=()=>ics(L);$('rnPrint').onclick=()=>print();
 $('rnClear').onclick=()=>{L=[];save();render()};
-window.__rnTest={ics:()=>null};render()})();
+const qd=new URLSearchParams(location.search).get('d');
+if(qd){const name=qd.trim().slice(0,60),sel=$('rnDoc'),hit=[...sel.options].find(o=>o.value!=='__other'&&name.toLowerCase().includes(o.textContent.toLowerCase()));
+ if(hit)sel.value=hit.value;else{sel.value='__other';$('rnOtherL').hidden=false;$('rnOther').value=name}
+ history.replaceState(null,'',location.pathname);setTimeout(()=>{$('rnF').scrollIntoView({block:'center'});$('rnDate').focus()},50)}
+render()})();
 </script>
 <footer><div class="wrap fc"><b>للتواصل</b><a href="tel:+97472232609" dir="ltr">☎ +974 7223 2609</a><a href="https://wa.me/97472232609" target="_blank" rel="noopener">واتساب</a><a href="mailto:baseeratactions@gmail.com" dir="ltr">✉ baseeratactions@gmail.com</a></div><div class="wrap"><span>بصيرة للمعاملات ذ.م.م · الدوحة، قطر</span><span><a href="index.html">العودة إلى الموقع</a> · <a href="legal.html">المستندات القانونية</a> · <a href="portal.html">حسابي</a></span></div></footer>
 <script src="assets/config.js?v=20261028a"></script>
