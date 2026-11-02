@@ -7,8 +7,7 @@ const SRC=(document.currentScript&&document.currentScript.src)||'';
 const BASE=SRC?SRC.replace(/[^/]*$/,''):'assets/';
 const CFG=window.BASIRA_CONFIG||{};
 const CO={ar:'بصيرة للمعاملات ذ.م.م',en:'Basira for Transactions LLC',city_ar:'الدوحة، قطر',city_en:'Doha, Qatar',cr:'254411',
-  phone:CFG.PHONE||'+974 7223 2609',email:CFG.EMAIL||'baseeratactions@gmail.com',web:'baseeratactions.github.io/basira',
-  sign_ar:'د. مصطفى أبوسعد',sign_en:'Dr. Moustafa Abousaad',title_ar:'المدير العام',title_en:'General Manager'};
+  phone:CFG.PHONE||'+974 7223 2609',email:CFG.EMAIL||'baseeratactions@gmail.com',web:'baseeratactions.github.io/basira'};
 const C1='#0e5e4a',C2='#c9a24d',INK='#1d252c',MUTE='#5b6670',LINE='#dfe5e2';
 const T={
   ar:{title:'عرض سعر',prelim:'عرض سعر مبدئي',no:'رقم العرض',date:'تاريخ الإصدار',valid:'صالح حتى',to:'مقدَّم إلى',from:'مقدَّم من',
@@ -86,7 +85,7 @@ const CSS=`
 .bq-acc div{display:flex;gap:8px;padding:3px 0;border-bottom:1px dotted #c7cfcb}.bq-acc div:last-child{border:0}
 .bq-acc span{color:${MUTE};min-width:62px}
 .bq-st{display:flex;align-items:center;gap:12px;justify-content:flex-end}
-.bq-st div{text-align:center;font-size:12.5px}.bq-st b{display:block;font-size:13.5px}
+.bq-st div{text-align:center;font-size:12.5px}.bq-st b{display:block;font-size:13.5px}.bq-st .bq-ln{display:block;margin-top:10px;color:#5b6670}
 .bq-foot{border-top:2px solid ${C2};padding-top:6px;color:${MUTE};font-size:11px;text-align:center}
 `;
 function style(){if(document.getElementById('bq-css'))return;const s=document.createElement('style');s.id='bq-css';s.textContent=CSS;document.head.appendChild(s)}
@@ -122,7 +121,7 @@ function html(d){const en=d.lang==='en',t=T[en?'en':'ar'],c=d.client||{},s=total
   <div class="bq-sec" data-brk><h3>${t.terms}</h3>${terms.map(li).join('')}</div>
   <div class="bq-sign" data-brk>
     ${d.prelim?'<div></div>':`<div class="bq-acc"><h3>${t.accept}</h3><div><span>${t.aName}</span></div><div><span>${t.aSign}</span></div><div><span>${t.aDate}</span></div></div>`}
-    <div class="bq-st"><div>${d.prelim?'':`<b>${esc(en?CO.sign_en:CO.sign_ar)}</b>${esc(en?CO.title_en:CO.title_ar)}<br>`}${t.for}</div>${stamp(t,en)}</div>
+    <div class="bq-st"><div><b>${t.for}</b>${d.prelim?'':`<span class="bq-ln">${t.aName}: ....................</span><span class="bq-ln">${t.aSign}: ....................</span>`}</div>${stamp(t,en)}</div>
   </div>
   <div class="bq-foot" data-brk>${esc(en?CO.en:CO.ar)} · ${t.cr} ${ltr(CO.cr)} · ${ltr(CO.phone)} · ${ltr(CO.email)} · ${ltr(CO.web)}</div>
 </div>`}

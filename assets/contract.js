@@ -4,7 +4,7 @@
 // every value is written into the contract with textContent only.
 (function(){
 const CFG=window.BASIRA_CONFIG||{};
-const CO={ar:'بصيرة للمعاملات ذ.م.م',en:'Basira for Transactions LLC',sign_ar:'د. مصطفى أبوسعد',sign_en:'Dr. Moustafa Abousaad',
+const CO={ar:'بصيرة للمعاملات ذ.م.م',en:'Basira for Transactions LLC',
   title_ar:'المدير العام',title_en:'General Manager',addr_ar:'الدوحة، دولة قطر',addr_en:'Doha, State of Qatar',cr:'',
   phone:CFG.PHONE||'+974 7223 2609',email:CFG.EMAIL||'baseeratactions@gmail.com',prefix:'BAS-CT'};
 const KEY='basira_contract',DRAFT=KEY+'_draft';
