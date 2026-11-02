@@ -22,7 +22,7 @@ const T=EN?{
   copied:'Copied',copyHand:'Please select the text and copy it manually',ind:'Individual',
   about:'About the service',inc:'What we do',docs:'Documents you provide',time:'Approximate time',note:'Note',out:'What you receive',fee:'Basira fee',govFee:'Government fees are paid separately with the official receipt.',
   reqThis:'Request this service',addCalc:'Add to calculator',inCalc:'In calculator ✓',close:'Close',consult:'Studies & Consulting',govSvc:'Government services',allSvc:'All services of this authority',home:'Home',allEnts:'← All authorities',allCats:'← All types',svcN:n=>`${n} services`,results:q=>`Results for “${q}”`,
-  prices:'Full price list',hi:n=>`Welcome, ${n}`,waAsk:(n,c)=>`Hello, I would like to ask about this service: ${n} (${c}).`,register:'Register',regForQuote:'Please register your details first, so we can prepare the quote in your name.',co:'Company',stampName:'BASIRA FOR TRANSACTIONS',stampCity:'DOHA · QATAR',q:{title:'Preliminary quote',no:'Quote no.',date:'Date',valid:'Valid for 14 days from its date.',client:'Client',svc:'Service',qty:'Qty',fee:'Fee',total:'Total',sum:'Total Basira fees',startNote:'Studies and consulting are starting prices, confirmed in a written quotation.',gov:'Government fees are not included and are paid separately against the official receipt.',prelim:'This is a preliminary quote, confirmed after we review the documents and the transaction type.',custom:'To be priced after review',subj:'Quote request'},eOk:'Please agree to the privacy policy to send the request.',lVia:'Preferred contact',lWhen:'Preferred time',svcPage:'Full service page, to share or save ›',
+  prices:'Full price list',hi:n=>`Welcome, ${n}`,waAsk:(n,c)=>`Hello, I would like to ask about this service: ${n} (${c}).`,register:'Register',regForQuote:'Please register your details first, so we can prepare the quote in your name.',co:'Company',stampName:'BASIRA FOR TRANSACTIONS',stampCity:'DOHA · QATAR',q:{title:'Preliminary quote',no:'Quote no.',date:'Date',valid:'Valid for 14 days from its date.',client:'Client',svc:'Service',qty:'Qty',fee:'Fee',total:'Total',sum:'Total Basira fees',startNote:'Studies and consulting are starting prices, confirmed in a written quotation.',gov:'Government fees are not included and are paid separately against the official receipt.',prelim:'This is a preliminary quote, confirmed after we review the documents and the transaction type.',custom:'To be priced after review',subj:'Quote request'},pdfWait:'Preparing the PDF…',pdfFail:'The PDF could not be prepared. Use Print, then Save as PDF.',eOk:'Please agree to the privacy policy to send the request.',lVia:'Preferred contact',lWhen:'Preferred time',svcPage:'Full service page, to share or save ›',
   sec:{about:'About Basira',services:'Government services',consult:'Studies & consulting',packages:'Company packages',estimate:'Cost calculator',how:'How we work',request:'Request a service or quote',faq:'Common questions',track:'Track your transaction',auctions:'Qatar auctions'}
 }:{
   cur:'ر.ق',all:'كل الجهات',core:'ضمن الباقات',add:'أضف',added:'مضافة ✓',addA:'إضافة ',rmA:'إزالة ',
@@ -39,7 +39,7 @@ const T=EN?{
   copied:'تم النسخ',copyHand:'يرجى تحديد النص ونسخه يدوياً',ind:'فرد',
   about:'عن الخدمة',inc:'ما نقوم به',docs:'المستندات المطلوبة منك',time:'المدة التقريبية',note:'ملاحظة',out:'ما تستلمه',fee:'أتعاب بصيرة',govFee:'الرسوم الحكومية تُدفع منفصلة بإيصالها الرسمي.',
   reqThis:'اطلب هذه الخدمة',addCalc:'أضف إلى الحاسبة',inCalc:'في الحاسبة ✓',close:'إغلاق',consult:'الدراسات والاستشارات',govSvc:'الخدمات الحكومية',allSvc:'كل خدمات هذه الجهة',home:'الرئيسية',allEnts:'كل الجهات →',allCats:'كل الأنواع →',svcN:n=>`${n} ${n<=10?'خدمات':'خدمة'}`,results:q=>`نتائج البحث عن «${q}»`,
-  prices:'قائمة الأسعار الكاملة',hi:n=>`أهلاً ${n}`,waAsk:(n,c)=>`السلام عليكم، أريد الاستفسار عن خدمة: ${n} (${c}).`,register:'تسجيل',regForQuote:'يرجى تسجيل بياناتك أولاً لنجهّز عرض السعر باسمك.',co:'الشركة',stampName:'بصيرة للمعاملات ذ.م.م',stampCity:'الدوحة · قطر',q:{title:'عرض سعر مبدئي',no:'رقم العرض',date:'التاريخ',valid:'صالح لمدة 14 يوماً من تاريخه.',client:'العميل',svc:'الخدمة',qty:'العدد',fee:'الأتعاب',total:'المجموع',sum:'إجمالي أتعاب بصيرة',startNote:'أسعار الدراسات والاستشارات تبدأ من المبلغ المذكور وتُعتمد بعرض سعر مكتوب.',gov:'الرسوم الحكومية غير مشمولة، وتُدفع منفصلة بإيصالها الرسمي.',prelim:'هذا عرض مبدئي، ويُعتمد بعد مراجعة المستندات ونوع المعاملة.',custom:'تُسعَّر بعد المراجعة',subj:'طلب عرض سعر'},eOk:'يرجى الموافقة على سياسة الخصوصية لإرسال الطلب.',lVia:'وسيلة التواصل المفضلة',lWhen:'الموعد المفضل',svcPage:'صفحة الخدمة كاملة للمشاركة أو الحفظ ›',
+  prices:'قائمة الأسعار الكاملة',hi:n=>`أهلاً ${n}`,waAsk:(n,c)=>`السلام عليكم، أريد الاستفسار عن خدمة: ${n} (${c}).`,register:'تسجيل',regForQuote:'يرجى تسجيل بياناتك أولاً لنجهّز عرض السعر باسمك.',co:'الشركة',stampName:'بصيرة للمعاملات ذ.م.م',stampCity:'الدوحة · قطر',q:{title:'عرض سعر مبدئي',no:'رقم العرض',date:'التاريخ',valid:'صالح لمدة 14 يوماً من تاريخه.',client:'العميل',svc:'الخدمة',qty:'العدد',fee:'الأتعاب',total:'المجموع',sum:'إجمالي أتعاب بصيرة',startNote:'أسعار الدراسات والاستشارات تبدأ من المبلغ المذكور وتُعتمد بعرض سعر مكتوب.',gov:'الرسوم الحكومية غير مشمولة، وتُدفع منفصلة بإيصالها الرسمي.',prelim:'هذا عرض مبدئي، ويُعتمد بعد مراجعة المستندات ونوع المعاملة.',custom:'تُسعَّر بعد المراجعة',subj:'طلب عرض سعر'},pdfWait:'جارٍ إعداد ملف PDF…',pdfFail:'تعذّر إعداد ملف PDF. استخدم «طباعة» ثم «حفظ PDF».',eOk:'يرجى الموافقة على سياسة الخصوصية لإرسال الطلب.',lVia:'وسيلة التواصل المفضلة',lWhen:'الموعد المفضل',svcPage:'صفحة الخدمة كاملة للمشاركة أو الحفظ ›',
   sec:{about:'تعرّف إلى بصيرة',services:'الخدمات الحكومية',consult:'الدراسات والاستشارات',packages:'باقات الشركات',estimate:'احسب التكلفة',how:'كيف ننجز معاملتك',request:'اطلب خدمة أو عرض سعر',faq:'أسئلة شائعة',track:'تابع معاملتك',auctions:'مزادات قطر'}
 };
 const WA=CFG.WHATSAPP||'97472232609';
@@ -288,7 +288,7 @@ $('f').addEventListener('submit',async e=>{e.preventDefault();
   const msg=`${T.msgHead}\n${T.lName}: ${n}\n${REG&&REG.company?T.co+': '+REG.company+'\n':''}${T.lPhone}: ${ph}\n${em?T.lMail+': '+em+'\n':''}${T.lType}: ${typeTxt}\n${via?T.lVia+': '+via+'\n':''}${when?T.lWhen+': '+when+'\n':''}${plan?T.lPlan+': '+plan+'\n':''}${T.lSvc}:\n${sv}`;
   const Q=buildQuote({n,ph,em,typeTxt,plan,via:via+(when?' · '+when:''),sv,co:(REG&&REG.company)||''});const full=msg+'\n\n'+Q.text;
   window.BTRACK&&BTRACK('quote',{services:cart.size||1});
-  $('qdoc').innerHTML=Q.html;$('out').textContent=full;$('sendWa').href=`https://wa.me/${WA}?text=`+encodeURIComponent(full);
+  $('qdoc').innerHTML=Q.html;LASTQ=Q.pdf;$('out').textContent=full;$('sendWa').href=`https://wa.me/${WA}?text=`+encodeURIComponent(full);
   $('sendMail').href=`mailto:${CFG.EMAIL||'baseeratactions@gmail.com'}?${em?'cc='+encodeURIComponent(em)+'&':''}subject=${encodeURIComponent(T.q.subj+' '+Q.no+' - '+n)}&body=${encodeURIComponent(full)}`;
   const st=$('sendState');$('outWrap').hidden=false;
   if(CFG.API){st.hidden=false;st.className='verdict';st.textContent=T.sending;
@@ -313,7 +313,10 @@ function buildQuote(c){const d=new Date(),pad=x=>String(x).padStart(2,'0');
    ${custom.length?`<p><b>${T.q.custom}:</b><br>${custom.map(esc).join('<br>')}</p>`:''}
    <ul class="qnotes"><li>${T.q.gov}</li>${from?`<li>${T.q.startNote}</li>`:''}<li>${T.q.prelim}</li><li>${T.q.valid}</li></ul><div class="qsign">${stampSVG()}</div>`;
   const text=[`${T.q.title} ${no} (${date})`,...rows.map(({s,q})=>`- ${s.n} (${s.c}) × ${q}: ${s.from?T.from+' ':''}${fmt(s.p*q)} ${cur}`),...(custom.length?[T.q.custom+':',...custom.map(x=>'- '+x)]:[]),...(rows.length?[`${T.q.sum}: ${from?T.from+' ':''}${fmt(sum)} ${cur}`]:[]),T.q.gov,T.q.valid].join('\n');
-  return {no,html,text}}
+  // the same quotation as a PDF file on the letterhead (assets/quote-pdf.js)
+  const pdf={lang:EN?'en':'ar',prelim:true,no,date,validDays:14,validUntil:(()=>{const v=new Date(d);v.setDate(v.getDate()+14);return `${pad(v.getDate())}-${pad(v.getMonth()+1)}-${v.getFullYear()}`})(),
+    client:{name:c.co?c.n:'',co:c.co||c.n,phone:c.ph,email:c.em},lines:rows.map(({s,q})=>({c:s.c,n:s.n,q,p:s.p,from:!!s.from})),custom};
+  return {no,html,text,pdf}}
 // brand mark and a round company stamp, drawn in SVG so they print sharply on the quote
 const LOGO='<svg width="44" height="44" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="#0e5e4a" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg>';
 function stampSVG(){const c='#2f5d8a';
@@ -360,6 +363,14 @@ if(reg){// the sign-up window never blocks browsing: Esc or «Not now» closes i
 }
 applyReg();
 $('printQ')&&($('printQ').onclick=()=>window.print());
+// the quotation as a PDF file: downloaded, or shared straight to WhatsApp or email from the phone
+let LASTQ=null;
+async function quotePdf(share){if(!LASTQ||!window.QuotePDF)return;const b=$(share?'shareQ':'pdfQ'),t=b.textContent;b.disabled=true;b.textContent=T.pdfWait;
+  try{const blob=await QuotePDF.pdf(LASTQ),name=QuotePDF.fileName(LASTQ);window.BTRACK&&BTRACK(share?'quote_pdf_share':'quote_pdf');
+    if(share)await QuotePDF.share(blob,name,$('out').textContent);else QuotePDF.save(blob,name)}
+  catch(e){if(!e||e.name!=='AbortError')toast(T.pdfFail)}finally{b.disabled=false;b.textContent=t}}
+$('pdfQ')&&($('pdfQ').onclick=()=>quotePdf(false));
+if($('shareQ')&&window.QuotePDF&&QuotePDF.canShare()){$('shareQ').hidden=false;$('shareQ').onclick=()=>quotePdf(true)}
 $('copyMsg').onclick=()=>copy($('out').textContent,$('out'));
 $('waFab')&&($('waFab').href='https://wa.me/'+WA);$('mbWa')&&($('mbWa').href='https://wa.me/'+WA);
 $('copyPh').onclick=()=>copy('+'+WA,$('ph'));

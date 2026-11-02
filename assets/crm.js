@@ -167,7 +167,7 @@ function renderReq(){const f=$('reqF').value,q=$('reqQ').value.trim();
     <td class="num">${esc(r.id)}<br><small class="mute">${esc(dmy(r.created))}</small></td><td>${link(r.clientId,r.name)}<br><small class="num">${esc(r.phone)}</small>${r.email?`<br><small dir="ltr">${esc(r.email)}</small>`:''}</td>
     <td class="pre">${esc(r.services)}</td><td>${esc(r.plan||'')}</td><td>${r.mailed==='نعم'?'أُرسل':'—'}</td>
     <td><select data-rq="${esc(r.id)}">${REQ_ST.map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select>
-    <div class="acts"><button class="btn xs ghost" type="button" data-conv="${esc(r.id)}">تحويل إلى معاملات</button>${r.email?`<button class="btn xs ghost" type="button" data-rmail="${esc(r.id)}">رد بالبريد</button>`:''}</div></td></tr>`);
+    <div class="acts"><button class="btn xs pri" type="button" data-rquote="${esc(r.id)}">إعداد عرض سعر PDF</button><button class="btn xs ghost" type="button" data-conv="${esc(r.id)}">تحويل إلى معاملات</button>${r.email?`<button class="btn xs ghost" type="button" data-rmail="${esc(r.id)}">رد بالبريد</button>`:''}</div></td></tr>`);
   $('reqT').innerHTML=table(['الرقم','العميل','الخدمات المطلوبة','الباقة','التأكيد بالبريد','الحالة والإجراء'],rows)}
 $('reqT').addEventListener('change',async e=>{const s=e.target.closest('[data-rq]');if(!s)return;const r=DB.Requests.find(x=>x.id===s.dataset.rq);r.status=s.value;await saveRow('Requests',r);renderDash()});
 $('reqT').addEventListener('click',async e=>{

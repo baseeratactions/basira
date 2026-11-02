@@ -241,10 +241,10 @@ function logoHtml(p) {
   if (!p.icon) return '<span class="logo" style="--brand:' + esc(p.color) + '">' + letter + '</span>';
   return '<span class="logo" style="--brand:' + esc(p.color) + '" data-letter="' + letter + '"><img src="' + esc(p.site + p.icon) + '" alt="" loading="lazy"></span>';
 }
-function adminLink(p) {
+function adminLink(p, open) {
   if (!p.admin) return '';
   const b = p.api && S.backends.get(p.api);
-  return p.site + p.admin + (b && b.token ? '#sso=' + b.token : '');
+  return p.site + p.admin + (open ? '?open=' + encodeURIComponent(open) : '') + (b && b.token ? '#sso=' + b.token : '');
 }
 function modeBadges(p) {
   const out = [];
@@ -287,6 +287,7 @@ function cardHtml(p, st) {
     '<div class="badges">' + modeBadges(p) + '</div>' + stats + (note ? '<p class="note">' + note + '</p>' : '') + relogHtml(p) +
     '<div class="actions">' + (adm ? '<a class="btn main" href="' + esc(adm) + '" target="_blank" rel="noopener">لوحة الإدارة</a>' : '') +
     '<a class="btn" href="' + esc(p.site) + '" target="_blank" rel="noopener">الموقع</a>' +
+    (adm && p.quotes ? '<a class="btn" href="' + esc(adminLink(p, 'quote')) + '" target="_blank" rel="noopener">عرض سعر جديد PDF</a>' : '') +
     (p.portal ? '<a class="btn" href="' + esc(p.site + p.portal) + '" target="_blank" rel="noopener">بوابة العملاء</a>' : '') +
     '<a class="btn" href="https://github.com/' + esc(p.repo) + (p.path ? '/tree/HEAD/' + esc(p.path) : '') + '" target="_blank" rel="noopener">الملفات</a></div></article>';
 }
