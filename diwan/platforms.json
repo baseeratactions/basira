@@ -19,7 +19,8 @@
       "color": "#0e5e4a",
       "admin": "crm.html",
       "portal": "portal.html",
-      "config": "assets/config.js"
+      "config": "assets/config.js",
+      "quotes": true
     },
     {
       "id": "jahiz",
