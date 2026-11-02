@@ -3,16 +3,19 @@
 // الحزمة ملف مشفّر (AES-GCM) يختاره المدير من جهازه (لا يُنشر على الموقع)، ومفتاحه يصل في الرابط فقط (#import=...) ولا يُرسل إلى أي خادم.
 // التسجيل يمر عبر أوامر الخادم العادية للمدير المسجّل دخوله (save · clientAccount · upload)، ويمكن تشغيله أكثر من مرة دون تكرار.
 (function(){
-  const KK='basira_imp_k';
+  const KK='basira_imp_k',KD='basira_imp_d';
   const T=(a,e)=>window.CRM_LANG==='en'?e:a;
   try{const m=/^#import=([A-Za-z0-9_-]{43})$/.exec(location.hash);if(m){sessionStorage.setItem(KK,m[1]);history.replaceState(null,'',location.pathname+location.search)}}catch(e){}
-  const key=(()=>{try{return sessionStorage.getItem(KK)}catch(e){return null}})();
-  if(!key)return;
+  // صيغة ثانية لحزمة صغيرة بلا مرفقات: البيانات نفسها مضغوطة في الرابط (#importdata=...) فلا حاجة لاختيار ملف
+  try{const m=/^#importdata=([A-Za-z0-9_-]{20,})$/.exec(location.hash);if(m){sessionStorage.setItem(KD,m[1]);history.replaceState(null,'',location.pathname+location.search)}}catch(e){}
+  const ss=k=>{try{return sessionStorage.getItem(k)}catch(e){return null}};
+  const key=ss(KK),inl=ss(KD);
+  if(!key&&!inl)return;
   const box=document.createElement('div');
   box.dir='rtl';box.style.cssText='position:relative;max-width:560px;margin:12px auto;background:#fff;color:#1d2b27;border:1px solid #0e5e4a;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:14px 16px;font:14px/1.6 inherit';
   box.innerHTML=`<b style="color:#0e5e4a">${T('تسجيل بيانات العملاء وعروضهم','Register client data and quotes')}</b>
-    <div id="impMsg" style="margin:6px 0">${T('سجّل الدخول كمدير، ثم اختر ملف البيانات (.bin) واضغط الزر.','Sign in as an admin, choose the data file (.bin), then press the button.')}</div>
-    <input type="file" id="impFile" accept=".bin,application/octet-stream" style="margin:4px 0;max-width:100%">
+    <div id="impMsg" style="margin:6px 0">${inl?T('سجّل الدخول كمدير إن طُلب منك، ثم اضغط الزر الأخضر.','Sign in as an admin if asked, then press the button.'):T('سجّل الدخول كمدير، ثم اختر ملف البيانات (.bin) واضغط الزر.','Sign in as an admin, choose the data file (.bin), then press the button.')}</div>
+    <input type="file" id="impFile" ${inl?'hidden':''} accept=".bin,application/octet-stream" style="margin:4px 0;max-width:100%">
     <div id="impLog" style="max-height:220px;overflow:auto;font-size:13px;white-space:pre-wrap"></div>
     <div style="display:flex;gap:8px;margin-top:8px"><button class="btn pri" id="impGo" type="button">${T('تسجيل البيانات','Register data')}</button>
     <button class="btn ghost" id="impX" type="button">${T('إغلاق','Close')}</button></div>`;
@@ -21,6 +24,7 @@
   $i('impX').onclick=()=>box.remove();
   const b64=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4)),c=>c.charCodeAt(0));
   async function open(){
+    if(inl){const ds=new Blob([b64(inl)]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return JSON.parse(await new Response(ds).text())}
     const fl=$i('impFile').files[0];if(!fl)throw new Error(T('اختر ملف البيانات أولاً.','Choose the data file first.'));
     const buf=new Uint8Array(await fl.arrayBuffer()),k=await crypto.subtle.importKey('raw',b64(key),'AES-GCM',false,['decrypt']);
     let plain;try{plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},k,buf.slice(12))}catch(e){throw new Error(T('الملف لا يطابق هذا الرابط.','This file does not match the link.'))}
@@ -79,7 +83,7 @@
       sum.push(cl.id+' '+cl.name+(user?' · '+user:''));
       db=await Remote.list();
     }
-    try{sessionStorage.removeItem(KK)}catch(e){}
+    try{sessionStorage.removeItem(KK);sessionStorage.removeItem(KD)}catch(e){}
     msg(T('اكتمل التسجيل لـ ','Done for ')+sum.length+T(' عملاء. افتح «العملاء» لمراجعة الملفات.',' clients. Open Clients to review.'));
     $i('impGo').remove();
     if(typeof reload==='function')reload();
