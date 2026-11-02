@@ -43,10 +43,14 @@
       if(cl){
         const row=Object.assign({},cl);
         Object.entries(c.fill||{}).forEach(([k,v])=>{if(!row[k])row[k]=v});
-        Object.entries(c.row).forEach(([k,v])=>{if(k==='notes'){if(!String(row.notes||'').includes('['+c.tag+']'))row.notes=(row.notes?row.notes+'\n':'')+v}else if(!row[k]&&v)row[k]=v});
+        Object.entries(c.row).forEach(([k,v])=>{if((c.overwrite||[]).includes(k)&&v)row[k]=v;else if(k==='notes'){if(!String(row.notes||'').includes('['+c.tag+']'))row.notes=(row.notes?row.notes+'\n':'')+v}else if(!row[k]&&v)row[k]=v});
         cl=await Remote.save('Clients',row);out('✓ '+cl.id+' '+cl.name+T(' (موجود، أُكملت بياناته)',' (existing, data completed)'));
       }else{cl=await Remote.save('Clients',Object.assign({},c.row));out('✓ '+cl.id+' '+cl.name+T(' (ملف جديد)',' (new file)'))}
       const txn={};
+      for(const x of c.cancel||[]){   // a quote replaced by a newer one: its transaction is closed as cancelled
+        const old=db.Transactions.find(r=>r.clientId===cl.id&&same(r.service,x.service)&&r.status!=='ملغاة');
+        if(old){await Remote.save('Transactions',Object.assign({},old,{status:'ملغاة',notes:(old.notes?old.notes+' · ':'')+x.note}));out('  ✓ '+T('أُلغيت المعاملة ','cancelled ')+old.id)}
+      }
       for(const t of c.txns){
         let x=db.Transactions.find(r=>r.clientId===cl.id&&same(r.service,t.service));
         if(!x){const row=Object.assign({},t,{clientId:cl.id,govFee:''});delete row.key;x=await Remote.save('Transactions',row);out('  ✓ '+T('معاملة ','transaction ')+x.id+' · '+(t.fee?Number(t.fee).toLocaleString('en-US')+' QAR':''))}
