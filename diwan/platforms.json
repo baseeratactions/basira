@@ -1,7 +1,12 @@
 {
   "about": "سجل منصات الديوان. أي مستودع منشور على GitHub Pages لدى الحسابات المذكورة في owners، وأي تطبيق داخله له ملف manifest.webmanifest، يظهر في اللوحة تلقائياً. هذا الملف يضيف الاسم والهوية ورابط الإدارة وقواعد التمييز. ولا تُرسل بيانات الدخول إلا إلى الخوادم المثبّتة هنا في الحقل api، فالمنصة المكتشفة تُعرض فقط حتى يُعتمد خادمها في هذا الملف.",
-  "owners": ["baseeratactions", "munjiz-qa"],
-  "ignore": ["baseeratactions/basira/diwan"],
+  "owners": [
+    "baseeratactions",
+    "munjiz-qa"
+  ],
+  "ignore": [
+    "baseeratactions/basira/diwan"
+  ],
   "platforms": [
     {
       "id": "basira",
@@ -28,7 +33,13 @@
       "admin": "crm.html",
       "portal": "portal.html",
       "config": "assets/config.js",
-      "claim": { "codes": "^[A-Z]{2}-", "types": ["شريك معتمد", "Partner"] }
+      "claim": {
+        "codes": "^[A-Z]{2}-",
+        "types": [
+          "شريك معتمد",
+          "Partner"
+        ]
+      }
     },
     {
       "id": "munjiz",
@@ -78,6 +89,90 @@
       "color": "#14212e",
       "admin": "admin/",
       "feed": "data/brief.json"
+    },
+    {
+      "id": "sanad",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "sanad",
+      "name": "سند",
+      "kind": "الموظف الرقمي لخدمة العملاء",
+      "site": "https://munjiz-qa.github.io/sanad/",
+      "icon": "assets/icon-192.png",
+      "color": "#0D4F5C",
+      "admin": "app/admin.html",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "binaa-builder",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "binaa-builder",
+      "name": "بناء بيلدر",
+      "kind": "تصميم مواقع الأنشطة التجارية",
+      "site": "https://munjiz-qa.github.io/binaa-builder/",
+      "icon": "icons/icon-192.png",
+      "color": "#1F3A5F",
+      "admin": "",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "buraq",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "buraq",
+      "name": "براق",
+      "kind": "التحويل الكهربائي للسيارات",
+      "site": "https://munjiz-qa.github.io/buraq/",
+      "icon": "app/icon-192.png",
+      "color": "#14202A",
+      "admin": "admin.html",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "mishkat",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "mishkat",
+      "name": "مشكاة",
+      "kind": "موسوعة القرآن الكريم",
+      "site": "https://munjiz-qa.github.io/mishkat/",
+      "icon": "icons/icon-192.png",
+      "color": "#1b2559",
+      "admin": "",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "quran-lab",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "quran-lab",
+      "name": "مختبر الأبحاث القرآنية",
+      "kind": "إعداد البحوث العلمية وتأصيلها",
+      "site": "https://munjiz-qa.github.io/quran-lab/",
+      "icon": "icons/icon-192.png",
+      "color": "#0e4a52",
+      "admin": "",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "altayyibat",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "altayyibat",
+      "name": "الطيبات",
+      "kind": "الدليل الطبي الموثوق",
+      "site": "https://munjiz-qa.github.io/altayyibat/",
+      "icon": "icon-192.png",
+      "color": "#1D6455",
+      "admin": "",
+      "config": "assets/config.js"
+    },
+    {
+      "id": "saif",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "saif",
+      "name": "سَيْف",
+      "kind": "حماية سرية البيانات",
+      "site": "https://munjiz-qa.github.io/saif/",
+      "icon": "icon.svg",
+      "color": "#0f4c5c",
+      "admin": "",
+      "config": "assets/config.js"
     }
   ]
 }
