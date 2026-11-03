@@ -52,9 +52,10 @@
 <p class="err" id="rnErr" role="alert"></p>
 <button class="btn pri" type="submit">أضف إلى القائمة</button>
 </form>
+<p class="rntoast" id="rnToast" role="status" hidden></p>
 <p class="rnsum" id="rnSum" aria-live="polite"></p>
 <div class="rnl" id="rnList"></div>
-<div class="cta rnact" id="rnAct" hidden><button type="button" class="btn pri" id="rnIcs">📅 أضف التنبيهات إلى التقويم</button><button type="button" class="btn ghost" id="rnPrint">🖨 اطبع القائمة</button><button type="button" class="btn ghost" id="rnClear">امسح القائمة</button></div>
+<div class="cta rnact" id="rnAct" hidden><button type="button" class="btn pri" id="rnIcs">📅 أضف التنبيهات إلى التقويم</button><a class="btn ghost" id="rnSend" target="_blank" rel="noopener">💬 أرسل القائمة إلى بصيرة لمتابعتها</a><button type="button" class="btn ghost" id="rnMove">🔗 انقل القائمة إلى جهاز آخر</button><button type="button" class="btn ghost" id="rnPrint">🖨 اطبع القائمة</button><button type="button" class="btn ghost" id="rnClear">امسح القائمة</button></div>
 <p class="note">الأداة إرشادية، والمرجع في مواعيد التجديد هو الجهات الحكومية المختصة. هل تريد أن نتابع التجديدات عنك؟ اطّلع على <a href="management.html">باقة الإدارة والإشراف</a>.</p>
 </article>
 </div></main>
@@ -62,6 +63,7 @@
 .rnf{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;align-items:end;margin:18px 0;padding:16px;border:1px solid rgba(127,127,127,.25);border-radius:14px}
 .rnf label{display:grid;gap:6px;font-weight:500}.rnf input,.rnf select{font:inherit;padding:10px 12px;border:1px solid rgba(127,127,127,.4);border-radius:10px;background:transparent;color:inherit;min-height:44px}
 .rnf .err{grid-column:1/-1;margin:0;color:#c0392b;min-height:0}.rnf .err:empty{display:none}
+.rntoast{position:fixed;inset-inline:16px;bottom:20px;margin:auto;max-width:340px;text-align:center;background:#123;color:#fff;padding:10px 14px;border-radius:12px;z-index:99}.rntoast[hidden]{display:none}
 .rnsum{font-weight:700;margin:6px 0}.rnl{display:grid;gap:10px}
 .rni{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid rgba(127,127,127,.25);border-inline-start:5px solid #2f855a}
 .rni.soon{border-inline-start-color:#d68910}.rni.exp{border-inline-start-color:#c0392b}
@@ -87,7 +89,7 @@ function render(){L.sort((a,b)=>a.e<b.e?-1:1);const box=$('rnList');
  $('rnAct').hidden=false;let x=0,s=0;
  box.innerHTML=L.map((it,i)=>{const n=days(it.e),[c,t]=status(n);if(c==='exp')x++;else if(c==='soon')s++;
   return `<div class="rni ${c}"><div><b>${esc(it.d)}</b><small>${it.h?esc(it.h)+' · ':''}<span dir="ltr">${dmy(it.e)}</span></small></div><span class="st">${esc(t)}</span><div class="ra"><a class="btn pri" href="${waLink(it)}" target="_blank" rel="noopener">${esc(T.req)}</a><button type="button" class="btn ghost" data-ics="${i}">📅 ${esc(T.icsOne)}</button><button type="button" class="btn ghost" data-del="${i}">${esc(T.dl)}</button></div></div>`}).join('');
- $('rnSum').textContent=f(T.sum,{t:L.length,x,s})}
+ $('rnSum').textContent=f(T.sum,{t:L.length,x,s});const sd=$('rnSend');if(sd)sd.href=sendHref()}
 function ics(items){const p=n=>String(n).padStart(2,'0'),now=new Date(),st=now.getUTCFullYear()+p(now.getUTCMonth()+1)+p(now.getUTCDate())+'T'+p(now.getUTCHours())+p(now.getUTCMinutes())+'00Z';
  const fold=s=>s.replace(/[\\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n');
  const ev=items.map((x,i)=>{const d=x.e.replace(/-/g,''),[y,m,dd]=x.e.split('-').map(Number),nx=new Date(Date.UTC(y,m-1,dd+1)),d2=nx.getUTCFullYear()+p(nx.getUTCMonth()+1)+p(nx.getUTCDate());const msg=fold(f(T.alarm,{d:x.d,h:x.h?' ('+x.h+')':'',e:dmy(x.e)}));
@@ -104,6 +106,16 @@ $('rnList').addEventListener('click',e=>{const del=e.target.closest('[data-del]'
  if(del){L.splice(+del.dataset.del,1);save();render()}if(ic)ics([L[+ic.dataset.ics]])});
 $('rnIcs').onclick=()=>ics(L);$('rnPrint').onclick=()=>print();
 $('rnClear').onclick=()=>{L=[];save();render()};
+const TX={head:'السلام عليكم، أرغب أن تتابع بصيرة تجديد هذه المستندات:',moved:'أُضيفت {n} مستندات من الرابط ✓',copied:'نُسخ رابط القائمة. افتحه على الجهاز الآخر ✓',exp:'ينتهي'};
+function toastR(m){const e=$('rnToast');e.textContent=m;e.hidden=false;clearTimeout(toastR.t);toastR.t=setTimeout(()=>e.hidden=true,2200)}
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
+function sendHref(){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(TX.head+'\n'+L.map(x=>'• '+nm(x)+' — '+TX.exp+' '+dmy(x.e)).join('\n'))}
+$('rnMove').onclick=()=>{const u=location.origin+location.pathname+'#l='+b64e(L.map(x=>[x.d,x.h||'',x.e]));
+ (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toastR(TX.copied),()=>{location.hash='l='+u.split('#l=')[1];toastR(TX.copied)})};
+const hm=location.hash.match(/^#l=([A-Za-z0-9_-]+)$/);
+if(hm){try{let n=0;b64d(hm[1]).forEach(a=>{if(Array.isArray(a)&&typeof a[0]==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(a[2])&&!L.some(x=>x.d===a[0]&&x.e===a[2]&&(x.h||'')===a[1])){L.push({d:a[0].slice(0,60),h:String(a[1]).slice(0,60),e:a[2]});n++}});save();toastR(TX.moved.replace('{n}',n))}catch(e){}history.replaceState(null,'',location.pathname)}
+
 const qd=new URLSearchParams(location.search).get('d');
 if(qd){const name=qd.trim().slice(0,60),sel=$('rnDoc'),hit=[...sel.options].find(o=>o.value!=='__other'&&name.toLowerCase().includes(o.textContent.toLowerCase()));
  if(hit)sel.value=hit.value;else{sel.value='__other';$('rnOtherL').hidden=false;$('rnOther').value=name}
