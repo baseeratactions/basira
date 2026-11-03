@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="diwan.css?v=20261025a">
+<link rel="stylesheet" href="diwan.css?v=20261103a">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -48,7 +48,9 @@
     <div class="brand"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg><div><b>الديوان</b><small>لوحة الإدارة الموحّدة</small></div></div>
     <nav class="tabs" role="tablist">
       <button role="tab" data-tab="overview" aria-selected="true">نظرة عامة</button>
-      <button role="tab" data-tab="inbox" aria-selected="false">الوارد الموحّد <span class="pill" id="inboxCount"></span></button>
+      <button role="tab" data-tab="alerts" aria-selected="false">التنبيهات <span class="pill" id="alertCount"></span></button>
+      <button role="tab" data-tab="inbox" aria-selected="false">الوارد <span class="pill" id="inboxCount"></span></button>
+      <button role="tab" data-tab="quotes" aria-selected="false">عروض الأسعار</button>
       <button role="tab" data-tab="platforms" aria-selected="false">المنصات</button>
     </nav>
     <div class="tools">
@@ -62,9 +64,22 @@
   <main class="wrap">
     <section id="tab-overview" class="tab">
       <div class="hello"><h2 id="hello"></h2><p id="sync" class="mute"></p></div>
+      <div id="brief" class="brief" role="status"></div>
       <div class="kpis" id="kpis"></div>
       <div class="sec-head"><h3>المنصات</h3><p class="mute">كل منصة بهويتها. «لوحة الإدارة» تفتح إدارتها مباشرة دون دخول ثانٍ.</p></div>
       <div class="grid" id="cards"></div>
+    </section>
+
+    <section id="tab-alerts" class="tab" hidden>
+      <div class="sec-head"><h3>مركز التنبيهات</h3><p class="mute">تُجمَع التنبيهات كلها في رسالة بريد واحدة يومياً الساعة 7:00 صباحاً بتوقيت السعودية، ولا يُرسَل تنبيه فوري إلا لما هو شديد الخطورة.</p></div>
+      <div id="aCrit" class="panel crit"></div>
+      <div class="alerts-grid">
+        <div id="aDigest" class="panel"></div>
+        <div class="stack">
+          <div id="aDecide" class="panel"></div>
+          <div id="aFollow" class="panel"></div>
+        </div>
+      </div>
     </section>
 
     <section id="tab-inbox" class="tab" hidden>
@@ -80,6 +95,22 @@
       <div id="inbox" class="inbox"></div>
     </section>
 
+    <section id="tab-quotes" class="tab" hidden>
+      <div class="sec-head q-head"><div><h3>عروض الأسعار</h3><p class="mute">كل عرض يصدر أولاً ملف PDF قابلاً للتنزيل والإرسال، ويُفتح للعميل حساب في بصيرة يُحفظ فيه كل ما يخصه.</p></div>
+        <a class="btn main" id="qNew" style="--brand:#0e5e4a" href="#" target="_blank" rel="noopener" hidden>عرض سعر جديد PDF</a></div>
+      <ol class="steps" aria-label="مسار عرض السعر">
+        <li><b>ملف PDF أولاً</b><span>يصدر العرض برقم موحّد BQ وجاهزاً للتنزيل والإرسال.</span></li>
+        <li><b>حساب في بصيرة</b><span>يُفتح للعميل حساب «حسابي» ويُحفظ فيه العرض وملفه.</span></li>
+        <li><b>متابعة واعتماد</b><span>مهمة متابعة بعد 3 أيام، وعند الاعتماد تُنشأ المعاملات.</span></li>
+      </ol>
+      <div class="qstats" id="qStats"></div>
+      <div class="filters"><div class="chips" id="qState">
+        <button class="chip" data-v="open" aria-pressed="true">بانتظار قرار العميل</button>
+        <button class="chip" data-v="all" aria-pressed="false">كل العروض</button>
+      </div></div>
+      <div id="qList" class="inbox"></div>
+    </section>
+
     <section id="tab-platforms" class="tab" hidden>
       <div class="sec-head"><h3>سجل المنصات</h3><p class="mute">تنضم أي منصة جديدة إلى الديوان تلقائياً بمجرد نشرها على حسابات الشركة في GitHub، ويتصل الديوان بخادمها من ملف إعداداتها دون أي خطوة إضافية.</p></div>
       <div class="table-wrap"><table class="tbl" id="ptable"></table></div>
@@ -89,6 +120,6 @@
 </div>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="diwan.js?v=20261102q"></script>
+<script src="diwan.js?v=20261103a"></script>
 </body>
 </html>
