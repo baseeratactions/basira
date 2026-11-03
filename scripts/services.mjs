@@ -66,7 +66,7 @@ const T = {
   ar: { dir: 'rtl', loc: 'ar_QA', cur: 'ر.ق', home: 'الرئيسية', list: 'الخدمات والأسعار', brand: 'بصيرة للمعاملات', legal: 'بصيرة للمعاملات ذ.م.م',
     fee: 'أتعاب بصيرة', from: 'يبدأ من', once: 'لمرة واحدة', core: 'ضمن الباقات', about: 'عن الخدمة', inc: 'ما نقوم به', docs: 'المستندات المطلوبة منك',
     time: 'المدة التقريبية', out: 'ما تستلمه', note: 'ملاحظة', gov: 'الرسوم الحكومية تُدفع منفصلة بإيصالها الرسمي، ولا تدخل في أتعاب بصيرة.',
-    req: 'اطلب هذه الخدمة', wa: 'اسأل على واتساب', call: 'اتصل بنا', faq: 'أسئلة شائعة', more: 'خدمات أخرى في', all: 'كل الخدمات والأسعار',
+    req: 'اطلب هذه الخدمة', remind: 'ذكّرني بموعد التجديد القادم', remindNote: 'سجّل تاريخ الانتهاء في منبّه التجديدات المجاني، فيصلك تنبيه في تقويم جوالك قبل الموعد بشهر وبأسبوع.', wa: 'اسأل على واتساب', call: 'اتصل بنا', faq: 'أسئلة شائعة', more: 'خدمات أخرى في', all: 'كل الخدمات والأسعار',
     waMsg: (n, c) => `السلام عليكم، أرغب في الاستفسار عن خدمة: ${n} (${c}).`, acct: 'حسابي', other: 'English',
     qPrice: n => `كم تكلفة «${n}» لدى بصيرة؟`, aPrice: (s, L) => `أتعاب بصيرة ${s.from ? 'تبدأ من ' : ''}${fmt(s.p)} ${L.cur}${s.ar.unit ? ' ' + s.ar.unit : ''}${s.kind === 'gov' ? '، والرسوم الحكومية تُدفع منفصلة بإيصالها الرسمي' : ''}${s.from ? '، ويُؤكَّد السعر النهائي في عرض سعر مكتوب' : ''}.`,
     qDocs: n => `ما المستندات المطلوبة لـ«${n}»؟`, qTime: n => `كم تستغرق «${n}»؟`, qOut: () => 'ماذا أستلم في النهاية؟',
@@ -76,7 +76,7 @@ const T = {
   en: { dir: 'ltr', loc: 'en_US', cur: 'QAR', home: 'Home', list: 'Services and prices', brand: 'Basira for Transactions', legal: 'Basira for Transactions LLC',
     fee: 'Basira fee', from: 'from', once: 'one-time', core: 'In packages', about: 'About the service', inc: 'What we do', docs: 'Documents you provide',
     time: 'Approximate time', out: 'What you receive', note: 'Note', gov: 'Government fees are paid separately with the official receipt and are not part of Basira’s fee.',
-    req: 'Request this service', wa: 'Ask on WhatsApp', call: 'Call us', faq: 'Frequently asked questions', more: 'More services in', all: 'All services and prices',
+    req: 'Request this service', remind: 'Remind me before the next renewal', remindNote: 'Add the expiry date to the free renewals reminder and get calendar alerts a month and a week ahead.', wa: 'Ask on WhatsApp', call: 'Call us', faq: 'Frequently asked questions', more: 'More services in', all: 'All services and prices',
     waMsg: (n, c) => `Hello, I would like to ask about this service: ${n} (${c}).`, acct: 'My account', other: 'العربية',
     qPrice: n => `How much does “${n}” cost with Basira?`, aPrice: (s, L) => `Basira’s fee is ${s.from ? 'from ' : ''}${fmt(s.p)} ${L.cur}${s.en.unit ? ' ' + s.en.unit : ''}${s.kind === 'gov' ? '; government fees are paid separately with the official receipt' : ''}${s.from ? '; the final price is confirmed in a written quotation' : ''}.`,
     qDocs: n => `Which documents are needed for “${n}”?`, qTime: n => `How long does “${n}” take?`, qOut: () => 'What do I receive at the end?',
@@ -171,7 +171,7 @@ function servicePage(s, l) {
 ${x.about ? `<p class="lead">${esc(x.about)}</p>` : ''}
 <div class="svc-box"><div class="svc-price"><span>${L.fee}</span><b class="price num">${priceText(s, L, l)}</b>${s.kind === 'setup' ? `<small class="mute">${L.once}</small>` : ''}${s.core ? `<span class="tag">${L.core}</span>` : ''}</div>
 ${s.kind !== 'consult' ? `<p class="mute sm">${L.gov}</p>` : ''}
-<div class="contact"><a class="btn pri" href="../index.html#svc=${code}">${L.req}</a><a class="btn wa" href="${esc(waHref)}" target="_blank" rel="noopener">${L.wa}</a><a class="btn ghost" href="tel:+97472232609">${L.call}</a></div></div>
+<div class="contact"><a class="btn pri" href="../index.html#svc=${code}">${L.req}</a><a class="btn wa" href="${esc(waHref)}" target="_blank" rel="noopener">${L.wa}</a><a class="btn ghost" href="tel:+97472232609">${L.call}</a></div>${s.kind !== 'consult' && /تجديد|renew/i.test(x.n) ? `<p class="svc-remind mute sm">${L.remindNote} <a href="../renewals.html?d=${encodeURIComponent(x.n)}">📅 ${L.remind}</a></p>` : ''}</div>
 <div class="svc-cols">
 <section><h2>${L.inc}</h2><ol>${steps(x.inc).map(t => `<li>${esc(t)}</li>`).join('')}</ol></section>
 ${docs.length ? `<section><h2>${L.docs}</h2><ul>${docs.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>` : ''}
