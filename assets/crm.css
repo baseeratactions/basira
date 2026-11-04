@@ -250,3 +250,5 @@ dialog.bqdlg{max-width:min(860px,calc(100vw - 24px))}
 .bqbar{margin:0 0 8px}.bqbar h3{margin:0}
 @media (max-width:620px){.bqrow{grid-template-columns:1fr 1fr;align-items:center}.bqrow .bqn{grid-column:1/-1}.bqrow .bqt{text-align:start;padding:0}.bqacts .btn{flex:1 1 100%}.bqpick{flex-wrap:wrap}}
 #cQuotes td.num{white-space:nowrap}
+
+.login h1{font-size:clamp(22px,3.2vw,30px);color:var(--ink)}
