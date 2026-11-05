@@ -137,7 +137,7 @@ function page({ l, path, title, desc, alt, h1, body, ld }) {
 <main class="sec svcp" id="main"><div class="wrap">
 ${body}
 </div></main>
-<footer><div class="wrap fc"><b>${l === 'en' ? 'Contact' : 'للتواصل'}</b><a href="tel:+97472232609" dir="ltr">☎ +974 7223 2609</a><a href="https://wa.me/97472232609" target="_blank" rel="noopener">${l === 'en' ? 'WhatsApp' : 'واتساب'}</a><a href="mailto:baseeratactions@gmail.com" dir="ltr">✉ baseeratactions@gmail.com</a></div><div class="wrap"><span>${L.legal} · ${l === 'en' ? 'Doha, Qatar' : 'الدوحة، قطر'}</span><span><a href="${A}${ROOT}index.html">${l === 'en' ? 'Back to the website' : 'العودة إلى الموقع'}</a> · <a href="${A}${ROOT}legal.html">${l === 'en' ? 'Legal documents' : 'المستندات القانونية'}</a> · <a href="${A}${ROOT}privacy.html">${l === 'en' ? 'Privacy' : 'الخصوصية'}</a></span></div></footer>
+<footer><div class="wrap fc"><b>${l === 'en' ? 'Contact' : 'للتواصل'}</b><a href="tel:+97472232609" dir="ltr">☎ +974 7223 2609</a><a href="https://wa.me/97472232609" target="_blank" rel="noopener">${l === 'en' ? 'WhatsApp' : 'واتساب'}</a><a href="mailto:baseeratactions@gmail.com" dir="ltr">✉ baseeratactions@gmail.com</a></div><div class="wrap"><span>${L.legal} · ${l === 'en' ? 'Lusail, Qatar' : 'لوسيل، قطر'}</span><span><a href="${A}${ROOT}index.html">${l === 'en' ? 'Back to the website' : 'العودة إلى الموقع'}</a> · <a href="${A}${ROOT}legal.html">${l === 'en' ? 'Legal documents' : 'المستندات القانونية'}</a> · <a href="${A}${ROOT}privacy.html">${l === 'en' ? 'Privacy' : 'الخصوصية'}</a></span></div></footer>
 <a class="wa-fab" href="https://wa.me/97472232609" target="_blank" rel="noopener" aria-label="${L.wa}" title="${L.wa}"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.4z"/></svg></a>
 <script src="${A}assets/config.js?${V('config.js')}"></script>
 <script src="${A}assets/sitetext.js?${V('sitetext.js')}"></script>
@@ -146,7 +146,7 @@ ${body}
 `;
 }
 
-const ORG = { '@type': 'ProfessionalService', '@id': SITE + '#org', name: 'بصيرة للمعاملات', alternateName: 'Basira for Transactions', url: SITE, telephone: '+97472232609', address: { '@type': 'PostalAddress', addressLocality: 'Doha', addressCountry: 'QA' } };
+const ORG = { '@type': 'ProfessionalService', '@id': SITE + '#org', name: 'بصيرة للمعاملات', alternateName: 'Basira for Transactions', url: SITE, telephone: '+97472232609', address: { '@type': 'PostalAddress', addressLocality: 'Lusail', addressCountry: 'QA' } };
 const crumbsLd = items => ({ '@type': 'BreadcrumbList', itemListElement: items.map(([name, url], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE + url })) });
 
 function servicePage(s, l) {

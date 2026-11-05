@@ -6,7 +6,7 @@
 const SRC=(document.currentScript&&document.currentScript.src)||'';
 const BASE=SRC?SRC.replace(/[^/]*$/,''):'assets/';
 const CFG=window.BASIRA_CONFIG||{};
-const CO={ar:'بصيرة للمعاملات ذ.م.م',en:'Basira for Transactions LLC',city_ar:'الدوحة، قطر',city_en:'Doha, Qatar',cr:'254411',
+const CO={ar:'بصيرة للمعاملات ذ.م.م',en:'Basira for Transactions LLC',city_ar:'لوسيل، قطر',city_en:'Lusail, Qatar',cr:'254411',
   phone:CFG.PHONE||'+974 7223 2609',email:CFG.EMAIL||'baseeratactions@gmail.com',web:'baseeratactions.github.io/basira'};
 const C1='#0e5e4a',C2='#c9a24d',INK='#1d252c',MUTE='#5b6670',LINE='#dfe5e2';
 const T={
@@ -21,7 +21,7 @@ const T={
     tStart:'يبدأ العمل بعد اعتماد العرض واستلام المستندات المطلوبة كاملة.',
     tPrelim:'هذا عرض مبدئي، ويُعتمد بعد مراجعة المستندات ونوع المعاملة.',
     tValid:n=>`هذا العرض صالح لمدة ${n} يوماً من تاريخ إصداره.`,
-    accept:'اعتماد العميل',aName:'الاسم',aSign:'التوقيع',aDate:'التاريخ',for:'عن بصيرة للمعاملات',stampName:'بصيرة للمعاملات ذ.م.م',stampCity:'الدوحة · قطر',est:'تأسست 2026',
+    accept:'اعتماد العميل',aName:'الاسم',aSign:'التوقيع',aDate:'التاريخ',for:'عن بصيرة للمعاملات',stampName:'بصيرة للمعاملات ذ.م.م',stampCity:'لوسيل · قطر',est:'تأسست 2026',
     page:(i,n)=>`صفحة ${i} من ${n}`},
   en:{title:'Quotation',prelim:'Preliminary quotation',no:'Quote no.',date:'Issue date',valid:'Valid until',to:'Prepared for',from:'Prepared by',
     co:'Company',phone:'Mobile',email:'Email',cr:'C.R. No.',
@@ -34,7 +34,7 @@ const T={
     tStart:'Work starts once the quotation is approved and all required documents are received.',
     tPrelim:'This is a preliminary quotation, confirmed after we review the documents and the transaction type.',
     tValid:n=>`This quotation is valid for ${n} days from its issue date.`,
-    accept:'Client approval',aName:'Name',aSign:'Signature',aDate:'Date',for:'For Basira for Transactions',stampName:'BASIRA FOR TRANSACTIONS',stampCity:'DOHA · QATAR',est:'EST. 2026',
+    accept:'Client approval',aName:'Name',aSign:'Signature',aDate:'Date',for:'For Basira for Transactions',stampName:'BASIRA FOR TRANSACTIONS',stampCity:'LUSAIL · QATAR',est:'EST. 2026',
     page:(i,n)=>`Page ${i} of ${n}`}};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>(Math.round((Number(n)||0)*100)/100).toLocaleString('en-US');
