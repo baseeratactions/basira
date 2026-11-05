@@ -40,3 +40,5 @@ function refresh(){const api=(window.BASIRA_CONFIG||{}).API;if(!api||(saved&&Dat
   fetch(api,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'theme'})}).then(r=>r.json()).then(j=>{if(j&&j.ok){const t=j.theme&&hex(j.theme.primary)?j.theme:DEF;window.SITE_THEME.remember(t)}}).catch(()=>{})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh);else refresh();
 })();
+// التثبيت تطبيقاً على الكمبيوتر والجوال (القاعدة 32): يُحمَّل من هنا لأن هذا الملف موجود في كل الصفحات.
+(function(){try{var s=document.currentScript&&document.currentScript.src;if(!s||/\/diwan\//.test(location.pathname))return;var e=document.createElement('script');e.src=new URL('pwa.js?v=20261106a',s).href;e.defer=true;document.head.appendChild(e)}catch(_){}})();
