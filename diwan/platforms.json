@@ -186,6 +186,16 @@
       "color": "#0f2a3d",
       "admin": "",
       "config": "assets/config.js"
+    },
+    {
+      "id": "barakat",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "barakat",
+      "name": "بركات",
+      "kind": "الخدمات المصرفية الإسلامية",
+      "site": "https://munjiz-qa.github.io/barakat/",
+      "color": "#17594a",
+      "admin": ""
     }
   ]
 }
