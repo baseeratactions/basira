@@ -5,7 +5,7 @@
 (function(){
 const CFG=window.BASIRA_CONFIG||{};
 const CO={ar:'بصيرة للمعاملات ذ.م.م',en:'Basira for Transactions LLC',
-  title_ar:'المدير العام',title_en:'General Manager',addr_ar:'لوسيل، دولة قطر',addr_en:'Lusail, State of Qatar',cr:'',
+  sign_ar:'أحمد صلاح',sign_en:'Ahmed Salah',title_ar:'المدير التنفيذي',title_en:'Chief Executive Officer',addr_ar:'لوسيل، دولة قطر',addr_en:'Lusail, State of Qatar',cr:'',
   phone:CFG.PHONE||'+974 7223 2609',email:CFG.EMAIL||'baseeratactions@gmail.com',prefix:'BAS-CT'};
 const KEY='basira_contract',DRAFT=KEY+'_draft';
 // item registration: fee per item (includes the first 5 sales outlets) plus a fee per item in every extra outlet
