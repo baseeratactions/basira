@@ -21,6 +21,7 @@ const T={
     tStart:'يبدأ العمل بعد اعتماد العرض واستلام المستندات المطلوبة كاملة.',
     tPrelim:'هذا عرض مبدئي، ويُعتمد بعد مراجعة المستندات ونوع المعاملة.',
     tValid:n=>`هذا العرض صالح لمدة ${n} يوماً من تاريخ إصداره.`,
+    ceo:'أحمد صلاح',ceoT:'المدير التنفيذي',req:'متطلبات بدء العمل من العميل',reqs:['اسم المسؤول عن التواصل وبريده وجواله.','هاتف المسؤول عن الأوتوب أو بطاقة العمل.','نسبة الزيادة المطلوبة لكل الأصناف.','ملف الأصناف Excel، أو إعداده من بصيرة مقابل 300 ر.ق إضافية.'],
     accept:'اعتماد العميل',aName:'الاسم',aSign:'التوقيع',aDate:'التاريخ',for:'عن بصيرة للمعاملات',stampName:'بصيرة للمعاملات ذ.م.م',stampCity:'لوسيل · قطر',est:'تأسست 2026',
     page:(i,n)=>`صفحة ${i} من ${n}`},
   en:{title:'Quotation',prelim:'Preliminary quotation',no:'Quote no.',date:'Issue date',valid:'Valid until',to:'Prepared for',from:'Prepared by',
@@ -34,6 +35,7 @@ const T={
     tStart:'Work starts once the quotation is approved and all required documents are received.',
     tPrelim:'This is a preliminary quotation, confirmed after we review the documents and the transaction type.',
     tValid:n=>`This quotation is valid for ${n} days from its issue date.`,
+    ceo:'Ahmed Salah',ceoT:'Chief Executive Officer',req:'What we need from the client to start',reqs:['Contact person: name, email and mobile.','Phone of the person in charge of the autobook or work card.','Markup percentage for all items.','Items Excel file, or Basira prepares it for an extra QAR 300.'],
     accept:'Client approval',aName:'Name',aSign:'Signature',aDate:'Date',for:'For Basira for Transactions',stampName:'BASIRA FOR TRANSACTIONS',stampCity:'LUSAIL · QATAR',est:'EST. 2026',
     page:(i,n)=>`Page ${i} of ${n}`}};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -85,7 +87,7 @@ const CSS=`
 .bq-acc div{display:flex;gap:8px;padding:3px 0;border-bottom:1px dotted #c7cfcb}.bq-acc div:last-child{border:0}
 .bq-acc span{color:${MUTE};min-width:62px}
 .bq-st{display:flex;align-items:center;gap:12px;justify-content:flex-end}
-.bq-st div{text-align:center;font-size:12.5px}.bq-st b{display:block;font-size:13.5px}.bq-st .bq-ln{display:block;margin-top:10px;color:#5b6670}
+.bq-st div{text-align:center;font-size:12.5px}.bq-st b{display:block;font-size:13.5px}.bq-st .bq-ln{display:block;margin-top:10px;color:#5b6670}.bq-st .bq-sg{display:block;margin:2px auto -6px}.bq-st .bq-ceo{margin-top:2px;color:#1d252c;font-weight:700}.bq-st .bq-ceot{margin-top:0}
 .bq-foot{border-top:2px solid ${C2};padding-top:6px;color:${MUTE};font-size:11px;text-align:center}
 `;
 function style(){if(document.getElementById('bq-css'))return;const s=document.createElement('style');s.id='bq-css';s.textContent=CSS;document.head.appendChild(s)}
@@ -102,6 +104,8 @@ function stamp(t,en){const c='#2f5d8a';
 // d: {lang, no, date, validUntil, validDays, prelim, client:{name,co,phone,email,cr}, lines:[{c,n,q,p,from}], custom:[text], gov, notes}
 function totals(d){const fees=(d.lines||[]).reduce((a,l)=>a+(+l.p||0)*(Math.max(1,+l.q||1)),0),gov=+d.gov||0;
   return {fees:Math.round(fees*100)/100,gov,grand:Math.round((fees+gov)*100)/100,from:(d.lines||[]).some(l=>l.from)}}
+// CEO signature (also at assets/sign-ceo.svg); final quotations only
+const SIGN='<svg class="bq-sg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="132" height="66" aria-hidden="true"><g fill="none" stroke="#1c2b4a" stroke-linecap="round" stroke-linejoin="round"><path d="M58 26 C62 22 70 20 74 24 C70 44 64 66 58 88" stroke-width="3.4"/><path d="M70 26 C96 14 124 20 120 38 C117 50 98 56 76 55" stroke-width="3"/><path d="M76 55 C108 52 134 60 128 76 C122 92 92 96 60 88 C54 86 52 82 56 80" stroke-width="3.2"/><path d="M56 80 C80 84 120 86 150 70 C158 66 164 64 166 68" stroke-width="2.4"/><path d="M30 104 C80 98 150 97 214 100" stroke-width="2.8"/><path d="M44 106 C100 102 160 101 200 103" stroke-width="1.2" opacity=".55"/></g></svg>';
 function html(d){const en=d.lang==='en',t=T[en?'en':'ar'],c=d.client||{},s=totals(d),cur=t.cur,F=s.from?t.fromP+' ':'';
   const lines=d.lines||[],custom=(d.custom||[]).filter(Boolean);
   const terms=[t.tCur,s.gov?t.tGovIn:t.tGovOut,...(s.from?[t.tFrom]:[]),t.tStart,...(d.prelim?[t.tPrelim]:[]),t.tValid(d.validDays||14)];
@@ -118,10 +122,11 @@ function html(d){const en=d.lang==='en',t=T[en?'en':'ar'],c=d.client||{},s=total
   <div class="bq-tot" data-brk><table><tr><td>${t.sum}</td><td>${F}${fmt(s.fees)} ${cur}</td></tr>${s.gov?`<tr><td>${t.gov}</td><td>${fmt(s.gov)} ${cur}</td></tr>`:''}<tr class="g"><td>${t.grand}</td><td>${F}${fmt(s.grand)} ${cur}</td></tr></table></div>`:''}
   ${custom.length?`<div class="bq-sec" data-brk><h3>${t.custom}</h3>${custom.map(li).join('')}</div>`:''}
   ${d.notes?`<div class="bq-sec" data-brk><h3>${t.notes}</h3><p dir="auto">${esc(d.notes)}</p></div>`:''}
+  <div class="bq-sec" data-brk><h3>${t.req}</h3>${t.reqs.map(li).join('')}</div>
   <div class="bq-sec" data-brk><h3>${t.terms}</h3>${terms.map(li).join('')}</div>
   <div class="bq-sign" data-brk>
     ${d.prelim?'<div></div>':`<div class="bq-acc"><h3>${t.accept}</h3><div><span>${t.aName}</span></div><div><span>${t.aSign}</span></div><div><span>${t.aDate}</span></div></div>`}
-    <div class="bq-st"><div><b>${t.for}</b>${d.prelim?'':`<span class="bq-ln">${t.aName}: ....................</span><span class="bq-ln">${t.aSign}: ....................</span>`}</div>${stamp(t,en)}</div>
+    <div class="bq-st"><div><b>${t.for}</b>${d.prelim?'':SIGN}<span class="bq-ln bq-ceo">${t.ceo}</span><span class="bq-ln bq-ceot">${t.ceoT}</span></div>${stamp(t,en)}</div>
   </div>
   <div class="bq-foot" data-brk>${esc(en?CO.en:CO.ar)} · ${t.cr} ${ltr(CO.cr)} · ${ltr(CO.phone)} · ${ltr(CO.email)} · ${ltr(CO.web)}</div>
 </div>`}
