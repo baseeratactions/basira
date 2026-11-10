@@ -71,3 +71,8 @@ table.rows td:nth-child(3) input,table.rows td:nth-child(4) input{max-width:110p
   .sigs{grid-template-columns:1fr 1fr!important}
   .annex,.atbl tr{break-inside:avoid}
 }
+
+.sig .cosign{display:block;width:150px;height:75px;margin:8px 0 2px}.sig .cosign[hidden]{display:none}
+.sig .cosign:not([hidden])+.line{margin-top:0}
+.req-h{margin:14px 0 6px;font-size:14.5px}
+table.req th{width:42%;text-align:start;font-weight:600}
