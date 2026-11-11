@@ -1,0 +1,14 @@
+name: Domain probe (temporary)
+on: { push: { branches: [claude/domain-probe] } }
+permissions: { contents: read, issues: read }
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/security-watch.mjs || true
+        env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}', SITE_URL: 'https://baseeratactions.github.io/basira/', DOMAIN_URL: 'https://baseeratactions.com/', DRY_RUN: 'true' }
+      - run: node scripts/site-health.mjs || true
+        env: { SITE_URL: 'https://baseeratactions.com/', HEALTH_TAG: domain, CHECK_DEFAULT_ADMIN: 'true' }

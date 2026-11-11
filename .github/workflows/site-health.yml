@@ -1,4 +1,5 @@
 name: Site health (hourly)
+# Checks both addresses: the GitHub Pages copy and the custom domain https://baseeratactions.com/ (Cloudflare).
 on:
   schedule:
     - cron: '37 * * * *'
@@ -25,3 +26,13 @@ jobs:
           OWNER_LOGIN: baseeratactions
           ALERT_TELEGRAM: ${{ vars.ALERT_TELEGRAM || '@mabouelezz2022' }}
           CHECK_DEFAULT_ADMIN: ${{ github.event_name != 'schedule' }}
+      - name: Custom domain
+        if: always()
+        run: node scripts/site-health.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE_URL: ${{ vars.DOMAIN_URL || 'https://baseeratactions.com/' }}
+          HEALTH_TAG: domain
+          OWNER_LOGIN: baseeratactions
+          ALERT_TELEGRAM: ${{ vars.ALERT_TELEGRAM || '@mabouelezz2022' }}
+          CHECK_DEFAULT_ADMIN: 'false'
