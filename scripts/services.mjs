@@ -71,7 +71,7 @@ const T = {
     qPrice: n => `كم تكلفة «${n}» لدى بصيرة؟`, aPrice: (s, L) => `أتعاب بصيرة ${s.from ? 'تبدأ من ' : ''}${fmt(s.p)} ${L.cur}${s.ar.unit ? ' ' + s.ar.unit : ''}${s.kind === 'gov' ? '، والرسوم الحكومية تُدفع منفصلة بإيصالها الرسمي' : ''}${s.from ? '، ويُؤكَّد السعر النهائي في عرض سعر مكتوب' : ''}.`,
     qDocs: n => `ما المستندات المطلوبة لـ«${n}»؟`, qTime: n => `كم تستغرق «${n}»؟`, qOut: () => 'ماذا أستلم في النهاية؟',
     qHow: () => 'كيف أطلب الخدمة؟', aHow: 'اضغط «اطلب هذه الخدمة» لتجهيز عرض سعر باسمك، أو راسلنا على واتساب ‎+974 7223 2609، وسنراجع مستنداتك ونؤكد لك الخطوات قبل البدء.',
-    listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
+    fPh: 'ابحث عن خدمة: إقامة، سجل تجاري، رخصة، أو رمز الخدمة', fLbl: 'ابحث في الخدمات', fNone: q => `لم نجد خدمة باسم «${q}». أرسل لنا ما تحتاجه وسنخبرك إن كنا نقدمه وبكم.`, fAsk: 'اسألنا على واتساب', fCount: 'خدمة مطابقة', fClear: 'مسح البحث', listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
     title: (s) => `${s.ar.n} | ${s.ar.grp} | بصيرة للمعاملات`, desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
   en: { dir: 'ltr', loc: 'en_US', cur: 'QAR', home: 'Home', list: 'Services and prices', brand: 'Basira for Transactions', legal: 'Basira for Transactions LLC',
     fee: 'Basira fee', from: 'from', once: 'one-time', core: 'In packages', about: 'About the service', inc: 'What we do', docs: 'Documents you provide',
@@ -81,7 +81,7 @@ const T = {
     qPrice: n => `How much does “${n}” cost with Basira?`, aPrice: (s, L) => `Basira’s fee is ${s.from ? 'from ' : ''}${fmt(s.p)} ${L.cur}${s.en.unit ? ' ' + s.en.unit : ''}${s.kind === 'gov' ? '; government fees are paid separately with the official receipt' : ''}${s.from ? '; the final price is confirmed in a written quotation' : ''}.`,
     qDocs: n => `Which documents are needed for “${n}”?`, qTime: n => `How long does “${n}” take?`, qOut: () => 'What do I receive at the end?',
     qHow: () => 'How do I request it?', aHow: 'Press “Request this service” to prepare a quote in your name, or message us on WhatsApp at +974 7223 2609. We review your documents and confirm the steps before we start.',
-    listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
+    fPh: 'Search a service: residence, commercial registration, licence, or code', fLbl: 'Search services', fNone: q => `No service matches “${q}”. Tell us what you need and we will confirm whether we offer it and the price.`, fAsk: 'Ask us on WhatsApp', fCount: 'matching services', fClear: 'Clear search', listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
     title: (s) => `${s.en.n} | ${s.en.grp} | Basira for Transactions`, desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
 };
 const LOGO = '<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#e0a12b" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#e0a12b"/></svg>';
@@ -143,6 +143,7 @@ ${body}
 <script src="${A}assets/sitetext.js?${V('sitetext.js')}"></script>
 <script src="${A}assets/track.js?${V('track.js')}"></script>
 <script src="${A}assets/share.js?${V('share.js')}" defer></script>
+<script src="${A}assets/svc-filter.js?${V('svc-filter.js')}" defer></script>
 </body></html>
 `;
 }
@@ -195,8 +196,9 @@ function listPage(l) {
   const body = `<nav class="bc" aria-label="${l === 'en' ? 'You are here' : 'مسار الصفحة'}"><ol><li><a href="../index.html">${L.home}</a></li><li aria-current="page">${L.list}</li></ol></nav>
 <h1>${L.listH1}</h1>
 <p class="lead">${L.listLead}</p>
+<div class="svc-filter" data-svc-filter data-none="${esc(L.fNone('%q%'))}" data-count="${esc(L.fCount)}"><input type="search" id="svcQ" placeholder="${esc(L.fPh)}" aria-label="${esc(L.fLbl)}" autocomplete="off" enterkeyhint="search"><button type="button" class="btn ghost sm" data-clear hidden>${L.fClear}</button><p class="mute sm" data-status aria-live="polite"></p><p class="svc-none" data-nores hidden><span></span> <a class="btn wa sm" target="_blank" rel="noopener" data-ask>${L.fAsk}</a></p></div>
 <nav class="svc-jump" aria-label="${l === 'en' ? 'Groups' : 'المجموعات'}">${groups.map(g => `<a href="#g-${g.k}">${esc(g[l])}</a>`).join('')}</nav>
-${groups.map(g => `<section id="g-${g.k}" class="svc-group"><h2>${esc(g[l])} <small class="mute">(${g.items.length})</small></h2><ul class="svc-list">${g.items.map(s => `<li><a href="${s.c}.html">${esc(s[l].n)}</a><span class="price num">${priceText(s, L, l)}</span></li>`).join('')}</ul></section>`).join('\n')}
+${groups.map(g => `<section id="g-${g.k}" class="svc-group"><h2>${esc(g[l])} <small class="mute">(${g.items.length})</small></h2><ul class="svc-list">${g.items.map(s => `<li data-q="${esc([s.ar.n, s.en.n, s.c, g.ar, g.en].join(' '))}"><a href="${s.c}.html">${esc(s[l].n)}</a><span class="price num">${priceText(s, L, l)}</span></li>`).join('')}</ul></section>`).join('\n')}
 <p class="mute sm">${L.gov}</p>`;
   return page({ l, path: base + 'services/', title: L.listTitle, desc: L.listLead.slice(0, 160), alt: { ar: 'services/', en: 'en/services/', file: 'index.html' }, h1: L.listH1, body, ld });
 }
