@@ -16,6 +16,12 @@ function run(){const v=norm(q.value),words=v.split(' ').filter(Boolean);let n=0;
   if(words.length&&!n){none.querySelector('span').textContent=box.dataset.none.replace('%q%',q.value.trim());
     ask.href='https://wa.me/97472232609?text='+encodeURIComponent((document.documentElement.lang==='en'?'Hello, do you offer this service: ':'السلام عليكم، هل تقدمون هذه الخدمة: ')+q.value.trim())}
   try{history.replaceState(null,'',words.length?'#q='+encodeURIComponent(q.value.trim()):location.pathname)}catch(e){}}
+// sorting by price works inside each group, so the government entities stay together; «Default order» restores the published order
+const sortSel=box.querySelector('[data-sort]');items.forEach((li,i)=>li._i=i);
+function sortBy(){const v=sortSel.value;document.querySelectorAll('.svc-group ul').forEach(ul=>{const lis=[...ul.children].filter(li=>li.dataset.q!=null);
+  lis.sort((a,b)=>v==='low'?(+a.dataset.p-+b.dataset.p)||a._i-b._i:v==='high'?(+b.dataset.p-+a.dataset.p)||a._i-b._i:a._i-b._i).forEach(li=>ul.appendChild(li))});
+  try{localStorage.setItem('basira_svc_sort',v)}catch(e){}}
+if(sortSel){sortSel.addEventListener('change',sortBy);try{const v=localStorage.getItem('basira_svc_sort');if(v){sortSel.value=v;sortBy()}}catch(e){}}
 q.addEventListener('input',run);
 q.addEventListener('keydown',e=>{if(e.key==='Escape'){q.value='';run()}});
 clr.addEventListener('click',()=>{q.value='';run();q.focus()});
