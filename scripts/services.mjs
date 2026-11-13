@@ -66,22 +66,22 @@ const T = {
   ar: { dir: 'rtl', loc: 'ar_QA', cur: 'ر.ق', home: 'الرئيسية', list: 'الخدمات والأسعار', brand: 'بصيرة للمعاملات', legal: 'بصيرة للمعاملات ذ.م.م',
     fee: 'أتعاب بصيرة', from: 'يبدأ من', once: 'لمرة واحدة', core: 'ضمن الباقات', about: 'عن الخدمة', inc: 'ما نقوم به', docs: 'المستندات المطلوبة منك',
     time: 'المدة التقريبية', out: 'ما تستلمه', note: 'ملاحظة', gov: 'الرسوم الحكومية تُدفع منفصلة بإيصالها الرسمي، ولا تدخل في أتعاب بصيرة.',
-    req: 'اطلب هذه الخدمة', remind: 'ذكّرني بموعد التجديد القادم', remindNote: 'سجّل تاريخ الانتهاء في منبّه التجديدات المجاني، فيصلك تنبيه في تقويم جوالك قبل الموعد بشهر وبأسبوع.', wa: 'اسأل على واتساب', call: 'اتصل بنا', faq: 'أسئلة شائعة', more: 'خدمات أخرى في', all: 'كل الخدمات والأسعار',
+    req: 'اطلب هذه الخدمة', shareH: 'هل تعرف من يحتاج هذه الخدمة؟', shareT: (n) => `خدمة «${n}» من بصيرة للمعاملات بسعر ثابت معلن:`, shareWa: 'أرسلها على واتساب', shareNat: 'مشاركة', shareCopy: 'نسخ الرابط', remind: 'ذكّرني بموعد التجديد القادم', remindNote: 'سجّل تاريخ الانتهاء في منبّه التجديدات المجاني، فيصلك تنبيه في تقويم جوالك قبل الموعد بشهر وبأسبوع.', wa: 'اسأل على واتساب', call: 'اتصل بنا', faq: 'أسئلة شائعة', more: 'خدمات أخرى في', all: 'كل الخدمات والأسعار',
     waMsg: (n, c) => `السلام عليكم، أرغب في الاستفسار عن خدمة: ${n} (${c}).`, acct: 'حسابي', other: 'English',
     qPrice: n => `كم تكلفة «${n}» لدى بصيرة؟`, aPrice: (s, L) => `أتعاب بصيرة ${s.from ? 'تبدأ من ' : ''}${fmt(s.p)} ${L.cur}${s.ar.unit ? ' ' + s.ar.unit : ''}${s.kind === 'gov' ? '، والرسوم الحكومية تُدفع منفصلة بإيصالها الرسمي' : ''}${s.from ? '، ويُؤكَّد السعر النهائي في عرض سعر مكتوب' : ''}.`,
     qDocs: n => `ما المستندات المطلوبة لـ«${n}»؟`, qTime: n => `كم تستغرق «${n}»؟`, qOut: () => 'ماذا أستلم في النهاية؟',
     qHow: () => 'كيف أطلب الخدمة؟', aHow: 'اضغط «اطلب هذه الخدمة» لتجهيز عرض سعر باسمك، أو راسلنا على واتساب ‎+974 7223 2609، وسنراجع مستنداتك ونؤكد لك الخطوات قبل البدء.',
-    listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
+    fPh: 'ابحث عن خدمة: إقامة، سجل تجاري، رخصة، أو رمز الخدمة', fLbl: 'ابحث في الخدمات', fNone: q => `لم نجد خدمة باسم «${q}». أرسل لنا ما تحتاجه وسنخبرك إن كنا نقدمه وبكم.`, fAsk: 'اسألنا على واتساب', fCount: 'خدمة مطابقة', fClear: 'مسح البحث', sLbl: 'الترتيب', sDef: 'الترتيب الأصلي', sLow: 'الأقل سعراً أولاً', sHigh: 'الأعلى سعراً أولاً', listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
     title: (s) => `${s.ar.n} | ${s.ar.grp} | بصيرة للمعاملات`, desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
   en: { dir: 'ltr', loc: 'en_US', cur: 'QAR', home: 'Home', list: 'Services and prices', brand: 'Basira for Transactions', legal: 'Basira for Transactions LLC',
     fee: 'Basira fee', from: 'from', once: 'one-time', core: 'In packages', about: 'About the service', inc: 'What we do', docs: 'Documents you provide',
     time: 'Approximate time', out: 'What you receive', note: 'Note', gov: 'Government fees are paid separately with the official receipt and are not part of Basira’s fee.',
-    req: 'Request this service', remind: 'Remind me before the next renewal', remindNote: 'Add the expiry date to the free renewals reminder and get calendar alerts a month and a week ahead.', wa: 'Ask on WhatsApp', call: 'Call us', faq: 'Frequently asked questions', more: 'More services in', all: 'All services and prices',
+    req: 'Request this service', shareH: 'Know someone who needs this service?', shareT: (n) => `«${n}» by Basira for Transactions, at a fixed published price:`, shareWa: 'Send on WhatsApp', shareNat: 'Share', shareCopy: 'Copy link', remind: 'Remind me before the next renewal', remindNote: 'Add the expiry date to the free renewals reminder and get calendar alerts a month and a week ahead.', wa: 'Ask on WhatsApp', call: 'Call us', faq: 'Frequently asked questions', more: 'More services in', all: 'All services and prices',
     waMsg: (n, c) => `Hello, I would like to ask about this service: ${n} (${c}).`, acct: 'My account', other: 'العربية',
     qPrice: n => `How much does “${n}” cost with Basira?`, aPrice: (s, L) => `Basira’s fee is ${s.from ? 'from ' : ''}${fmt(s.p)} ${L.cur}${s.en.unit ? ' ' + s.en.unit : ''}${s.kind === 'gov' ? '; government fees are paid separately with the official receipt' : ''}${s.from ? '; the final price is confirmed in a written quotation' : ''}.`,
     qDocs: n => `Which documents are needed for “${n}”?`, qTime: n => `How long does “${n}” take?`, qOut: () => 'What do I receive at the end?',
     qHow: () => 'How do I request it?', aHow: 'Press “Request this service” to prepare a quote in your name, or message us on WhatsApp at +974 7223 2609. We review your documents and confirm the steps before we start.',
-    listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
+    fPh: 'Search a service: residence, commercial registration, licence, or code', fLbl: 'Search services', fNone: q => `No service matches “${q}”. Tell us what you need and we will confirm whether we offer it and the price.`, fAsk: 'Ask us on WhatsApp', fCount: 'matching services', fClear: 'Clear search', sLbl: 'Sort', sDef: 'Default order', sLow: 'Lowest price first', sHigh: 'Highest price first', listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
     title: (s) => `${s.en.n} | ${s.en.grp} | Basira for Transactions`, desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
 };
 const LOGO = '<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#e0a12b" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#e0a12b"/></svg>';
@@ -142,6 +142,8 @@ ${body}
 <script src="${A}assets/config.js?${V('config.js')}"></script>
 <script src="${A}assets/sitetext.js?${V('sitetext.js')}"></script>
 <script src="${A}assets/track.js?${V('track.js')}"></script>
+<script src="${A}assets/share.js?${V('share.js')}" defer></script>
+<script src="${A}assets/svc-filter.js?${V('svc-filter.js')}" defer></script>
 </body></html>
 `;
 }
@@ -172,6 +174,7 @@ ${x.about ? `<p class="lead">${esc(x.about)}</p>` : ''}
 <div class="svc-box"><div class="svc-price"><span>${L.fee}</span><b class="price num">${priceText(s, L, l)}</b>${s.kind === 'setup' ? `<small class="mute">${L.once}</small>` : ''}${s.core ? `<span class="tag">${L.core}</span>` : ''}</div>
 ${s.kind !== 'consult' ? `<p class="mute sm">${L.gov}</p>` : ''}
 <div class="contact"><a class="btn pri" href="../index.html#svc=${code}">${L.req}</a><a class="btn wa" href="${esc(waHref)}" target="_blank" rel="noopener">${L.wa}</a><a class="btn ghost" href="tel:+97472232609">${L.call}</a></div>${s.kind !== 'consult' && /تجديد|renew/i.test(x.n) ? `<p class="svc-remind mute sm">${L.remindNote} <a href="../renewals.html?d=${encodeURIComponent(x.n)}">📅 ${L.remind}</a></p>` : ''}</div>
+<div class="svc-share" data-share-box data-title="${esc(x.n)}" data-text="${esc(L.shareT(x.n))}"><span>${L.shareH}</span><a class="btn ghost sm" data-share-wa target="_blank" rel="noopener">${L.shareWa}</a><button type="button" class="btn ghost sm" data-share-native hidden>${L.shareNat}</button><button type="button" class="btn ghost sm" data-share-copy>${L.shareCopy}</button></div>
 <div class="svc-cols">
 <section><h2>${L.inc}</h2><ol>${steps(x.inc).map(t => `<li>${esc(t)}</li>`).join('')}</ol></section>
 ${docs.length ? `<section><h2>${L.docs}</h2><ul>${docs.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>` : ''}
@@ -193,8 +196,9 @@ function listPage(l) {
   const body = `<nav class="bc" aria-label="${l === 'en' ? 'You are here' : 'مسار الصفحة'}"><ol><li><a href="../index.html">${L.home}</a></li><li aria-current="page">${L.list}</li></ol></nav>
 <h1>${L.listH1}</h1>
 <p class="lead">${L.listLead}</p>
+<div class="svc-filter" data-svc-filter data-none="${esc(L.fNone('%q%'))}" data-count="${esc(L.fCount)}"><input type="search" id="svcQ" placeholder="${esc(L.fPh)}" aria-label="${esc(L.fLbl)}" autocomplete="off" enterkeyhint="search"><label class="svc-sort"><span>${L.sLbl}</span><select data-sort><option value="">${L.sDef}</option><option value="low">${L.sLow}</option><option value="high">${L.sHigh}</option></select></label><button type="button" class="btn ghost sm" data-clear hidden>${L.fClear}</button><p class="mute sm" data-status aria-live="polite"></p><p class="svc-none" data-nores hidden><span></span> <a class="btn wa sm" target="_blank" rel="noopener" data-ask>${L.fAsk}</a></p></div>
 <nav class="svc-jump" aria-label="${l === 'en' ? 'Groups' : 'المجموعات'}">${groups.map(g => `<a href="#g-${g.k}">${esc(g[l])}</a>`).join('')}</nav>
-${groups.map(g => `<section id="g-${g.k}" class="svc-group"><h2>${esc(g[l])} <small class="mute">(${g.items.length})</small></h2><ul class="svc-list">${g.items.map(s => `<li><a href="${s.c}.html">${esc(s[l].n)}</a><span class="price num">${priceText(s, L, l)}</span></li>`).join('')}</ul></section>`).join('\n')}
+${groups.map(g => `<section id="g-${g.k}" class="svc-group"><h2>${esc(g[l])} <small class="mute">(${g.items.length})</small></h2><ul class="svc-list">${g.items.map(s => `<li data-p="${+s.p || 0}" data-q="${esc([s.ar.n, s.en.n, s.c, g.ar, g.en].join(' '))}"><a href="${s.c}.html">${esc(s[l].n)}</a><span class="price num">${priceText(s, L, l)}</span></li>`).join('')}</ul></section>`).join('\n')}
 <p class="mute sm">${L.gov}</p>`;
   return page({ l, path: base + 'services/', title: L.listTitle, desc: L.listLead.slice(0, 160), alt: { ar: 'services/', en: 'en/services/', file: 'index.html' }, h1: L.listH1, body, ld });
 }
