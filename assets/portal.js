@@ -24,7 +24,7 @@ const T=EN?{
   sent:id=>`Thank you. Request ${id} has been sent, and we will contact you soon.`,saved:'Saved.',pwChanged:'Password changed.',dl:'Download',open:'Open',txn:'Transaction',
   bye:'You have signed out.',office:'Basira team',you:'You',noMsg:'No messages yet. Write to us below.',msgSent:'Message sent.',
   credSaved:'Saved encrypted.',credDel:'Delete',credAsk:'Delete this login from your account?',hidden:'hidden',
-  consent:c=>c?`You accepted version ${c.version} on ${c.created}, signed as “${c.name}”.`:'No acceptance recorded yet.',
+  consent:c=>c?`You accepted version ${c.version} on ${dmy(c.created)}, signed as “${c.name}”.`:'No acceptance recorded yet.',
   newer:v=>` A newer version (${v}) is available on the legal documents page.`,
   ST:{'نقداً':'Cash','تحويل بنكي':'Bank transfer','بطاقة':'Card','شيك':'Cheque','أخرى':'Other','جديد':'New','تم التواصل':'Contacted','تحوّل إلى معاملة':'Became a transaction','مغلق':'Closed','جديدة':'New','بانتظار المستندات':'Waiting for documents','قيد التقديم':'Being submitted','قيد المتابعة لدى الجهة':'With the authority','بانتظار العميل':'Waiting for you','منجزة':'Completed','ملغاة':'Cancelled'}
 }:{
@@ -44,7 +44,7 @@ const T=EN?{
   sent:id=>`شكراً لك، أُرسل الطلب ${id} وسنتواصل معك قريباً.`,saved:'تم الحفظ.',pwChanged:'تم تغيير كلمة المرور.',dl:'تنزيل',open:'فتح',txn:'المعاملة',
   bye:'تم تسجيل الخروج.',office:'فريق بصيرة',you:'أنت',noMsg:'لا توجد رسائل بعد. اكتب لنا من الأسفل.',msgSent:'أُرسلت الرسالة.',
   credSaved:'تم الحفظ مشفّراً.',credDel:'حذف',credAsk:'حذف بيانات الدخول هذه من حسابك؟',hidden:'مخفية',
-  consent:c=>c?`وافقت على الإصدار ${c.version} بتاريخ ${c.created}، ووقّعت باسم «${c.name}».`:'لا توجد موافقة مسجلة بعد.',
+  consent:c=>c?`وافقت على الإصدار ${c.version} بتاريخ ${dmy(c.created)}، ووقّعت باسم «${c.name}».`:'لا توجد موافقة مسجلة بعد.',
   newer:v=>` يوجد إصدار أحدث (${v}) في صفحة المستندات القانونية.`,ST:{}
 };
 const st=s=>T.ST[s]||s;
@@ -113,7 +113,8 @@ $('dNewCli').onclick=()=>{signOut();$('signF').reset();tab(true);$('sName').focu
 // ---- dashboard ----
 let ME=null;
 // dates come from the office system as 2026-10-28 and are shown as 28-10-2026
-const dmy=v=>String(v==null?'':v).replace(/^(\d{4})-(\d{2})-(\d{2})/,'$3-$2-$1');
+// dates on screen as DD-MM-YYYY (time kept as HH:MM), the same format as the site; stored values stay ISO
+const dmy=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})(.*)$/.exec(String(v==null?'':v));return m?`${m[3]}-${m[2]}-${m[1]}${m[4].replace(/^T/,' ').replace(/(:\d{2}):\d{2}(\.\d+)?Z?$/,'$1')}`:(v==null?'':String(v))};
 const days=s=>{if(!s)return null;const d=new Date(s),t=new Date();t.setHours(0,0,0,0);return isNaN(d)?null:Math.round((d-t)/864e5)};
 function table(rows,cols){if(!rows.length)return `<p class="mute">${T.none}</p>`;
   return `<div class="ptable"><table><thead><tr>${cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td data-l="${esc(c[0])}">${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
@@ -154,11 +155,11 @@ function render(){const c=ME.client,closed=t=>/منجزة|ملغاة/.test(t.sta
   $('fileList').innerHTML=ME.files.length?`<ul class="plist files">${ME.files.map(f=>`<li><div><b>${esc(f.title)}</b><span class="mute sm">${esc(dmy(String(f.created).slice(0,10)))}${f.txnId?` · ${T.txn} ${esc(f.txnId)}`:''}</span></div><button type="button" class="btn sm pri" data-f="${esc(f.id)}">${f.link?T.open:T.dl}</button></li>`).join('')}</ul>`:`<p class="mute">${T.none}</p>`;
   const pf=$('profF').elements;['name','type','phone','email','cr','estCard','taxNo','qid','address'].forEach(k=>{if(pf[k])pf[k].value=c[k]||''});if(!c.type)pf.type.value='منشأة';
   $('credList').innerHTML=ME.credentials.length?`<ul class="plist">${ME.credentials.map(x=>`<li><div><b>${esc(x.portal)}</b><span class="mute sm" dir="ltr">${esc(x.username)} · ••••••</span><span class="mute sm">${esc(dmy(String(x.created).slice(0,10)))}</span></div><button type="button" class="btn sm ghost" data-cdel="${esc(x.id)}">${T.credDel}</button></li>`).join('')}</ul>`:'';
-  $('msgList').innerHTML=ME.messages.length?ME.messages.map(m=>`<div class="bub ${m.from==='client'?'me':''}"><div class="pre">${esc(m.body)}</div><small class="mute">${m.from==='client'?T.you:T.office} · ${esc(m.created)}</small></div>`).join(''):`<p class="mute">${T.noMsg}</p>`;
+  $('msgList').innerHTML=ME.messages.length?ME.messages.map(m=>`<div class="bub ${m.from==='client'?'me':''}"><div class="pre">${esc(m.body)}</div><small class="mute">${m.from==='client'?T.you:T.office} · ${esc(dmy(m.created))}</small></div>`).join(''):`<p class="mute">${T.noMsg}</p>`;
   const live=ME.transactions.filter(t=>!/ملغاة/.test(t.status)),pays=ME.payments||[],tot=live.reduce((a,t)=>a+(+t.fee||0)+(+t.govFee||0),0),paid=live.reduce((a,t)=>a+(+t.paid||0),0);
   $('payK').innerHTML=[[T.payK[0],money(tot)],[T.payK[1],money(paid)],[T.payK[2],money(live.reduce((a,t)=>a+bal(t),0))]].map(([k,v],i)=>`<div class="kpi"><b class="num ${i===2&&v!==money(0)?'late':''}">${v}</b><span>${k}</span></div>`).join('');
   $('payDue').innerHTML=table(live.filter(t=>(+t.fee||0)+(+t.govFee||0)>0),[[T.th.no,t=>esc(t.id)],[T.th.svc,t=>esc(t.service)],[T.th.fee,t=>money(t.fee)],[T.th.gov,t=>money(t.govFee)],[T.th.paid,t=>money(t.paid)],[T.th.bal,t=>`<b class="${bal(t)?'late':''}">${money(bal(t))}</b>`]]);
-  $('payList').innerHTML=table(pays,[[T.th.date,p=>esc(p.date)],[T.th.rcpt,p=>`<span dir="ltr">${esc(p.receiptNo)}</span>`],[T.th.txn,p=>esc(p.txnId)],[T.th.method,p=>esc(st(p.method))],[T.th.amount,p=>`<b>${money(p.amount)}</b>`]]);
+  $('payList').innerHTML=table(pays,[[T.th.date,p=>esc(dmy(p.date))],[T.th.rcpt,p=>`<span dir="ltr">${esc(p.receiptNo)}</span>`],[T.th.txn,p=>esc(p.txnId)],[T.th.method,p=>esc(st(p.method))],[T.th.amount,p=>`<b>${money(p.amount)}</b>`]]);
   $('consent').textContent=T.consent(ME.consent)+(ME.consent&&ME.consent.version!==ME.legalVersion?T.newer(ME.legalVersion):'')}
 async function load(){const j=await api('cme');ME=j;if(window.ACCT_WHO)ACCT_WHO.set({name:(j.client&&j.client.name)||j.username,user:j.username});$('auth').hidden=true;$('dash').hidden=false;$('logout').hidden=false;render();pane(location.hash.slice(1)||'home',true)}
 function pane(p,quiet){if(!$('p-'+p))p='home';document.querySelectorAll('#dTabs [data-p]').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===p));
