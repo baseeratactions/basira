@@ -6,6 +6,7 @@
 // medium ones stay unassigned and reach the owner in the single daily email at 7:00 Doha.
 import { execSync } from 'node:child_process';
 import { readFileSync, appendFileSync, statSync } from 'node:fs';
+import tls from 'node:tls';
 
 const env = process.env;
 const REPO = env.GITHUB_REPOSITORY, TOKEN = env.GITHUB_TOKEN;
@@ -17,6 +18,8 @@ const LABEL = 'security-alert';
 // accounts allowed to change the main branch: the owner, Claude, the site's own data bots and GitHub's web editor
 const ALLOWED = new Set(['aboelezz2005@gmail.com', 'baseeratactions@users.noreply.github.com', 'noreply@anthropic.com',
   'actions@users.noreply.github.com', 'noreply@github.com', '41898282+github-actions[bot]@users.noreply.github.com',
+  // the owner's own addresses: GitHub's id-prefixed noreply, and the Munjiz company mailbox
+  '341908079+baseeratactions@users.noreply.github.com', 'munijizqa@gmail.com', 'munjiz-qa@users.noreply.github.com',
   ...String(env.ALLOWED_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean)]);
 const SECRETS = [
   [/ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}/, 'مفتاح GitHub'],
@@ -132,13 +135,42 @@ async function report() {
   // site problems that cleared on their own are closed with a note
   for (const i of open) {
     const k = keyOf(i);
-    if (!k || !/^(down|diff):/.test(k) || findings.some(f => f.key === k)) continue;
+    if (!k || !/^(down|diff|ssl|sslexp):/.test(k) || findings.some(f => f.key === k)) continue;
     await gh(`/repos/${REPO}/issues/${i.number}/comments`, { method: 'POST', body: JSON.stringify({ body: '✅ عاد الوضع طبيعياً في ' + now + '، وأُغلق التنبيه تلقائياً.' }) });
     await gh(`/repos/${REPO}/issues/${i.number}`, { method: 'PATCH', body: JSON.stringify({ state: 'closed', state_reason: 'completed' }) });
   }
 }
 
+// 4. the site's HTTPS certificate: valid, issued for this domain, and not about to expire
+function certInfo(host) {
+  return new Promise(resolve => {
+    const s = tls.connect({ host, port: 443, servername: host, timeout: 20000 }, () => {
+      const c = s.getPeerCertificate();
+      resolve({ ok: s.authorized, error: s.authorizationError, to: c.valid_to, issuer: c.issuer?.O || c.issuer?.CN || '' });
+      s.end();
+    });
+    s.on('error', e => resolve({ ok: false, error: e.code || e.message }));
+    s.on('timeout', () => { s.destroy(); resolve({ ok: false, error: 'لا استجابة' }); });
+  });
+}
+async function checkCert() {
+  if (!SITE.startsWith('https://')) return;
+  const host = new URL(SITE).hostname;
+  if (host.endsWith('.github.io')) return;   // GitHub's own certificate
+  const c = await certInfo(host);
+  if (!c.ok) {
+    add({ level: 'high', key: 'ssl:' + host, recoverable: true, title: 'شهادة SSL غير صالحة: ' + host,
+      detail: 'فشل التحقق من شهادة الأمان للنطاق ' + host + ' (' + c.error + '). الزوار يرون تحذير «الاتصال غير آمن»، وقد يعني ذلك انتهاء الشهادة أو خللاً في إعداد النطاق أو محاولة انتحال.' });
+    return;
+  }
+  const days = Math.floor((new Date(c.to) - Date.now()) / 86400000);
+  if (days < 14) add({ level: days < 5 ? 'high' : 'medium', key: 'sslexp:' + host, recoverable: true, title: 'شهادة SSL تنتهي خلال ' + days + ' يوماً: ' + host,
+    detail: 'تنتهي شهادة الأمان للنطاق ' + host + ' في ' + doha(c.to) + ' (المُصدِر: ' + c.issuer + '). يجددها GitHub Pages تلقائياً عادة؛ إن لم تتجدد فراجع إعداد النطاق في Settings ← Pages.' });
+  else console.log('شهادة SSL للنطاق ' + host + ' سليمة، تنتهي ' + doha(c.to) + ' (بعد ' + days + ' يوماً).');
+}
+
 await checkSite();
+await checkCert();
 await checkCommits();
 checkSecrets();
 await report();
