@@ -211,6 +211,6 @@ for (const l of ['ar', 'en']) {
   for (const f of readdirSync(new URL('../' + dir, import.meta.url))) if (/^[A-Z]{2}-\d{2}\.html$/.test(f) && !keep.has(f)) unlinkSync(new URL('../' + dir + f, import.meta.url));
 }
 let sm = read('sitemap.xml').replace(/\s*<url><loc>[^<]*\/services\/[^<]*<\/loc>.*?<\/url>/gs, '');
-sm = sm.replace(/\s*<\/urlset>/, '\n' + urls.map(([u, f]) => `  <url><loc>${SITE}${u}</loc>\n    <xhtml:link rel="alternate" hreflang="ar" href="${SITE}services/${f}"/>\n    <xhtml:link rel="alternate" hreflang="en" href="${SITE}en/services/${f}"/>\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}services/${f}"/></url>`).join('\n') + '\n</urlset>\n');
+sm = sm.replace(/\s*<\/urlset>\s*$/, '\n' + urls.map(([u, f]) => `  <url><loc>${SITE}${u}</loc>\n    <xhtml:link rel="alternate" hreflang="ar" href="${SITE}services/${f}"/>\n    <xhtml:link rel="alternate" hreflang="en" href="${SITE}en/services/${f}"/>\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}services/${f}"/></url>`).join('\n') + '\n</urlset>\n');
 write('sitemap.xml', sm);
 console.log(`${svcs.length} services × 2 languages written`);
