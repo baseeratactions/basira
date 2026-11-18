@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://sijil.baseeratactions.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="google" content="notranslate">
 <title>My account | Basira for Transactions</title>
 <meta name="description" content="Create an account for your company, or sign in, to request services, follow your requests and transactions, and download your licences and documents.">
@@ -21,11 +21,12 @@
 <script src="../assets/who.js?v=20261101L" defer></script>
 </head>
 <body class="portal-page">
+<a class="skip" href="#main">Skip to main content</a>
 <header class="top"><div class="wrap">
   <a class="brand" href="index.html"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg>Basira for Transactions</a>
   <div class="plainnav"><a href="index.html">Home</a><a href="index.html#services">Services and prices</a><button type="button" class="linkbtn" id="logout" hidden>Sign out</button><a href="../portal.html" class="lang" lang="ar">العربية</a></div>
 </div></header>
-<main class="sec"><div class="wrap portal">
+<main class="sec" id="main" tabindex="-1"><div class="wrap portal">
 <div id="noApi" class="pnote" hidden><b>Accounts open once the client system is running</b><p>We are still preparing client accounts. In the meantime, we are glad to take your requests and keep you updated on WhatsApp.</p><div class="pbtns"><a class="btn sm pri" href="https://wa.me/97472232609" target="_blank" rel="noopener">Chat on WhatsApp</a></div></div>
 
 <section id="auth">
@@ -162,5 +163,6 @@
 <script src="../assets/details.js?v=20261024i"></script>
 <script src="../assets/catalog.js?v=20261024i"></script>
 <script src="../assets/portal.js?v=20261114a"></script>
+<script src="../assets/sv.js" defer></script>
 </body>
 </html>
