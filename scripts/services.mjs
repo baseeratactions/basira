@@ -72,7 +72,7 @@ const T = {
     qDocs: n => `ما المستندات المطلوبة لـ«${n}»؟`, qTime: n => `كم تستغرق «${n}»؟`, qOut: () => 'ماذا أستلم في النهاية؟',
     qHow: () => 'كيف أطلب الخدمة؟', aHow: 'اضغط «اطلب هذه الخدمة» لتجهيز عرض سعر باسمك، أو راسلنا على واتساب ‎+974 7223 2609، وسنراجع مستنداتك ونؤكد لك الخطوات قبل البدء.',
     fPh: 'ابحث عن خدمة: إقامة، سجل تجاري، رخصة، أو رمز الخدمة', fLbl: 'ابحث في الخدمات', fNone: q => `لم نجد خدمة باسم «${q}». أرسل لنا ما تحتاجه وسنخبرك إن كنا نقدمه وبكم.`, fAsk: 'اسألنا على واتساب', fCount: 'خدمة مطابقة', fClear: 'مسح البحث', sLbl: 'الترتيب', sDef: 'الترتيب الأصلي', sLow: 'الأقل سعراً أولاً', sHigh: 'الأعلى سعراً أولاً', listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
-    title: (s) => `${s.ar.n} | ${s.ar.grp} | بصيرة للمعاملات`, desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
+    title: (s) => { const t = `${s.ar.n} | ${s.ar.grp} | بصيرة للمعاملات`; return t.length <= 65 ? t : `${s.ar.n} | بصيرة للمعاملات`; }, desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
   en: { dir: 'ltr', loc: 'en_US', cur: 'QAR', home: 'Home', list: 'Services and prices', brand: 'Basira for Transactions', legal: 'Basira for Transactions LLC',
     fee: 'Basira fee', from: 'from', once: 'one-time', core: 'In packages', about: 'About the service', inc: 'What we do', docs: 'Documents you provide',
     time: 'Approximate time', out: 'What you receive', note: 'Note', gov: 'Government fees are paid separately with the official receipt and are not part of Basira’s fee.',
@@ -82,11 +82,11 @@ const T = {
     qDocs: n => `Which documents are needed for “${n}”?`, qTime: n => `How long does “${n}” take?`, qOut: () => 'What do I receive at the end?',
     qHow: () => 'How do I request it?', aHow: 'Press “Request this service” to prepare a quote in your name, or message us on WhatsApp at +974 7223 2609. We review your documents and confirm the steps before we start.',
     fPh: 'Search a service: residence, commercial registration, licence, or code', fLbl: 'Search services', fNone: q => `No service matches “${q}”. Tell us what you need and we will confirm whether we offer it and the price.`, fAsk: 'Ask us on WhatsApp', fCount: 'matching services', fClear: 'Clear search', sLbl: 'Sort', sDef: 'Default order', sLow: 'Lowest price first', sHigh: 'Highest price first', listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
-    title: (s) => `${s.en.n} | ${s.en.grp} | Basira for Transactions`, desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
+    title: (s) => { const t = `${s.en.n} | ${s.en.grp} | Basira for Transactions`; return t.length <= 65 ? t : `${s.en.n} | Basira for Transactions`; }, desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
 };
 const LOGO = '<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#e0a12b" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#e0a12b"/></svg>';
 const ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='36' fill='%230e5e4a'/%3E%3Cpath d='M14 40 Q40 16 66 40 Q40 64 14 40Z' fill='none' stroke='white' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='10' fill='%23c9a24d'/%3E%3C/svg%3E";
-const CSP = "default-src 'self'; script-src 'self' https://cloud.umami.is https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://www.gstatic.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cloud.umami.is https://api-gateway.umami.dev https://translate.googleapis.com https://translate-pa.googleapis.com; frame-src https://translate.google.com https://translate.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'";
+const CSP = "default-src 'self'; script-src 'self' https://cloud.umami.is https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://www.gstatic.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://cloud.umami.is https://api-gateway.umami.dev https://translate.googleapis.com https://translate-pa.googleapis.com https://sijil.baseeratactions.workers.dev; frame-src https://translate.google.com https://translate.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'";
 
 const priceText = (s, L, l) => `${s.from ? `<small>${L.from}</small> ` : ''}${fmt(s.p)} <small>${L.cur}${s[l].unit ? ' ' + esc(s[l].unit) : ''}</small>`;
 const steps = s => String(s || '').split(/[،,]\s*/).map(x => x.trim()).filter(Boolean);
@@ -144,6 +144,7 @@ ${body}
 <script src="${A}assets/track.js?${V('track.js')}"></script>
 <script src="${A}assets/share.js?${V('share.js')}" defer></script>
 <script src="${A}assets/svc-filter.js?${V('svc-filter.js')}" defer></script>
+<script src="${A}assets/sv.js" defer></script>
 </body></html>
 `;
 }
