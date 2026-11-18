@@ -252,3 +252,8 @@ dialog.bqdlg{max-width:min(860px,calc(100vw - 24px))}
 #cQuotes td.num{white-space:nowrap}
 
 .login h1{font-size:clamp(22px,3.2vw,30px);color:var(--ink)}
+
+/* عناوين أقسام الجداول المالية بلون النص الأساسي (تباين أعلى من 4.5 في الوضعين)، والرسم الشهري يتسع لاثني عشر شهراً على الجوال دون تمرير أفقي */
+table.fin tr.h td,table.fin tr.h th{color:var(--ink)}
+#rpOut .panel{overflow-x:auto}
+@media (max-width:520px){.cols{gap:3px}.cols>.col{min-width:0}.cols .col small{font-size:10px}.cols .col:nth-last-child(even) small{visibility:hidden}}

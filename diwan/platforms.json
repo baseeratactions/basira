@@ -196,6 +196,16 @@
       "site": "https://munjiz-qa.github.io/barakat/",
       "color": "#17594a",
       "admin": ""
+    },
+    {
+      "id": "jumana",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "jumana",
+      "name": "جُمانة مصر القديمة",
+      "kind": "تاريخ الحضارة المصرية القديمة",
+      "site": "https://munjiz-qa.github.io/jumana/",
+      "color": "#1D3C78",
+      "admin": ""
     }
   ]
 }
