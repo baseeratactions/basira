@@ -5,7 +5,8 @@
     "munjiz-qa"
   ],
   "ignore": [
-    "baseeratactions/basira/diwan"
+    "baseeratactions/basira/diwan",
+    "munjiz-qa/munjiz-qa.github.io/khabar"
   ],
   "platforms": [
     {
@@ -82,10 +83,10 @@
     {
       "id": "khabar",
       "repo": "munjiz-qa/munjiz-qa.github.io",
-      "path": "khabar",
-      "name": "خبر",
+      "path": "abdo-news",
+      "name": "عبدو نيوز",
       "kind": "الخلاصة الإخبارية اليومية",
-      "site": "https://munjiz-qa.github.io/khabar/",
+      "site": "https://munjiz-qa.github.io/abdo-news/",
       "icon": "assets/icon.svg",
       "color": "#14212e",
       "admin": "admin/",
