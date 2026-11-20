@@ -6,6 +6,12 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync, existsSync } from 'node:fs';
 import vm from 'node:vm';
 import { createHash } from 'node:crypto';
+// search-result title: name | group | brand, else name | brand, else the name without its trailing (detail) | brand
+const fitTitle = (n, grp, brand) => {
+  const short = n.replace(/\s*\([^)]*\)\s*$/, '');
+  for (const t of [`${n} | ${grp} | ${brand}`, `${n} | ${brand}`]) if (t.length <= 65) return t;
+  return `${short} | ${brand}`;
+};
 
 const SITE = 'https://baseeratactions.github.io/basira/';
 const read = f => readFileSync(new URL('../' + f, import.meta.url), 'utf8');
@@ -72,7 +78,7 @@ const T = {
     qDocs: n => `ما المستندات المطلوبة لـ«${n}»؟`, qTime: n => `كم تستغرق «${n}»؟`, qOut: () => 'ماذا أستلم في النهاية؟',
     qHow: () => 'كيف أطلب الخدمة؟', aHow: 'اضغط «اطلب هذه الخدمة» لتجهيز عرض سعر باسمك، أو راسلنا على واتساب ‎+974 7223 2609، وسنراجع مستنداتك ونؤكد لك الخطوات قبل البدء.',
     listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
-    title: (s) => { const t = `${s.ar.n} | ${s.ar.grp} | بصيرة للمعاملات`; return t.length <= 65 ? t : `${s.ar.n} | بصيرة للمعاملات`; }, desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
+    title: s => fitTitle(s.ar.n, s.ar.grp, 'بصيرة للمعاملات'), desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
   en: { dir: 'ltr', loc: 'en_US', cur: 'QAR', home: 'Home', list: 'Services and prices', brand: 'Basira for Transactions', legal: 'Basira for Transactions LLC',
     fee: 'Basira fee', from: 'from', once: 'one-time', core: 'In packages', about: 'About the service', inc: 'What we do', docs: 'Documents you provide',
     time: 'Approximate time', out: 'What you receive', note: 'Note', gov: 'Government fees are paid separately with the official receipt and are not part of Basira’s fee.',
@@ -82,7 +88,7 @@ const T = {
     qDocs: n => `Which documents are needed for “${n}”?`, qTime: n => `How long does “${n}” take?`, qOut: () => 'What do I receive at the end?',
     qHow: () => 'How do I request it?', aHow: 'Press “Request this service” to prepare a quote in your name, or message us on WhatsApp at +974 7223 2609. We review your documents and confirm the steps before we start.',
     listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
-    title: (s) => { const t = `${s.en.n} | ${s.en.grp} | Basira for Transactions`; return t.length <= 65 ? t : `${s.en.n} | Basira for Transactions`; }, desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
+    title: s => fitTitle(s.en.n, s.en.grp, 'Basira for Transactions'), desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
 };
 const LOGO = '<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#e0a12b" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#e0a12b"/></svg>';
 const ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='36' fill='%230e5e4a'/%3E%3Cpath d='M14 40 Q40 16 66 40 Q40 64 14 40Z' fill='none' stroke='white' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='10' fill='%23c9a24d'/%3E%3C/svg%3E";
