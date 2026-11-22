@@ -28,3 +28,10 @@ clr.addEventListener('click',()=>{q.value='';run();q.focus()});
 function fromHash(){const m=location.hash.match(/^#q=(.+)$/);if(m){try{q.value=decodeURIComponent(m[1])}catch(e){}run()}}
 fromHash();addEventListener('hashchange',fromHash);
 })();
+// print or save the list as PDF (the click itself is handled by who.js for every [data-print]): only the services currently shown are printed, with Basira's contact line and the print date (DD/MM/YYYY)
+(function(){
+const b=document.querySelector('[data-print]');if(!b)return;
+const d=document.querySelector('[data-pdate]');
+const stamp=()=>{if(!d)return;const t=new Date(),p=n=>String(n).padStart(2,'0');d.textContent=p(t.getDate())+'/'+p(t.getMonth()+1)+'/'+t.getFullYear()};
+window.addEventListener('beforeprint',stamp);b.addEventListener('click',stamp,true);stamp();
+})();
