@@ -6,6 +6,8 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync, existsSync } from 'node:fs';
 import vm from 'node:vm';
 import { createHash } from 'node:crypto';
+// meta description: at most 160 characters, cut at a word boundary with an ellipsis instead of mid-word
+const clip = (t, n = 160) => { if (t.length <= n) return t; const c = t.slice(0, n - 1); const i = c.lastIndexOf(' '); return (i > 100 ? c.slice(0, i) : c).replace(/[\s،,:;.-]+$/, '') + '…'; };
 // search-result title: name | group | brand, else name | brand, else the name without its trailing (detail) | brand
 const fitTitle = (n, grp, brand) => {
   const short = n.replace(/\s*\([^)]*\)\s*$/, '');
@@ -79,7 +81,7 @@ const T = {
     qHow: () => 'كيف أطلب الخدمة؟', aHow: 'اضغط «اطلب هذه الخدمة» لتجهيز عرض سعر باسمك، أو راسلنا على واتساب ‎+974 7223 2609، وسنراجع مستنداتك ونؤكد لك الخطوات قبل البدء.',
     fPh: 'ابحث عن خدمة: إقامة، سجل تجاري، رخصة، أو رمز الخدمة', fLbl: 'ابحث في الخدمات', fNone: q => `لم نجد خدمة باسم «${q}». أرسل لنا ما تحتاجه وسنخبرك إن كنا نقدمه وبكم.`, fAsk: 'اسألنا على واتساب', fCount: 'خدمة مطابقة', fClear: 'مسح البحث', sLbl: 'الترتيب', sDef: 'الترتيب الأصلي', sLow: 'الأقل سعراً أولاً', sHigh: 'الأعلى سعراً أولاً', pBtn: 'اطبع القائمة أو احفظها PDF', pHead: 'قائمة خدمات بصيرة للمعاملات وأسعارها المعلنة', pDate: 'تاريخ الطباعة', pNote: 'تُطبع الخدمات الظاهرة حالياً، فابحث أولاً لتطبع جزءاً من القائمة.',
     listTitle: 'الخدمات والأسعار | بصيرة للمعاملات', listH1: 'الخدمات والأسعار', listLead: 'كل خدمات بصيرة بأسعارها المعلنة: المعاملات الحكومية في قطر، وباقات التأسيس، والدراسات والاستشارات. اختر أي خدمة لترى ما نقوم به والمستندات المطلوبة والمدة.',
-    title: s => fitTitle(s.ar.n, s.ar.grp, 'بصيرة للمعاملات'), desc: s => `${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`.slice(0, 160) },
+    title: s => fitTitle(s.ar.n, s.ar.grp, 'بصيرة للمعاملات'), desc: s => clip(`${s.ar.n} في الدوحة مع بصيرة للمعاملات: ${s.ar.about || s.ar.inc}`) },
   en: { dir: 'ltr', loc: 'en_US', cur: 'QAR', home: 'Home', list: 'Services and prices', brand: 'Basira for Transactions', legal: 'Basira for Transactions LLC',
     fee: 'Basira fee', from: 'from', once: 'one-time', core: 'In packages', about: 'About the service', inc: 'What we do', docs: 'Documents you provide',
     time: 'Approximate time', out: 'What you receive', note: 'Note', gov: 'Government fees are paid separately with the official receipt and are not part of Basira’s fee.',
@@ -90,7 +92,7 @@ const T = {
     qHow: () => 'How do I request it?', aHow: 'Press “Request this service” to prepare a quote in your name, or message us on WhatsApp at +974 7223 2609. We review your documents and confirm the steps before we start.',
     fPh: 'Search a service: residence, commercial registration, licence, or code', fLbl: 'Search services', fNone: q => `No service matches “${q}”. Tell us what you need and we will confirm whether we offer it and the price.`, fAsk: 'Ask us on WhatsApp', fCount: 'matching services', fClear: 'Clear search', sLbl: 'Sort', sDef: 'Default order', sLow: 'Lowest price first', sHigh: 'Highest price first', pBtn: 'Print or save as PDF', pHead: 'Basira for Transactions: services and published prices', pDate: 'Printed on', pNote: 'Only the services shown are printed, so search first to print part of the list.',
     listTitle: 'Services and prices | Basira for Transactions', listH1: 'Services and prices', listLead: 'Every Basira service with its published price: government transactions in Qatar, company setup packages, and studies and consulting. Open any service to see what we do, the documents needed and the time it takes.',
-    title: s => fitTitle(s.en.n, s.en.grp, 'Basira for Transactions'), desc: s => `${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`.slice(0, 160) },
+    title: s => fitTitle(s.en.n, s.en.grp, 'Basira for Transactions'), desc: s => clip(`${s.en.n} in Doha with Basira for Transactions: ${s.en.about || s.en.inc}`) },
 };
 const LOGO = '<svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#e0a12b" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#e0a12b"/></svg>';
 const ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='36' fill='%230e5e4a'/%3E%3Cpath d='M14 40 Q40 16 66 40 Q40 64 14 40Z' fill='none' stroke='white' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='10' fill='%23c9a24d'/%3E%3C/svg%3E";
@@ -210,7 +212,7 @@ function listPage(l) {
 <nav class="svc-jump" aria-label="${l === 'en' ? 'Groups' : 'المجموعات'}">${groups.map(g => `<a href="#g-${g.k}">${esc(g[l])}</a>`).join('')}</nav>
 ${groups.map(g => `<section id="g-${g.k}" class="svc-group"><h2>${esc(g[l])} <small class="mute">(${g.items.length})</small></h2><ul class="svc-list">${g.items.map(s => `<li data-p="${+s.p || 0}" data-q="${esc([s.ar.n, s.en.n, s.c, g.ar, g.en].join(' '))}"><a href="${s.c}.html">${esc(s[l].n)}</a><span class="price num">${priceText(s, L, l)}</span></li>`).join('')}</ul></section>`).join('\n')}
 <p class="mute sm">${L.gov}</p>`;
-  return page({ l, path: base + 'services/', title: L.listTitle, desc: L.listLead.slice(0, 160), alt: { ar: 'services/', en: 'en/services/', file: 'index.html' }, h1: L.listH1, body, ld });
+  return page({ l, path: base + 'services/', title: L.listTitle, desc: clip(L.listLead), alt: { ar: 'services/', en: 'en/services/', file: 'index.html' }, h1: L.listH1, body, ld });
 }
 
 // ---- write the pages, remove pages of services that are no longer offered, update the sitemap ----
