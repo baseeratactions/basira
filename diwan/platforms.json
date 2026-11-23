@@ -207,6 +207,16 @@
       "site": "https://munjiz-qa.github.io/jumana/",
       "color": "#1D3C78",
       "admin": ""
+    },
+    {
+      "id": "ishraq",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "ishraq",
+      "name": "إشراق",
+      "kind": "أذكار الصباح",
+      "site": "https://munjiz-qa.github.io/ishraq/",
+      "color": "#0f3a3f",
+      "admin": ""
     }
   ]
 }
