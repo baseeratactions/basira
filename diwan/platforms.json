@@ -217,6 +217,16 @@
       "site": "https://munjiz-qa.github.io/ishraq/",
       "color": "#0f3a3f",
       "admin": ""
+    },
+    {
+      "id": "mansoura-masters",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "mansoura-masters",
+      "name": "ماجستير المنصورة",
+      "kind": "سجل طلاب الماجستير",
+      "site": "https://munjiz-qa.github.io/mansoura-masters/",
+      "color": "#7a1e3a",
+      "admin": "admin.html"
     }
   ]
 }
