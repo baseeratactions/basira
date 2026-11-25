@@ -227,6 +227,26 @@
       "site": "https://munjiz-qa.github.io/mansoura-masters/",
       "color": "#7a1e3a",
       "admin": "admin.html"
+    },
+    {
+      "id": "habka",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "habka",
+      "name": "حبكة",
+      "kind": "منصة الصناعات المنزلية",
+      "site": "https://munjiz-qa.github.io/habka/",
+      "color": "#1F2340",
+      "admin": ""
+    },
+    {
+      "id": "matayaa",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "matayaa",
+      "name": "مطايا الشحانية",
+      "kind": "حجز التجارب والتذاكر",
+      "site": "https://munjiz-qa.github.io/matayaa/",
+      "color": "#1E1B2E",
+      "admin": ""
     }
   ]
 }
