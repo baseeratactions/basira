@@ -1,0 +1,15 @@
+/* أقسام تضاف من «إدارة محتوى الموقع» (admin.html). تعتمد على ألوان الموقع في style.css. */
+.cms-block{margin:8px 0 18px}
+.cms-block>h2{margin:0 0 10px}
+.cms-fig{margin:12px 0}
+.cms-fig img{display:block;max-width:100%;height:auto;border-radius:14px}
+.cms-fig figcaption{color:var(--mute);font-size:14px;margin-top:6px}
+.cms-split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.cms-split img{display:block;width:100%;height:auto;border-radius:16px}
+.cms-split h2{margin-top:0}
+.cms-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:14px}
+.cms-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.cms-card h3{margin:0 0 6px;font-size:18px}
+.cms-card p{margin:0;color:var(--mute)}
+.cms-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+@media (max-width:760px){.cms-split{grid-template-columns:1fr;gap:16px}}
