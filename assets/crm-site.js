@@ -15,7 +15,8 @@ const F=[['brand',L('اسم الشركة أعلى الصفحات','Company name 
 const MAX={brand:60,eyebrow:80,h1:120,h1em:80,lead:400,p1t:60,p1s:160,p2t:60,p2s:160,p3t:60,p3s:160,about:600};
 const e=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const v=document.createElement('section');v.id='v-site';v.className='view';v.hidden=true;v.setAttribute('data-notr','');
-v.innerHTML=`<div class="bar"><h2>${L('نصوص الموقع','Site texts')}</h2><span class="sp"></span><a class="btn sm ghost" href="index.html" target="_blank" rel="noopener">${L('معاينة الموقع ↗','Preview the site ↗')}</a></div>
+v.innerHTML=`<div class="bar"><h2>${L('نصوص الموقع','Site texts')}</h2><span class="sp"></span><a class="btn sm pri" href="admin.html" target="_blank" rel="noopener">${L('محرر صفحات الموقع ↗','Site page editor ↗')}</a><a class="btn sm ghost" href="index.html" target="_blank" rel="noopener">${L('معاينة الموقع ↗','Preview the site ↗')}</a></div>
+<p class="mute sm">${L('لتعديل أي نص أو صورة أو قسم في أي صفحة، وإضافة الأقسام وحذفها وترتيبها، افتح «محرر صفحات الموقع».','To edit any text, picture or section on any page, and add, delete or reorder sections, open the «Site page editor».')}</p>
 <p class="mute sm">${L('اترك الحقل فارغاً ليبقى النص الأصلي الظاهر بالرمادي. تظهر التعديلات لكل زوار الموقع بعد الحفظ.','Leave a field empty to keep the original text shown in grey. Changes appear for every visitor once saved.')}</p>
 <form id="stF" class="panel">
  <div class="sttbl" role="table"><div class="sthead" role="row"><span></span><b>${L('بالعربية','Arabic')}</b><b>${L('بالإنجليزية','English')}</b></div>

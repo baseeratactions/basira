@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://api.github.com; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="robots" content="noindex, nofollow">
+<title>إدارة محتوى الموقع | بصيرة للمعاملات</title>
+<meta name="theme-color" content="#2f855a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='36' fill='%230e5e4a'/%3E%3Cpath d='M14 40 Q40 16 66 40 Q40 64 14 40Z' fill='none' stroke='white' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='10' fill='%23c9a24d'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/cms.css?v=20261125a">
+</head>
+<body>
+
+<!-- شاشة الدخول -->
+<section id="login" class="login" hidden>
+  <form id="loginF" class="lcard" novalidate>
+    <div class="lhead">
+      <svg width="46" height="46" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg>
+      <div><h1>إدارة محتوى الموقع</h1><p>بصيرة للمعاملات ذ.م.م</p></div>
+    </div>
+    <p class="mute">تحرير صفحات الموقع مباشرة: النصوص والصور والأقسام والروابط، بالإضافة والحذف والتعديل والترتيب، ثم النشر بضغطة واحدة.</p>
+    <label for="tok">مفتاح الدخول (GitHub)</label>
+    <input id="tok" type="password" dir="ltr" autocomplete="current-password" placeholder="github_pat_…" spellcheck="false">
+    <label class="chk"><input type="checkbox" id="remember" checked> تذكّر الدخول على هذا الجهاز</label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <button class="btn pri wide" type="submit" id="loginBtn">دخول</button>
+    <details class="howto">
+      <summary>كيف أحصل على مفتاح الدخول؟ (مرة واحدة، دقيقتان)</summary>
+      <ol>
+        <li>افتح <a id="patLink" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد في GitHub ↗</a> وأنت داخل إلى حساب <b dir="ltr">baseeratactions</b>.</li>
+        <li>في <b>Repository access</b> اختر <b>Only select repositories</b> ثم المستودع <b dir="ltr">basira</b>.</li>
+        <li>في <b>Permissions</b> ← <b>Repository permissions</b> اجعل <b>Contents</b> على <b>Read and write</b>.</li>
+        <li>اضغط <b>Generate token</b>، وانسخ المفتاح والصقه هنا.</li>
+      </ol>
+      <p class="mute sm">المفتاح يمنح صلاحية تعديل هذا الموقع فقط، ويُحفظ على جهازك وحده، ولا يُرسل إلا إلى GitHub. يمكنك إلغاؤه في أي وقت من الصفحة نفسها.</p>
+    </details>
+  </form>
+</section>
+
+<!-- المحرر -->
+<div id="app" class="app" hidden>
+  <header class="top">
+    <a class="brand" href="./" target="_blank" rel="noopener" title="فتح الموقع"><svg width="28" height="28" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="6"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="6"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg><span class="bt">إدارة المحتوى</span></a>
+    <div class="pagesel">
+      <label for="page" class="vh">الصفحة</label>
+      <select id="page" aria-label="اختر الصفحة"></select>
+    </div>
+    <div class="tools">
+      <button class="ib" type="button" id="undo" title="تراجع" aria-label="تراجع" disabled>↶</button>
+      <button class="ib" type="button" id="redo" title="إعادة" aria-label="إعادة" disabled>↷</button>
+      <span class="seg" role="group" aria-label="حجم المعاينة"><button type="button" class="on" data-w="" title="معاينة الكمبيوتر">🖥</button><button type="button" data-w="390" title="معاينة الجوال">📱</button></span>
+      <button class="btn sm" type="button" id="menuBtn" aria-haspopup="menu" aria-expanded="false">المزيد ▾</button>
+      <button class="btn sm pri" type="button" id="save" disabled>حفظ ونشر</button>
+    </div>
+    <div class="menu" id="menu" role="menu" hidden>
+      <button role="menuitem" type="button" data-act="sections">ترتيب أقسام الصفحة</button>
+      <button role="menuitem" type="button" data-act="meta">عنوان الصفحة ووصفها</button>
+      <button role="menuitem" type="button" data-act="history">سجل التعديلات والاستعادة</button>
+      <button role="menuitem" type="button" data-act="replace">بحث واستبدال في كل الصفحات</button>
+      <button role="menuitem" type="button" data-act="newpage">إنشاء صفحة جديدة</button>
+      <button role="menuitem" type="button" data-act="delpage">حذف هذه الصفحة</button>
+      <hr>
+      <a role="menuitem" id="liveLink" href="./" target="_blank" rel="noopener">فتح الصفحة على الموقع ↗</a>
+      <a role="menuitem" href="crm.html" target="_blank" rel="noopener">الخدمات والأسعار والإعلانات (لوحة الإدارة) ↗</a>
+      <button role="menuitem" type="button" data-act="help">طريقة الاستخدام</button>
+      <button role="menuitem" type="button" data-act="logout">تسجيل الخروج</button>
+    </div>
+  </header>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+  <div class="work">
+    <div class="stage" id="stage"><iframe id="frame" title="معاينة الصفحة للتحرير"></iframe><div class="loading" id="loading" hidden>جارٍ تحميل الصفحة…</div></div>
+    <aside class="panel" id="panel" aria-label="خصائص العنصر المحدد">
+      <button class="grip" type="button" id="grip" aria-label="تكبير اللوحة أو تصغيرها"><span></span></button>
+      <div id="pbody"></div>
+    </aside>
+  </div>
+  <div class="etb" id="etb" hidden role="toolbar" aria-label="أدوات النص">
+    <button type="button" data-cmd="bold" title="غامق"><b>B</b></button>
+    <button type="button" data-cmd="italic" title="مائل"><i>I</i></button>
+    <button type="button" data-cmd="link" title="إضافة رابط">🔗</button>
+    <button type="button" data-cmd="unlink" title="إزالة الرابط">⛓̸</button>
+    <button type="button" data-cmd="removeFormat" title="إزالة التنسيق">⌫</button>
+    <button type="button" class="done" data-cmd="done">تم ✓</button>
+  </div>
+</div>
+
+<dialog id="dlg"><form method="dialog" class="dlg" id="dlgF"><h3 id="dlgT"></h3><div id="dlgB"></div><p class="err" id="dlgErr" role="alert"></p><div class="row end" id="dlgA"></div></form></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<input type="file" id="imgFile" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" hidden>
+
+<script src="assets/cms.js?v=20261125a"></script>
+</body>
+</html>
