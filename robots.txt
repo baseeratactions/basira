@@ -3,5 +3,8 @@ Disallow: /basira/crm.html
 Disallow: /basira/portal.html
 Disallow: /basira/en/portal.html
 Disallow: /basira/diwan/
+Disallow: /basira/admin.html
+Disallow: /admin.html
+Disallow: /admin
 
 Sitemap: https://baseeratactions.github.io/basira/sitemap.xml

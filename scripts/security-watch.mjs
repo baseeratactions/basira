@@ -130,7 +130,7 @@ async function fetchText(url) {
 }
 async function checkDomain() {
   if (!DOMAIN.startsWith('https://')) return;
-  const files = git('ls-files').split('\n').filter(f => (/\.html$/.test(f) && f !== '404.html'));
+  const files = git('ls-files').split('\n').filter(f => (/\.html$/.test(f) && f !== '404.html' && f !== 'admin.html'));
   const toDomain = t => t.split(OLD_BASE).join(DOMAIN).split('baseeratactions.github.io/basira').join(new URL(DOMAIN).host);
   const headAge = (Date.now() - Number(git('log -1 --format=%ct')) * 1000) / 60000;
   let stale = [];
