@@ -257,3 +257,47 @@ dialog.bqdlg{max-width:min(860px,calc(100vw - 24px))}
 table.fin tr.h td,table.fin tr.h th{color:var(--ink)}
 #rpOut .panel{overflow-x:auto}
 @media (max-width:520px){.cols{gap:3px}.cols>.col{min-width:0}.cols .col small{font-size:10px}.cols .col:nth-last-child(even) small{visibility:hidden}}
+
+/* محتوى الموقع: شاشة إدارة الأسئلة والخطوات والبطاقات والكتل، مع السحب والإفلات والأسهم */
+.cmseg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.cmseg button{font:inherit;font-weight:700;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.cmseg button.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.cmnote{color:var(--mute);margin:0 0 12px}
+.cmlist{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.cmitem{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 12px}
+.cmitem.off{opacity:.62}
+.cmitem.dragging{opacity:.4}
+.cmitem.dropto{outline:2px dashed var(--amber);outline-offset:2px}
+.cmhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cmgrip{cursor:grab;font-size:20px;line-height:1;padding:4px 6px;color:var(--mute);user-select:none;touch-action:none}
+.cmn{min-width:22px;color:var(--mute)}
+.cmlab{flex:1 1 160px;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.cmon{display:inline-flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
+.cmgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.cmgrid label{display:flex;flex-direction:column;gap:4px;font-size:14px;min-width:0}
+.cmgrid label>span{color:var(--mute);font-size:13px}
+.cmgrid input,.cmgrid textarea,.cmgrid select{width:100%;box-sizing:border-box}
+.cmimg{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+.cmimg>span{color:var(--mute);font-size:13px}
+.cmimg img{max-width:220px;max-height:140px;border-radius:10px;border:1px solid var(--line);object-fit:cover}
+.cmimgbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cmimgbar input[type=text],.cmimgbar input:not([type]){flex:1 1 220px;min-width:0}
+.cmbar{margin-top:12px;flex-wrap:wrap}
+.cmgos{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.cmgo{font:inherit;text-align:start;display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.cmgo:hover{border-color:var(--amber)}
+.cmgo span{color:var(--mute);font-size:13px}
+.mvb{display:inline-flex;gap:4px;vertical-align:middle}
+.ctgroups li{display:flex;align-items:center;gap:6px}
+#ctS tr.dragging,.ctgroups li.dragging{opacity:.4}
+#ctS tr.dropto,.ctgroups li.dropto{outline:2px dashed var(--amber);outline-offset:-2px}
+#ctS tr[draggable=true],.ctgroups li[draggable=true]{cursor:grab}
+@media (max-width:700px){.cmgrid{grid-template-columns:minmax(0,1fr)}.cmhead .btn{min-width:38px;min-height:38px}}
+.cmhead .cmon{flex-direction:row;align-items:center}
+.cmimgbar .btn{flex-direction:row;cursor:pointer}
+#ctS td:last-child{white-space:nowrap}#ctS td.num[dir=ltr]{white-space:nowrap}
+.mvb .btn{padding:2px 8px;min-width:28px}
+.ctgroups li{flex-wrap:wrap}.ctgroups li .lnk{flex:1 1 90px}
+.ctgroups li:not(.on) .mvb{display:none}
+.ctgroups li.on .mvb{flex-basis:100%;justify-content:flex-end}
+@media (max-width:700px){.mvb .btn{min-width:38px;min-height:34px}}
