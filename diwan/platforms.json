@@ -247,6 +247,16 @@
       "site": "https://munjiz-qa.github.io/matayaa/",
       "color": "#1E1B2E",
       "admin": ""
+    },
+    {
+      "id": "gharsa",
+      "repo": "munjiz-qa/munjiz-qa.github.io",
+      "path": "gharsa",
+      "name": "غرسة",
+      "kind": "الزراعة المنزلية",
+      "site": "https://munjiz-qa.github.io/gharsa/",
+      "color": "#2F7A4C",
+      "admin": "admin.html"
     }
   ]
 }
