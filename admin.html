@@ -11,12 +11,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/cms.css?v=20261125a">
+<link rel="stylesheet" href="assets/cms.css?v=20261127a">
 </head>
 <body>
 
 <!-- شاشة الدخول -->
-<section id="login" class="login" hidden>
+<main id="login" class="login" hidden>
   <form id="loginF" class="lcard" novalidate>
     <div class="lhead">
       <svg width="46" height="46" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="5"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg>
@@ -39,11 +39,12 @@
       <p class="mute sm">المفتاح يمنح صلاحية تعديل هذا الموقع فقط، ويُحفظ على جهازك وحده، ولا يُرسل إلا إلى GitHub. يمكنك إلغاؤه في أي وقت من الصفحة نفسها.</p>
     </details>
   </form>
-</section>
+</main>
 
 <!-- المحرر -->
 <div id="app" class="app" hidden>
   <header class="top">
+    <h1 class="vh">إدارة محتوى الموقع</h1>
     <a class="brand" href="./" target="_blank" rel="noopener" title="فتح الموقع"><svg width="28" height="28" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="#c9a24d" stroke-width="6"/><path d="M12 40 Q40 14 68 40 Q40 66 12 40Z" fill="none" stroke="currentColor" stroke-width="6"/><circle cx="40" cy="40" r="10" fill="#c9a24d"/></svg><span class="bt">إدارة المحتوى</span></a>
     <div class="pagesel">
       <label for="page" class="vh">الصفحة</label>
@@ -71,13 +72,13 @@
     </div>
   </header>
   <div class="status" id="status" role="status" aria-live="polite"></div>
-  <div class="work">
+  <main class="work">
     <div class="stage" id="stage"><iframe id="frame" title="معاينة الصفحة للتحرير"></iframe><div class="loading" id="loading" hidden>جارٍ تحميل الصفحة…</div></div>
     <aside class="panel" id="panel" aria-label="خصائص العنصر المحدد">
       <button class="grip" type="button" id="grip" aria-label="تكبير اللوحة أو تصغيرها"><span></span></button>
       <div id="pbody"></div>
     </aside>
-  </div>
+  </main>
   <div class="etb" id="etb" hidden role="toolbar" aria-label="أدوات النص">
     <button type="button" data-cmd="bold" title="غامق"><b>B</b></button>
     <button type="button" data-cmd="italic" title="مائل"><i>I</i></button>
@@ -88,10 +89,10 @@
   </div>
 </div>
 
-<dialog id="dlg"><form method="dialog" class="dlg" id="dlgF"><h3 id="dlgT"></h3><div id="dlgB"></div><p class="err" id="dlgErr" role="alert"></p><div class="row end" id="dlgA"></div></form></dialog>
+<dialog id="dlg"><form method="dialog" class="dlg" id="dlgF"><h2 id="dlgT"></h2><div id="dlgB"></div><p class="err" id="dlgErr" role="alert"></p><div class="row end" id="dlgA"></div></form></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <input type="file" id="imgFile" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" hidden>
 
-<script src="assets/cms.js?v=20261125a"></script>
+<script src="assets/cms.js?v=20261127a"></script>
 </body>
 </html>
