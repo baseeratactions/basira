@@ -50,8 +50,8 @@ const git = cmd => execSync('git ' + cmd, { encoding: 'utf8', maxBuffer: 64 << 2
 async function live(path) {
   try {
     const res = await fetch(SITE + path + '?sw=' + Date.now(), { headers: { 'cache-control': 'no-cache' }, redirect: 'follow' });
-    return { status: res.status, body: res.ok ? await res.text() : '' };
-  } catch (err) { return { status: 0, body: '' }; }
+    return { status: res.status, body: res.ok ? await res.text() : '', url: res.url };
+  } catch (err) { return { status: 0, body: '', url: '' }; }
 }
 const norm = s => s.replace(/\r\n/g, '\n').trim();
 
@@ -60,24 +60,36 @@ async function checkSite() {
   if (!SITE.startsWith('https://')) return;
   const headAge = (Date.now() - Number(git('log -1 --format=%ct')) * 1000) / 60000;
   const files = git('ls-files').split('\n').filter(f => (/\.html$/.test(f) && f !== '404.html') || f === 'assets/config.js');
+  const pathOf = f => f === 'index.html' ? '' : f;
+  // when GitHub Pages forwards to the custom domain, the domain check (checkDomain) covers the content
+  const first = await live('');
+  if (first.status === 200 && first.url && new URL(first.url).host !== new URL(SITE).host) return;
+  // one pass, then a single shared wait before re-checking only the pages that failed (keeps the run within minutes)
+  const down = [], diff = [];
   for (const f of files) {
-    const path = f === 'index.html' ? '' : f;
-    let r = await live(path);
-    if (r.status !== 200) { await sleep(30000); r = await live(path); }
-    if (r.status !== 200) {
+    const r = f === 'index.html' ? first : await live(pathOf(f));
+    if (r.status !== 200) { down.push(f); continue; }
+    if (headAge >= 30 && norm(r.body) !== norm(readFileSync(f, 'utf8'))) diff.push(f);
+  }
+  if (down.length) {
+    await sleep(30000);
+    for (const f of down) {
+      const r = await live(pathOf(f));
+      if (r.status === 200) continue;
       add({ level: f === 'index.html' ? 'high' : 'medium', key: 'down:' + f, recoverable: true,
-        title: (f === 'index.html' ? 'الموقع لا يعمل' : 'صفحة لا تعمل') + ': /' + path,
-        detail: 'الرابط ' + SITE + path + ' أعاد الرمز ' + (r.status || 'لا استجابة') + ' في محاولتين بينهما 30 ثانية.' });
-      continue;
+        title: (f === 'index.html' ? 'الموقع لا يعمل' : 'صفحة لا تعمل') + ': /' + pathOf(f),
+        detail: 'الرابط ' + SITE + pathOf(f) + ' أعاد الرمز ' + (r.status || 'لا استجابة') + ' في محاولتين بينهما 30 ثانية.' });
     }
-    if (headAge < 30) continue;   // GitHub Pages may still be publishing the latest commit
-    const repoText = norm(readFileSync(f, 'utf8'));
-    if (norm(r.body) === repoText) continue;
-    await sleep(60000); r = await live(path);
-    if (r.status === 200 && norm(r.body) !== repoText) {
+  }
+  if (diff.length) {
+    await sleep(60000);
+    for (const f of diff) {
+      const repoText = norm(readFileSync(f, 'utf8'));
+      const r = await live(pathOf(f));
+      if (r.status !== 200 || norm(r.body) === repoText) continue;
       const extra = [...r.body.matchAll(/<script[^>]+src=["']([^"']+)/gi)].map(m => m[1]).filter(s => !repoText.includes(s));
-      add({ level: 'high', key: 'diff:' + f, recoverable: true, title: 'المنشور يختلف عن المستودع: /' + path,
-        detail: 'محتوى ' + SITE + path + ' لا يطابق الملف ' + f + ' في الفرع الرئيسي منذ أكثر من 30 دقيقة. السبب إما تعديل غير مصرح به على الموقع المنشور، وإما تعثر النشر على GitHub Pages.' +
+      add({ level: 'high', key: 'diff:' + f, recoverable: true, title: 'المنشور يختلف عن المستودع: /' + pathOf(f),
+        detail: 'محتوى ' + SITE + pathOf(f) + ' لا يطابق الملف ' + f + ' في الفرع الرئيسي منذ أكثر من 30 دقيقة. السبب إما تعديل غير مصرح به على الموقع المنشور، وإما تعثر النشر على GitHub Pages.' +
           (extra.length ? '\nسكربتات في المنشور غير موجودة في المستودع: ' + extra.join('، ') : '') });
     }
   }
@@ -133,11 +145,11 @@ async function checkDomain() {
   const files = git('ls-files').split('\n').filter(f => (/\.html$/.test(f) && f !== '404.html' && f !== 'admin.html'));
   const toDomain = t => t.split(OLD_BASE).join(DOMAIN).split('baseeratactions.github.io/basira').join(new URL(DOMAIN).host);
   const headAge = (Date.now() - Number(git('log -1 --format=%ct')) * 1000) / 60000;
-  let stale = [];
+  let stale = [], waited = false;
   for (const f of files) {
     const path = f === 'index.html' ? '' : f.replace(/index\.html$/, '');
     let r = await fetchText(DOMAIN + path);
-    if (r.status !== 200) { await sleep(30000); r = await fetchText(DOMAIN + path); }
+    if (r.status !== 200) { if (!waited) { waited = true; await sleep(30000); } r = await fetchText(DOMAIN + path); }   // one shared wait, not one per page
     if (r.status !== 200) {
       add({ level: f === 'index.html' ? 'high' : 'medium', key: 'down:domain:' + f, recoverable: true,
         title: (f === 'index.html' ? 'النطاق لا يعمل' : 'صفحة لا تعمل على النطاق') + ': ' + DOMAIN + path,
