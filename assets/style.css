@@ -724,3 +724,15 @@ footer .wrap.logins{display:flex;flex-direction:row;flex-wrap:wrap;justify-conte
 .svc-filter [data-status]{flex-basis:100%;margin:0}.svc-filter .svc-none{flex-basis:100%;margin:6px 0 0;padding:12px;border:1px dashed rgba(47,133,90,.5);border-radius:12px}
 .svc-sort{display:flex;align-items:center;gap:6px;font-size:.95rem}.svc-sort select{font:inherit;min-height:44px;padding:8px 10px;border-radius:10px;border:1px solid rgba(127,127,127,.4);background:transparent;color:inherit}.svc-sort select option{color:#1f2a33}
 .svc-filter .svc-sort{display:flex!important;flex-direction:row!important;align-items:center;grid-template-columns:none}.svc-filter .svc-sort span{white-space:nowrap}
+/* services list: print or save as PDF */
+.svc-phead{display:none}
+@media print{
+  .svcp .svc-phead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;border-bottom:2px solid #0e5e4a;padding:0 0 8px;margin:0 0 12px;font-size:12px;color:#1f2a33}
+  .svcp .svc-phead b{flex-basis:100%;font-size:16px;color:#0e5e4a}
+  body:has(.svc-phead) header.top,body:has(.svc-phead) footer,body:has(.svc-phead) .wa-fab,body:has(.svc-phead) .mbar,.svcp .bc,.svcp .svc-filter,.svcp .svc-jump,.svcp .lead{display:none!important}
+  .svcp h1{font-size:20px;margin:0 0 8px}
+  .svcp .svc-group h2{font-size:15px;margin:12px 0 4px;break-after:avoid}.svcp .svc-group h2 small{display:none}
+  .svcp .svc-list li{break-inside:avoid;padding:4px 8px;border:0;border-bottom:1px solid #ddd;border-radius:0;box-shadow:none;background:none}
+  .svcp .svc-list li a{text-decoration:none;color:#1f2a33}
+  .svcp .svc-list [hidden],.svcp .svc-group[hidden]{display:none!important}
+}
